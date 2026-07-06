@@ -105,6 +105,25 @@
   }
   .card .s{color:var(--muted); font-size:.82rem; margin-top:3px; line-height:1.45}
   .card .go{margin-left:auto; flex:none; font-weight:900; font-size:1.2rem; color:var(--orange)}
+  .app-strip{
+    border:3px solid var(--ink); border-radius:16px; background:#fff; box-shadow:var(--shadow);
+    padding:14px; margin-bottom:18px;
+  }
+  .app-title{font-weight:900; margin-bottom:10px; color:var(--teal); font-size:.9rem}
+  .app-row{display:flex; gap:10px; overflow-x:auto; padding-bottom:2px}
+  .app-link{
+    flex:0 0 82px; display:grid; justify-items:center; gap:7px;
+    color:var(--ink); text-decoration:none; font-size:.78rem; font-weight:900; text-align:center;
+  }
+  .app-badge{
+    width:54px; height:54px; border:3px solid var(--ink); border-radius:14px;
+    display:grid; place-content:center; background:var(--paper); box-shadow:2px 2px 0 var(--ink);
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif; font-size:1.25rem;
+  }
+  .app-link:nth-child(2n) .app-badge{background:var(--teal-soft)}
+  .app-link:nth-child(3n) .app-badge{background:var(--orange-soft)}
+  .app-link:nth-child(4n) .app-badge{background:var(--blue-soft)}
+  .app-link:nth-child(5n) .app-badge{background:var(--green-soft)}
   .foot{text-align:center; margin-top:30px; font-size:.75rem; color:#95877b;
     font-family:'Space Grotesk','Noto Sans TC',sans-serif; letter-spacing:.06em}
 </style>
@@ -122,12 +141,18 @@
     </div>
   </header>
 
-  <a class="card c2" href="cheatsheet.html">
-    <div class="icon">📋</div>
-    <div><div class="t">範本便利貼</div>
-    <div class="s">常用 prompt 和 Tripo／AR 動線</div></div>
-    <div class="go">▶</div>
-  </a>
+  <section class="app-strip" aria-label="需要先準備的 App">
+    <div class="app-title">需要先準備</div>
+    <div class="app-row">
+      <a class="app-link" href="https://accounts.google.com/"><span class="app-badge">G</span><span>Google 帳號</span></a>
+      <a class="app-link store-link" href="https://apps.apple.com/us/app/google-gemini/id6477489729" data-android="https://play.google.com/store/apps/details?id=com.google.android.apps.bard"><span class="app-badge">✦</span><span>Gemini</span></a>
+      <a class="app-link store-link" href="https://apps.apple.com/us/app/canva-ai-video-photo-editor/id897446215" data-android="https://play.google.com/store/apps/details?id=com.canva.editor"><span class="app-badge">C</span><span>Canva</span></a>
+      <a class="app-link store-link" href="https://apps.apple.com/us/app/tripo-ai-3d-model-generator/id6748596826" data-android="https://play.google.com/store/apps/details?id=ai.holymolly.tripo3daimodel"><span class="app-badge">3D</span><span>Tripo</span></a>
+      <a class="app-link store-link" href="https://apps.apple.com/us/app/lightcut-ai-video-editor/id1575860488" data-android="https://play.google.com/store/apps/details?id=com.lightcut.videoeditor"><span class="app-badge">LC</span><span>LightCut</span></a>
+      <a class="app-link store-link" href="https://apps.apple.com/us/app/padlet/id834618886" data-android="https://play.google.com/store/apps/details?id=com.wallwisher.Padlet"><span class="app-badge">P</span><span>Padlet</span></a>
+    </div>
+  </section>
+
   <a class="card c3" href="schedule.html">
     <div class="icon">🗓</div>
     <div><div class="t">課程表</div>
@@ -138,6 +163,12 @@
     <div class="icon">📤</div>
     <div><div class="t">作品上傳區（Padlet）</div>
     <div class="s">每堂課完成後，把作品交到這裡</div></div>
+    <div class="go">▶</div>
+  </a>
+  <a class="card c2" href="cheatsheet.html">
+    <div class="icon">📋</div>
+    <div><div class="t">範本便利貼</div>
+    <div class="s">常用 prompt 和 Tripo／AR 動線</div></div>
     <div class="go">▶</div>
   </a>
   <a class="card c2" href="creative-character-lab-course-v6.html">
@@ -155,5 +186,10 @@
 
   <p class="foot">AI Creative Camp · 工具會換，把想法說清楚的能力帶走</p>
 </div>
+<script>
+  if(/Android/i.test(navigator.userAgent)){
+    document.querySelectorAll('.store-link[data-android]').forEach(link=>link.href=link.dataset.android);
+  }
+</script>
 </body>
 </html>
