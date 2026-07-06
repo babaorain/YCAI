@@ -58,7 +58,8 @@
   .tabs{
     position:sticky; top:0; z-index:15; display:grid;
     grid-template-columns:repeat(4,minmax(0,1fr)); gap:7px;
-    padding:8px 0 12px; background:linear-gradient(var(--paper) 72%, rgba(255,247,236,0));
+    padding:8px 0 12px; background:var(--paper);
+    border-bottom:2px solid var(--line);
   }
   .tab{
     min-height:48px; border:3px solid var(--ink); border-radius:14px;
@@ -109,19 +110,66 @@
     border-radius:14px; background:#ddebcf;
   }
   .map-stage img{display:block;width:100%;height:auto}
+  .map-stage.debug::before{
+    content:""; position:absolute; inset:0; pointer-events:none; z-index:2;
+    background-image:
+      linear-gradient(to right, rgba(38,33,30,.28) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(38,33,30,.28) 1px, transparent 1px);
+    background-size:10% 10%;
+  }
   .pin{
     position:absolute; left:var(--x); top:var(--y); transform:translate(-50%,-50%);
     width:38px; height:38px; border:3px solid var(--ink); border-radius:50%;
     background:#fff; color:var(--ink); box-shadow:2px 2px 0 var(--ink);
     font:900 .78rem 'Space Grotesk','Noto Sans TC',sans-serif;
-    display:grid; place-content:center; cursor:pointer;
+    display:grid; place-content:center; cursor:pointer; z-index:3;
+    transition:opacity .12s, transform .12s, box-shadow .12s;
+  }
+  .pin.approx{border-style:dashed}
+  .map-stage.has-selection .pin:not(.is-on){opacity:.45}
+  .pin.is-current:not(.is-on){
+    box-shadow:0 0 0 4px rgba(239,107,69,.28), 2px 2px 0 var(--ink);
   }
   .pin.is-on{
     background:var(--orange); color:#fff;
     box-shadow:0 0 0 6px rgba(239,107,69,.25), 3px 3px 0 var(--ink);
-    z-index:3;
+    z-index:5;
+  }
+  .pin.is-on::after{
+    content:attr(data-title);
+    position:absolute; left:50%; bottom:100%; transform:translate(-50%,-12px);
+    min-width:max-content; max-width:190px; white-space:normal;
+    border:3px solid var(--ink); border-radius:10px; background:#fff; color:var(--ink);
+    box-shadow:2px 2px 0 var(--ink); padding:5px 8px;
+    font:900 .78rem/1.25 'Noto Sans TC',sans-serif;
   }
   .pin.group{background:var(--gold-soft)}
+  .pin-coord{
+    display:none; position:absolute; left:50%; top:100%; transform:translateX(-50%);
+    margin-top:2px; padding:1px 4px; border:1px solid var(--ink); border-radius:6px;
+    background:#fff; color:var(--ink); font-size:.54rem; white-space:nowrap;
+  }
+  .debug .pin-coord{display:block}
+  .show-all{
+    position:absolute; right:8px; bottom:8px; z-index:6;
+    border:2px solid var(--ink); border-radius:999px; background:#fff;
+    box-shadow:2px 2px 0 var(--ink); color:var(--ink);
+    font:900 .75rem 'Noto Sans TC',sans-serif; padding:6px 10px; cursor:pointer;
+  }
+  .show-all:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--ink)}
+  .debug-cross{
+    position:absolute; width:18px; height:18px; transform:translate(-50%,-50%);
+    pointer-events:none; z-index:7;
+  }
+  .debug-cross::before,.debug-cross::after{
+    content:""; position:absolute; background:var(--orange);
+  }
+  .debug-cross::before{left:8px; top:0; width:2px; height:18px}
+  .debug-cross::after{left:0; top:8px; width:18px; height:2px}
+  .legend{
+    display:flex; flex-wrap:wrap; gap:8px 12px; margin-top:9px;
+    color:var(--muted); font-size:.72rem; font-weight:900; line-height:1.35;
+  }
   .place-card{
     margin-top:12px; border:3px solid var(--ink); border-radius:15px;
     background:var(--paper-2); padding:14px;
@@ -129,6 +177,11 @@
   .place-card h2{font-size:1.25rem;line-height:1.28;margin-bottom:5px}
   .place-card p{color:var(--muted);font-weight:700;line-height:1.55;margin-bottom:10px}
   .place-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px}
+  .aliases{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  .alias{
+    border:1px solid var(--line); border-radius:999px; background:#fff;
+    color:var(--muted); font-size:.76rem; font-weight:900; padding:3px 8px;
+  }
   .sources{font-size:.82rem;color:var(--muted);font-weight:700;line-height:1.6}
   .sources a{color:var(--teal);font-weight:900}
   .foot{
@@ -146,7 +199,8 @@
     h1{font-size:1.78rem}
     header,.now,.panel{padding:15px;border-radius:16px}
     .flow-card{grid-template-columns:76px 1fr}
-    .pin{width:34px;height:34px;font-size:.72rem}
+    .pin{width:36px;height:36px;font-size:.72rem}
+    .pin.is-on::after{max-width:150px;font-size:.72rem}
   }
 </style>
 </head>
@@ -159,7 +213,7 @@
   </header>
 
   <section class="now" id="nowPanel" aria-live="polite"></section>
-  <nav class="tabs" id="dayTabs" aria-label="選擇日期"></nav>
+  <nav class="tabs" id="dayTabs" role="tablist" aria-label="選擇日期"></nav>
 
   <div class="content">
     <div>
@@ -177,6 +231,10 @@
     <section class="map-shell" id="mapShell" aria-label="校園地圖">
       <div class="map-stage" id="mapStage">
         <img src="campus-activity-map.png" alt="樹德科技大學營隊活動地圖">
+        <button class="show-all" type="button" id="showAll">顯示全部</button>
+      </div>
+      <div class="legend" aria-label="地圖圖例">
+        <span>⚪ 一般地點</span><span>🟡 五新 A/B 區</span><span>⭕ 虛線＝約略位置</span>
       </div>
       <article class="place-card" id="placeCard"></article>
     </section>
@@ -193,21 +251,24 @@
 
 <script>
 const TZ = 'Asia/Taipei';
+const params = new URLSearchParams(location.search);
+const DEBUG = params.has('debug');
 const LOCATIONS = {
-  stu:{code:'STU',title:'樹德科技大學',x:50,y:82,kind:'校區',note:'高雄市燕巢區橫山路59號。',query:'樹德科技大學 高雄市燕巢區橫山路59號'},
-  arrival:{code:'報到',title:'貳姿樓外走廊',x:32,y:36,kind:'報到',note:'7/7 潛能報到地點。',query:'樹德科技大學 貳姿樓'},
-  adminHall:{code:'A館',title:'行政大樓：多功能大禮堂',x:23,y:70,kind:'聚會',note:'脈絡連結、人生GPS、晚會、慶典主要地點。',query:'樹德科技大學 行政大樓 多功能大禮堂'},
-  adminOpen:{code:'空地',title:'行政大樓旁空地',x:28,y:66,kind:'活動',note:'脈絡連結集合與活動區。',query:'樹德科技大學 行政大樓'},
-  stairs:{code:'A',title:'A區：階梯廣場',x:41,y:62,kind:'五新',note:'五新領域展開 A 區。',query:'樹德科技大學 階梯廣場'},
-  designArea:{code:'B',title:'B區：設計大樓區域',x:62,y:53,kind:'五新',note:'五新領域展開 B 區。',query:'樹德科技大學 設計大樓'},
-  design:{code:'D',title:'設計大樓',x:74,y:68,kind:'職能',note:'設計大樓課程與靜態展周邊。',query:'樹德科技大學 設計大樓'},
-  marble:{code:'D廣',title:'設計大樓：大理石廣場',x:67,y:62,kind:'展演',note:'7/9 能量午餐與職能靜態展。',query:'樹德科技大學 設計大樓 大理石廣場'},
-  dining:{code:'餐',title:'餐廳 / 能量補給',x:52,y:17,kind:'餐食',note:'餐食集合點以現場隊輔公告為準。',query:'樹德科技大學 餐廳'},
-  dorm:{code:'宿',title:'宿舍 / 小隊基地',x:23,y:41,kind:'住宿',note:'就寢、晨間充電、小隊基地夜談使用。',query:'樹德科技大學 文薈館 宿舍'},
-  wenhui:{code:'W',title:'文薈館 B1',x:22,y:43,kind:'職能',note:'KPOP 舞蹈 W5B34-2。',query:'樹德科技大學 文薈館'},
-  upperField:{code:'球',title:'上操場 / 風雨球場',x:52,y:14,kind:'職能',note:'籃球員訓練課程地點。',query:'樹德科技大學 上操場 風雨球場'},
-  courseHub:{code:'課',title:'職能課程地點',x:37,y:58,kind:'課程',note:'依課程分散於行政大樓、設計大樓、文薈館與上操場。',query:'樹德科技大學 行政大樓'}
+  stu:{code:'門',title:'校門口 / 警衛室',x:42,y:68,kind:'校區',aliases:['樹德科技大學','橫山路59號','旗楠公路入口'],note:'集合進出校園的辨識點。',query:'樹德科技大學 高雄市燕巢區橫山路59號'},
+  arrival:{code:'報',title:'貳姿樓外走廊',x:32,y:36,kind:'報到',aliases:['第二宿舍','貳姿樓','諮商中心','7-11','學校餐廳'],approx:true,note:'7/7 潛能報到地點。',query:'樹德科技大學 貳姿樓'},
+  adminHall:{code:'A館',title:'行政大樓：多功能大禮堂',x:30,y:58,kind:'聚會',aliases:['行政大樓','A館','多功能大禮堂','表演藝術系','休閒遊憩與運動管理系'],note:'脈絡連結、人生GPS、晚會、慶典主要地點。',query:'樹德科技大學 行政大樓 多功能大禮堂'},
+  adminOpen:{code:'空',title:'行政大樓旁空地',x:34,y:62,kind:'活動',aliases:['行政大樓','大禮堂旁空地','A區往行政大樓空地'],note:'脈絡連結集合與活動區。',query:'樹德科技大學 行政大樓'},
+  stairs:{code:'A',title:'A區：階梯廣場',x:41,y:62,kind:'五新',aliases:['階梯廣場','五新 A 區','行政大樓旁階梯'],note:'五新領域展開 A 區。',query:'樹德科技大學 階梯廣場'},
+  designArea:{code:'B',title:'B區：設計大樓區域',x:69,y:53,kind:'五新',aliases:['設計大樓區域','五新 B 區','D館周邊'],note:'五新領域展開 B 區。',query:'樹德科技大學 設計大樓'},
+  design:{code:'D',title:'設計大樓',x:66,y:47,kind:'職能',aliases:['D館','設計學院','應用設計研究所','建築與室內研究所','動畫與遊戲設計系','室內設計系','視覺傳達設計系','流行設計系','生活產品設計系'],note:'設計大樓課程與靜態展周邊。',query:'樹德科技大學 設計大樓'},
+  marble:{code:'廣',title:'設計大樓：大理石廣場',x:62,y:57,kind:'展演',aliases:['大理石廣場','設計大樓前廣場','職能靜態展'],note:'7/9 能量午餐與職能靜態展。',query:'樹德科技大學 設計大樓 大理石廣場'},
+  dining:{code:'餐',title:'餐食 / 能量補給',x:44,y:36,kind:'餐食',aliases:['文薈館一帶','學生活動中心','餐食集合點'],approx:true,note:'餐食領取點若有固定館別，請老師更新座標。',query:'樹德科技大學 餐廳'},
+  dorm:{code:'宿',title:'第五宿舍 / 文薈館',x:44,y:27,kind:'住宿',aliases:['文薈館','第五宿舍','學生宿舍','學生活動中心','樹德書城','學務處課服組','學務處住服組'],note:'就寢、晨間充電、小隊基地夜談使用。',query:'樹德科技大學 文薈館 宿舍'},
+  wenhui:{code:'W',title:'文薈館 B1',x:50,y:31,kind:'職能',aliases:['第五宿舍','文薈館','W館','學生活動中心','KPOP 舞蹈教室'],note:'KPOP 舞蹈 W5B34-2。',query:'樹德科技大學 文薈館'},
+  upperField:{code:'球',title:'上操場 / 風雨球場',x:57,y:18,kind:'職能',aliases:['上操場','跑道','風雨球場','籃球員訓練'],note:'籃球員訓練課程地點。',query:'樹德科技大學 上操場 風雨球場'},
+  courseHub:{code:'課',title:'職能課程地點',x:36,y:56,kind:'課程',aliases:['行政大樓','設計大樓','文薈館','上操場'],note:'依課程分散於行政大樓、設計大樓、文薈館與上操場。',query:'樹德科技大學 行政大樓'}
 };
+const PIN_IDS = ['arrival','adminHall','stairs','designArea','design','marble','dining','dorm','wenhui','upperField','courseHub','stu'];
 const DAYS = [
   {id:'2026-07-07',tab:'7/7',label:'7/7（二）',events:[
     ['09:00前','各教會自行集合前往','stu','各教會集合後前往樹德科大'],
@@ -268,10 +329,12 @@ const COURSES = [
   [17,'物理治療師','D0528','設計大樓5F','design'],
   [18,'KPOP舞蹈','W5B34-2','文薈館B1','wenhui']
 ];
-let selectedDay = '2026-07-07';
-let selectedLoc = 'stu';
+let selectedDay = DAYS[0].id;
+let selectedLoc = '';
 let currentEvent = null;
+let nextEvent = null;
 let manualDay = false;
+let flowDay = '';
 
 const $ = selector => document.querySelector(selector);
 const pad = value => String(value).padStart(2,'0');
@@ -314,25 +377,26 @@ function findNow(clock){
   }));
   return {current,next};
 }
-function renderTabs(active){
+function renderTabs(){
   $('#dayTabs').innerHTML = DAYS.map(day => `
-    <button class="tab" type="button" data-day="${day.id}" aria-selected="${day.id === active}">
+    <button class="tab" role="tab" type="button" data-day="${day.id}" aria-selected="false">
       ${day.tab}<small>${day.label.replace(day.tab,'')}</small>
     </button>
   `).join('');
-  document.querySelectorAll('.tab').forEach(button => button.addEventListener('click', () => {
-    manualDay = true;
-    selectedDay = button.dataset.day;
-    render();
-  }));
+}
+function updateTabsSelected(){
+  document.querySelectorAll('.tab').forEach(button => {
+    button.setAttribute('aria-selected', String(button.dataset.day === selectedDay));
+  });
 }
 function renderFlow(){
   const day = DAYS.find(item => item.id === selectedDay) || DAYS[0];
+  flowDay = day.id;
   $('#dayTitle').textContent = day.label;
   $('#flow').innerHTML = day.events.map((event,index) => {
     const loc = LOCATIONS[event[2]];
     const isNow = currentEvent?.day.id === day.id && currentEvent.index === index;
-    return `<button class="flow-card ${isNow ? 'is-now' : ''}" type="button" data-loc="${event[2]}">
+    return `<button class="flow-card ${isNow ? 'is-now' : ''}" type="button" data-loc="${event[2]}" data-index="${index}">
       <span class="time">${timeBadge(event[0])}</span>
       <span>
         <span class="title">${event[1]}</span>
@@ -340,7 +404,15 @@ function renderFlow(){
       </span>
     </button>`;
   }).join('');
-  document.querySelectorAll('.flow-card').forEach(card => card.addEventListener('click', () => selectLocation(card.dataset.loc, true)));
+}
+function updateFlowNow(){
+  document.querySelectorAll('.flow-card').forEach(card => {
+    const isNow = currentEvent?.day.id === selectedDay && String(currentEvent.index) === card.dataset.index;
+    card.classList.toggle('is-now', isNow);
+    const meta = card.querySelector('.meta');
+    meta?.querySelector('.now-pill')?.remove();
+    if(isNow) meta?.insertAdjacentHTML('afterbegin', '<span class="pill now-pill">現在</span>');
+  });
 }
 function renderCourses(){
   $('#courses').innerHTML = COURSES.map(course => `
@@ -349,24 +421,24 @@ function renderCourses(){
       <span><b>${course[1]}</b><small>${course[2]} · ${course[3]}</small></span>
     </button>
   `).join('');
-  document.querySelectorAll('.course-card').forEach(card => card.addEventListener('click', () => selectLocation(card.dataset.loc, true)));
 }
 function renderPins(){
-  const ids = ['arrival','adminHall','stairs','designArea','design','marble','dining','dorm','wenhui','upperField','courseHub','stu'];
   $('#mapStage').querySelectorAll('.pin').forEach(pin => pin.remove());
-  ids.forEach(id => {
+  PIN_IDS.forEach(id => {
     const loc = LOCATIONS[id];
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = `pin ${['stairs','designArea'].includes(id) ? 'group' : ''}`;
+    button.className = `pin ${['stairs','designArea'].includes(id) ? 'group' : ''} ${loc.approx ? 'approx' : ''}`;
     button.dataset.loc = id;
+    button.dataset.title = loc.title;
     button.style.setProperty('--x', `${loc.x}%`);
     button.style.setProperty('--y', `${loc.y}%`);
     button.textContent = loc.code;
     button.setAttribute('aria-label', loc.title);
-    button.addEventListener('click', () => selectLocation(id, false));
+    button.insertAdjacentHTML('beforeend', `<span class="pin-coord">${loc.x},${loc.y}</span>`);
     $('#mapStage').append(button);
   });
+  checkPinDistances();
 }
 function timeBadge(range){
   if(range === '全日' || range.includes('前')) return range;
@@ -376,52 +448,129 @@ function timeBadge(range){
 function mapUrl(loc){
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.query)}`;
 }
-function selectLocation(id, jump){
+function noteFor(loc){
+  return `${loc.approx ? '📍 約略位置，以現場公告為準。' : ''}${loc.note}`;
+}
+function selectLocation(id, jump, userAction, toggleSame){
+  if(selectedLoc === id && $('#mapStage').classList.contains('has-selection') && toggleSame){
+    clearSelection(true);
+    return;
+  }
   selectedLoc = id;
   const loc = LOCATIONS[id] || LOCATIONS.stu;
+  $('#mapStage').classList.add('has-selection');
   document.querySelectorAll('.pin').forEach(pin => pin.classList.toggle('is-on', pin.dataset.loc === id));
   $('#placeCard').innerHTML = `
-    <div class="place-tags"><span class="pill">${loc.kind}</span><span>${loc.code}</span></div>
+    <div class="place-tags"><span class="pill">${loc.kind}</span><span>${loc.code}</span>${loc.approx ? '<span class="pill">約略</span>' : ''}</div>
     <h2>${loc.title}</h2>
-    <p>${loc.note}</p>
+    ${loc.aliases?.length ? `<div class="aliases">${loc.aliases.map(alias => `<span class="alias">${alias}</span>`).join('')}</div>` : ''}
+    <p>${noteFor(loc)}</p>
     <a class="gmaps" href="${mapUrl(loc)}" target="_blank" rel="noopener">開 Google Maps</a>
   `;
-  history.replaceState(null, '', `#${id}`);
+  if(userAction) history.replaceState(null, '', `#${id}`);
   if(jump) $('#mapShell').scrollIntoView({behavior:'smooth', block:'start'});
+}
+function clearSelection(userAction){
+  selectedLoc = '';
+  $('#mapStage').classList.remove('has-selection');
+  document.querySelectorAll('.pin').forEach(pin => pin.classList.remove('is-on'));
+  $('#placeCard').innerHTML = '<h2>顯示全部地點</h2><p>點流程卡、職能課程或地圖圖釘，可以快速查看該地點與 Google Maps 連結。</p>';
+  if(userAction) history.replaceState(null, '', `${location.pathname}${location.search}`);
 }
 function renderNow(clock, found){
   currentEvent = found.current;
+  nextEvent = found.next;
   if(found.current){
     const {day,event} = found.current;
-    selectedLoc = event[2];
-    if(!manualDay) selectedDay = day.id;
-    $('#nowPanel').innerHTML = `<small>正在進行 · ${clock.label}</small><strong>${event[1]}</strong><div class="lead">${day.label} · ${event[0]} · ${event[3]}</div><button type="button" id="jumpNow">看現在地點</button>`;
-    $('#jumpNow').addEventListener('click', () => selectLocation(event[2], true));
+    $('#nowPanel').innerHTML = `<small>正在進行 · ${clock.label}</small><strong>${event[1]}</strong><div class="lead">${day.label} · ${event[0]} · ${event[3]}</div><button type="button" data-jump-loc="${event[2]}">看現在地點</button>`;
     return;
   }
   if(found.next){
     const {day,event} = found.next;
-    if(!manualDay) selectedDay = day.id;
-    $('#nowPanel').innerHTML = `<small>下一段 · ${clock.label}</small><strong>${event[1]}</strong><div class="lead">${day.label} · ${event[0]} · ${event[3]}</div><button type="button" id="jumpNext">看下一段地點</button>`;
-    $('#jumpNext').addEventListener('click', () => selectLocation(event[2], true));
+    $('#nowPanel').innerHTML = `<small>下一段 · ${clock.label}</small><strong>${event[1]}</strong><div class="lead">${day.label} · ${event[0]} · ${event[3]}</div><button type="button" data-jump-loc="${event[2]}">看下一段地點</button>`;
     return;
   }
   $('#nowPanel').innerHTML = '<small>流程結束</small><strong>保持開掛，明年見</strong><div class="lead">2026 Youth Camp</div>';
 }
-function render(){
+function updatePinClasses(){
+  const nowLoc = currentEvent?.event[2] || '';
+  document.querySelectorAll('.pin').forEach(pin => {
+    pin.classList.toggle('is-current', pin.dataset.loc === nowLoc);
+  });
+}
+function updateNow(forceFlow){
   // ponytail: query override keeps QA cheap; normal visitors just use current Taipei time.
-  const clock = taipeiClock(parseOverride(new URLSearchParams(location.search).get('now')));
+  const clock = taipeiClock(parseOverride(params.get('now')));
   const found = findNow(clock);
+  const autoDay = found.current?.day.id || found.next?.day.id || selectedDay;
+  if(!manualDay && autoDay !== selectedDay) selectedDay = autoDay;
   renderNow(clock, found);
-  renderTabs(selectedDay);
-  renderFlow();
-  renderCourses();
-  renderPins();
-  selectLocation(location.hash.slice(1) || selectedLoc, false);
+  updateTabsSelected();
+  if(forceFlow || flowDay !== selectedDay) renderFlow();
+  updateFlowNow();
+  updatePinClasses();
+}
+function bindEvents(){
+  $('#dayTabs').addEventListener('click', event => {
+    const tab = event.target.closest('.tab');
+    if(!tab) return;
+    manualDay = true;
+    selectedDay = tab.dataset.day;
+    updateTabsSelected();
+    renderFlow();
+    updateFlowNow();
+  });
+  $('#flow').addEventListener('click', event => {
+    const card = event.target.closest('.flow-card');
+    if(card) selectLocation(card.dataset.loc, true, true, false);
+  });
+  $('#courses').addEventListener('click', event => {
+    const card = event.target.closest('.course-card');
+    if(card) selectLocation(card.dataset.loc, true, true, false);
+  });
+  $('#nowPanel').addEventListener('click', event => {
+    const button = event.target.closest('[data-jump-loc]');
+    if(button) selectLocation(button.dataset.jumpLoc, true, true, false);
+  });
+  $('#mapStage').addEventListener('click', event => {
+    const pin = event.target.closest('.pin');
+    if(pin){
+      selectLocation(pin.dataset.loc, false, true, true);
+      return;
+    }
+    if(DEBUG) dropDebugCross(event);
+  });
+  $('#showAll').addEventListener('click', () => clearSelection(true));
+}
+function checkPinDistances(){
+  for(let i = 0; i < PIN_IDS.length; i++){
+    for(let j = i + 1; j < PIN_IDS.length; j++){
+      const a = LOCATIONS[PIN_IDS[i]];
+      const b = LOCATIONS[PIN_IDS[j]];
+      const dist = Math.hypot(a.x - b.x, a.y - b.y);
+      if(dist < 5) console.warn(`Pin overlap risk: ${PIN_IDS[i]} / ${PIN_IDS[j]} = ${dist.toFixed(1)}%`);
+    }
+  }
+}
+function enableDebug(){
+  $('#mapStage').classList.add('debug');
+}
+function dropDebugCross(event){
+  if(event.target.closest('.show-all')) return;
+  const rect = $('#mapStage').getBoundingClientRect();
+  const x = ((event.clientX - rect.left) / rect.width) * 100;
+  const y = ((event.clientY - rect.top) / rect.height) * 100;
+  console.log(`x: ${x.toFixed(1)}%, y: ${y.toFixed(1)}%`);
+  const mark = document.createElement('span');
+  mark.className = 'debug-cross';
+  mark.style.left = `${x}%`;
+  mark.style.top = `${y}%`;
+  $('#mapStage').append(mark);
 }
 function selfTest(){
   [
     ['2026-07-07T09:30','潛能報到','arrival'],
+    ['2026-07-07T12:30','前往教室、能量午餐','dining'],
     ['2026-07-08T18:30','晚會','adminHall'],
     ['2026-07-09T11:45','能量午餐（職能靜態展）','marble']
   ].forEach(([when,title,loc]) => {
@@ -429,10 +578,28 @@ function selfTest(){
     console.assert(found.current?.event[1] === title, `${when} should be ${title}`);
     console.assert(found.current?.event[2] === loc, `${when} should be ${loc}`);
   });
+  const boundary = findNow(taipeiClock(parseOverride('2026-07-07T23:50')));
+  console.assert(!boundary.current, '2026-07-07T23:50 should have no current event');
+  console.assert(boundary.next?.day.id === '2026-07-08' && boundary.next?.event[1] === '小隊晨間充電', '2026-07-07T23:50 next should be 7/8 小隊晨間充電');
 }
-render();
-setInterval(render, 30000);
-if(new URLSearchParams(location.search).has('selftest')) selfTest();
+function init(){
+  const clock = taipeiClock(parseOverride(params.get('now')));
+  const found = findNow(clock);
+  currentEvent = found.current;
+  nextEvent = found.next;
+  selectedDay = found.current?.day.id || found.next?.day.id || DAYS[0].id;
+  selectedLoc = location.hash.slice(1) || found.current?.event[2] || found.next?.event[2] || 'stu';
+  renderTabs();
+  renderCourses();
+  renderPins();
+  bindEvents();
+  if(DEBUG) enableDebug();
+  updateNow(true);
+  selectLocation(selectedLoc, false, false, false);
+  if(params.has('selftest')) selfTest();
+  setInterval(() => updateNow(false), 30000);
+}
+init();
 </script>
 </body>
 </html>
