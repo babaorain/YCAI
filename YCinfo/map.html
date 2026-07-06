@@ -247,7 +247,7 @@
 
     <section class="map-shell" id="mapShell" aria-label="校園地圖">
       <div class="map-stage" id="mapStage">
-        <img src="campus-activity-map.png" alt="樹德科技大學營隊活動地圖">
+        <img src="campus-south-map-20260706.png" alt="樹德科技大學南校區地圖">
         <button class="map-action open-map" type="button" id="openMap">全螢幕</button>
         <button class="map-action close-map" type="button" id="closeMap">關閉</button>
       </div>
@@ -272,20 +272,20 @@ const TZ = 'Asia/Taipei';
 const params = new URLSearchParams(location.search);
 const DEBUG = params.has('debug');
 const LOCATIONS = {
-  gate:{code:'門',title:'校門口 / 警衛室',x:39,y:91,kind:'校區',aliases:['警衛室','校安中心','旗楠公路入口','橫山路59號'],note:'集合進出校園的辨識點。'},
-  admin:{code:'行',title:'行政大樓',x:13,y:82,kind:'聚會',aliases:['多功能大禮堂','表演藝術系','休閒遊憩與運動管理系','各行政處室'],note:'人生GPS、晚會、全體慶典主要地點。'},
-  adminPlaza:{code:'A',title:'A：行政大樓旁廣場',x:23,y:82,kind:'活動',aliases:['行政大樓旁廣場','脈絡連結地點','五新 A 區'],note:'脈絡連結就在 A；五新活動也會使用此區。'},
-  designArea:{code:'B',title:'B：設計大樓區域',x:61,y:75,kind:'活動',aliases:['設計大樓周邊','五新 B 區'],note:'五新活動 B 區。'},
-  design:{code:'設',title:'設計大樓',x:55,y:80,kind:'職能',aliases:['設計學院','應用設計研究所','建築與室內研究所','動畫與遊戲設計系','室內設計系','視覺傳達設計系','流行設計系','生活產品設計系'],note:'設計大樓課程與靜態展周邊。'},
-  marble:{code:'廣',title:'設計大樓：大理石廣場',x:49,y:74,kind:'展演',aliases:['大理石廣場','設計大樓前廣場','職能靜態展'],note:'7/9 能量午餐與職能靜態展。'},
-  dining:{code:'餐',title:'餐食 / 能量補給',x:30,y:62,kind:'餐食',aliases:['餐食集合點','學生活動中心一帶'],approx:true,note:'一般餐食集合點若有固定館別，請老師更新座標。'},
-  firstDorm:{code:'壹',title:'第一宿舍 / 壹軒樓',x:41,y:38,kind:'住宿',aliases:['壹軒樓','第一宿舍','健促中心','生活便利屋','學校餐廳'],note:'住宿與小隊集合可能使用，依隊輔公告為準。'},
-  secondDorm:{code:'貳',title:'第二宿舍 / 貳姿樓',x:39,y:50,kind:'住宿',aliases:['貳姿樓','第二宿舍','諮商中心','7-11','第一銀行提款機','學校餐廳'],note:'7/7 潛能報到在貳姿樓外走廊。'},
-  thirdDorm:{code:'參',title:'第三宿舍 / 參嵐宿',x:82,y:40,kind:'住宿',aliases:['參嵐宿','第三宿舍','便利商店','學校餐廳'],note:'住宿與小隊集合可能使用，依隊輔公告為準。'},
-  fourthDorm:{code:'肆',title:'第四宿舍 / 肆善宿',x:82,y:29,kind:'住宿',aliases:['肆善宿','第四宿舍'],note:'住宿與小隊集合可能使用，依隊輔公告為準。'},
-  fifthDorm:{code:'文',title:'第五宿舍 / 文薈館',x:23,y:61,kind:'住宿',aliases:['文薈館','第五宿舍','學生活動中心','樹德書城','KPOP 舞蹈教室'],note:'KPOP 舞蹈 W5B34-2；住宿與小隊集合依隊輔公告。'},
+  gate:{code:'門',title:'校門口 / 警衛室',x:34.5,y:89.4,kind:'校區',aliases:['警衛室','校安中心','旗楠公路入口','橫山路59號'],note:'集合進出校園的辨識點。'},
+  admin:{code:'行',title:'行政大樓',x:13.8,y:82.5,kind:'聚會',aliases:['多功能大禮堂','表演藝術系','休閒遊憩與運動管理系','各行政處室'],note:'人生GPS、晚會、全體慶典主要地點。'},
+  adminPlaza:{code:'A',title:'A：行政大樓旁廣場',x:23.6,y:82.4,kind:'活動',aliases:['行政大樓旁廣場','脈絡連結地點','五新 A 區'],note:'脈絡連結就在 A；五新活動也會使用此區。'},
+  designArea:{code:'B',title:'B：設計大樓區域',x:60,y:77,kind:'活動',aliases:['設計大樓周邊','五新 B 區'],note:'五新活動 B 區。'},
+  design:{code:'設',title:'設計大樓',x:53,y:75.5,kind:'職能',aliases:['設計學院','應用設計研究所','建築與室內研究所','動畫與遊戲設計系','室內設計系','視覺傳達設計系','流行設計系','生活產品設計系'],note:'設計大樓課程與靜態展周邊。'},
+  marble:{code:'廣',title:'設計大樓：大理石廣場',x:46,y:78,kind:'展演',aliases:['大理石廣場','設計大樓前廣場','職能靜態展'],note:'7/9 能量午餐與職能靜態展。'},
+  dining:{code:'餐',title:'餐食 / 能量補給',x:33,y:63,kind:'餐食',aliases:['餐食集合點','學生活動中心一帶'],approx:true,note:'一般餐食集合點若有固定館別，請老師更新座標。'},
+  firstDorm:{code:'壹',title:'第一宿舍 / 壹軒樓',x:47,y:38.8,kind:'住宿',aliases:['壹軒樓','第一宿舍','健促中心','生活便利屋','學校餐廳'],note:'住宿與小隊集合可能使用，依隊輔公告為準。'},
+  secondDorm:{code:'貳',title:'第二宿舍 / 貳姿樓',x:43,y:51,kind:'住宿',aliases:['貳姿樓','第二宿舍','諮商中心','7-11','第一銀行提款機','學校餐廳'],note:'7/7 潛能報到在貳姿樓外走廊。'},
+  thirdDorm:{code:'參',title:'第三宿舍 / 參嵐宿',x:77,y:40.8,kind:'住宿',aliases:['參嵐宿','第三宿舍','便利商店','學校餐廳'],note:'住宿與小隊集合可能使用，依隊輔公告為準。'},
+  fourthDorm:{code:'肆',title:'第四宿舍 / 肆善宿',x:77,y:29.3,kind:'住宿',aliases:['肆善宿','第四宿舍'],note:'住宿與小隊集合可能使用，依隊輔公告為準。'},
+  fifthDorm:{code:'文',title:'第五宿舍 / 文薈館',x:27,y:59.5,kind:'住宿',aliases:['文薈館','第五宿舍','學生活動中心','樹德書城','KPOP 舞蹈教室'],note:'KPOP 舞蹈 W5B34-2；住宿與小隊集合依隊輔公告。'},
   management:{code:'管',title:'管理大樓',x:68,y:49,kind:'建物',aliases:['管理學院','經營管理研究所','國際企業與貿易系','會展管理與國際行銷學位學程','金融管理系','休閒與觀光管理系','餐旅管理學位學程','流通管理系','行銷管理系'],note:'目前營隊流程未指定此館。'},
-  library:{code:'圖',title:'圖資大樓',x:66,y:67,kind:'建物',aliases:['資訊學院','資訊管理系','電腦與通訊系','應用社會學院','人類性學研究所','兒童與家庭服務系','社會工作學位學程','通識教育學院','藝文中心','語文中心'],note:'目前營隊流程未指定此館。'},
+  library:{code:'圖',title:'圖資大樓',x:61.5,y:65.5,kind:'建物',aliases:['資訊學院','資訊管理系','電腦與通訊系','應用社會學院','人類性學研究所','兒童與家庭服務系','社會工作學位學程','通識教育學院','藝文中心','語文中心'],note:'目前營隊流程未指定此館。'},
   upperField:{code:'球',title:'上操場 / 風雨球場',x:57,y:25,kind:'職能',aliases:['上操場','跑道','風雨球場','籃球員訓練'],note:'籃球員訓練課程地點。'}
 };
 const DORM_IDS = ['firstDorm','secondDorm','thirdDorm','fourthDorm','fifthDorm'];
