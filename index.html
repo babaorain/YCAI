@@ -82,7 +82,7 @@
     margin:22px 4px 10px; display:flex; align-items:center; gap:10px;
   }
   .day::after{content:""; flex:1; height:2px; background:var(--line)}
-  a.card{
+  a.card,.locked-card{
     display:flex; gap:14px; align-items:center;
     border:3px solid var(--ink); border-radius:16px; background:#fff;
     box-shadow:var(--shadow); padding:16px;
@@ -91,6 +91,9 @@
     transition:transform .1s;
   }
   a.card:active{transform:translate(2px,2px); box-shadow:2px 2px 0 rgba(38,33,30,.9)}
+  .locked-card{background:#eee; color:#777; filter:grayscale(1); cursor:not-allowed}
+  .locked-card .icon{background:#ddd}
+  .locked-card .go{color:#777; font-size:.86rem}
   .icon{
     flex:none; width:52px; height:52px; border-radius:14px;
     border:3px solid var(--ink); display:grid; place-content:center;
@@ -180,18 +183,18 @@
     <div class="s">表單引導生成角色／資料卡／貼圖 prompt</div></div>
     <div class="go">▶</div>
   </a>
-  <a class="card c1" href="character-camera.html">
+  <div class="card c1 locked-card" aria-disabled="true">
     <div class="icon">🎥</div>
     <div><div class="t">角色合成相機</div>
     <div class="s">相機＋角色 PNG 或 3D 模型 → 拍照、錄影</div></div>
-    <div class="go">▶</div>
-  </a>
-  <a class="card c3" href="after-camp.html">
+    <div class="go">尚未開放</div>
+  </div>
+  <div class="card c3 locked-card" aria-disabled="true">
     <div class="icon">🏡</div>
     <div><div class="t">回家繼續玩</div>
     <div class="s">工具清單、安全提醒、三個進階挑戰</div></div>
-    <div class="go">▶</div>
-  </a>
+    <div class="go">尚未開放</div>
+  </div>
 
   <p class="foot">AI Creative Camp · 工具會換，把想法說清楚的能力帶走</p>
 </div>
