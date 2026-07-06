@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link rel="icon" href="data:,">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#26211e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-180.png">
 <title>角色合成相機｜讓角色闖進現實</title>
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 <style>
@@ -113,8 +119,29 @@
     padding:8px 14px; font-size:.78rem; font-weight:700; text-align:center;
     max-width:88vw; line-height:1.5; backdrop-filter:blur(4px); pointer-events:none;
   }
+  /* 光線面板 */
+  #lightPanel{
+    display:none; position:absolute; top:calc(56px + env(safe-area-inset-top)); right:10px;
+    z-index:22; pointer-events:auto;
+    background:rgba(0,0,0,.6); backdrop-filter:blur(6px);
+    border:2px solid rgba(255,255,255,.85); border-radius:14px;
+    padding:12px 14px; width:min(78vw, 280px); color:#fff;
+  }
+  #lightPanel.open{display:block}
+  #lightPanel .lp-presets{display:flex; gap:8px; margin-bottom:10px}
+  .lpre{
+    flex:1; cursor:pointer; border:2px solid rgba(255,255,255,.7); border-radius:999px;
+    background:transparent; color:#fff; font:inherit; font-weight:900;
+    font-size:.78rem; padding:7px 4px;
+  }
+  .lpre.on{background:var(--gold); border-color:var(--gold); color:var(--ink)}
+  #lightPanel label{
+    display:flex; align-items:center; gap:10px;
+    font-size:.78rem; font-weight:900; margin-top:8px;
+  }
+  #lightPanel input[type=range]{flex:1; accent-color:var(--gold)}
   /* 乾淨模式 */
-  body.clean .topbar, body.clean .bottombar, body.clean #hint3d{display:none !important}
+  body.clean .topbar, body.clean .bottombar, body.clean #hint3d, body.clean #lightPanel{display:none !important}
   #cleanDot{
     display:none; position:absolute; top:calc(12px + env(safe-area-inset-top)); right:12px; z-index:25;
     width:34px; height:34px; border-radius:50%; border:2px solid rgba(255,255,255,.8);
@@ -150,6 +177,7 @@
   <video id="cam" autoplay playsinline muted></video>
   <img id="png" alt="角色">
   <model-viewer id="mv" camera-controls interaction-prompt="none" touch-action="none"
+    min-camera-orbit="auto auto 25%" max-camera-orbit="auto auto 800%"
     shadow-intensity="0" exposure="1" alt="3D 角色"></model-viewer>
 </div>
 
@@ -157,9 +185,19 @@
   <div class="topbar">
     <button class="chip" id="backBtn" type="button">← 換角色</button>
     <div style="display:flex; gap:8px">
+      <button class="chip" id="lightBtn" type="button" style="display:none">💡 光線</button>
       <button class="chip" id="flipBtn" type="button">🔄 翻轉鏡頭</button>
       <button class="chip" id="cleanBtn" type="button">🫥 隱藏按鈕</button>
     </div>
+  </div>
+  <div id="lightPanel">
+    <div class="lp-presets">
+      <button class="lpre on" data-env="neutral" type="button">標準</button>
+      <button class="lpre" data-env="https://modelviewer.dev/shared-assets/environments/spruit_sunrise_1k_HDR.hdr" type="button">暖陽</button>
+      <button class="lpre" data-env="https://modelviewer.dev/shared-assets/environments/music_hall_01_1k.hdr" type="button">室內</button>
+    </div>
+    <label>亮度 <input type="range" id="expSlider" min="0.2" max="2.6" step="0.05" value="1"></label>
+    <label>陰影 <input type="range" id="shadowSlider" min="0" max="1" step="0.05" value="0"></label>
   </div>
   <div id="recTime">● 00:00</div>
   <div id="hint3d">一指旋轉角色・雙指縮放移動<br>3D 模式錄影：先「隱藏按鈕」，再用手機的螢幕錄影</div>
@@ -177,6 +215,7 @@
   <video class="media" id="pvVid" controls playsinline style="display:none"></video>
   <div class="pv-note" id="pvNote"></div>
   <div class="row">
+    <button class="pbtn" id="pvShare" type="button" style="display:none">📲 存到相簿</button>
     <button class="pbtn" id="pvSave" type="button">⬇️ 下載存檔</button>
     <button class="pbtn ghost" id="pvClose" type="button">✕ 關閉</button>
   </div>
@@ -259,6 +298,8 @@
       ov.x = window.innerWidth/2; ov.y = window.innerHeight/2; ov.s = 1;
       applyPng();
     }
+    $('lightBtn').style.display = (mode === '3d') ? '' : 'none';
+    $('lightPanel').classList.remove('open');
     ready.file = true;
     $('pickChar').classList.add('ok');
     $('pickChar').textContent = '✓ 已選：' + f.name + '（可再點換檔）';
@@ -281,7 +322,15 @@
       showErr('相機打不開：請確認已允許相機權限，且網址是 https。（' + err.name + '）');
     }
   }
-  $('startCam').addEventListener('click', openCam);
+  $('startCam').addEventListener('click', ()=>{
+    // 非「加入主畫面」開啟時，嘗試進入全螢幕（Android 支援；iPhone 請用加入主畫面）
+    if(!window.matchMedia('(display-mode: standalone)').matches
+       && !window.matchMedia('(display-mode: fullscreen)').matches
+       && document.documentElement.requestFullscreen){
+      document.documentElement.requestFullscreen().catch(()=>{});
+    }
+    openCam();
+  });
   $('flipBtn').addEventListener('click', ()=>{
     facing = (facing === 'user') ? 'environment' : 'user';
     openCam();
@@ -456,25 +505,46 @@
     recTime.textContent = '● 00:00';
   }
 
+  // ===== 光線調整（3D 模式）=====
+  $('lightBtn').addEventListener('click', ()=>$('lightPanel').classList.toggle('open'));
+  document.querySelectorAll('.lpre').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      document.querySelectorAll('.lpre').forEach(x=>x.classList.toggle('on', x === b));
+      mv.setAttribute('environment-image', b.dataset.env);
+    });
+  });
+  $('expSlider').addEventListener('input', e=>mv.setAttribute('exposure', e.target.value));
+  $('shadowSlider').addEventListener('input', e=>mv.setAttribute('shadow-intensity', e.target.value));
+
   // ===== 乾淨模式 =====
   $('cleanBtn').addEventListener('click', ()=>document.body.classList.add('clean'));
   $('cleanDot').addEventListener('click', ()=>document.body.classList.remove('clean'));
 
   // ===== 預覽與下載 =====
-  let pvUrl = null, pvExt = 'png';
+  let pvUrl = null, pvExt = 'png', pvBlob = null;
+  function pvFile(){
+    const type = pvBlob.type || (pvExt === 'png' ? 'image/png' : 'video/' + pvExt);
+    return new File([pvBlob], 'character-' + Date.now() + '.' + pvExt, {type});
+  }
   function showPreview(kind, blob, ext){
     if(pvUrl) URL.revokeObjectURL(pvUrl);
     pvUrl = URL.createObjectURL(blob);
-    pvExt = ext;
+    pvExt = ext; pvBlob = blob;
     $('pvImg').style.display = (kind === 'img') ? 'block' : 'none';
     $('pvVid').style.display = (kind === 'vid') ? 'block' : 'none';
     if(kind === 'img'){ $('pvImg').src = pvUrl; }
     else { $('pvVid').src = pvUrl; }
+    let canShare = false;
+    try{ canShare = !!(navigator.canShare && navigator.canShare({files:[pvFile()]})); }catch(e){}
+    $('pvShare').style.display = canShare ? 'block' : 'none';
     $('pvNote').textContent = (kind === 'img')
-      ? '手機也可以長按圖片 → 存到相簿'
-      : '下載後丟進 Canva 當素材（影片無聲，配樂在 Canva 加）';
+      ? (canShare ? '「存到相簿」→ 選「儲存影像」就會進相簿；也可以長按圖片儲存' : '手機可長按圖片 → 存到相簿')
+      : '「存到相簿」或下載後丟進 Canva（影片無聲，配樂在 Canva 加）';
     $('preview').style.display = 'flex';
   }
+  $('pvShare').addEventListener('click', async ()=>{
+    try{ await navigator.share({files:[pvFile()]}); }catch(e){ /* 使用者取消 */ }
+  });
   $('pvSave').addEventListener('click', ()=>{
     const a = document.createElement('a');
     a.href = pvUrl;
