@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<meta name="theme-color" content="#26211e">
+<title>2026 Youth Camp｜地點速查</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap');
+  :root{
+    --paper:#fff7ec; --paper-2:#fffdf8; --ink:#26211e; --muted:#75695f;
+    --line:#e5d7c7; --teal:#287c78; --teal-soft:#dff2ee;
+    --orange:#ef6b45; --orange-soft:#fde2d8; --gold:#e0ad45; --gold-soft:#fff7c9;
+    --blue:#4267b2; --blue-soft:#e4ebff; --green:#48815d; --green-soft:#e4f3e8;
+    --shadow:5px 5px 0 rgba(38,33,30,.9);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Noto Sans TC',sans-serif;
+    background:var(--paper);
+    background-image:radial-gradient(circle at 1px 1px, rgba(38,33,30,.055) 1px, transparent 0);
+    background-size:22px 22px;
+    color:var(--ink);
+    padding:16px 12px 52px;
+  }
+  .wrap{max-width:920px;margin:0 auto}
+  header,.now,.panel,.map-shell,.sources{
+    border:3px solid var(--ink); border-radius:18px; background:#fff;
+    box-shadow:var(--shadow); padding:18px; margin-bottom:16px;
+  }
+  header{position:relative;overflow:hidden}
+  header::after{
+    content:""; position:absolute; width:146px; height:146px; border-radius:50%;
+    background:var(--teal-soft); right:-64px; bottom:-76px;
+  }
+  header>*{position:relative;z-index:1}
+  .kicker{
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif;
+    color:var(--teal); font-size:.82rem; font-weight:900; letter-spacing:0;
+  }
+  h1{font-size:2rem;line-height:1.08;margin:6px 0 8px;font-weight:900;letter-spacing:0}
+  h1 span{color:var(--orange)}
+  .lead{color:var(--muted);font-weight:700;line-height:1.55}
+  .now{background:var(--gold-soft);display:grid;gap:7px}
+  .now small{
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif;
+    color:var(--teal);font-weight:900;font-size:.78rem;
+  }
+  .now strong{font-size:1.18rem;line-height:1.35}
+  .now button,.gmaps{
+    justify-self:start; display:inline-flex; align-items:center; justify-content:center;
+    border:3px solid var(--ink); border-radius:12px; background:var(--gold);
+    box-shadow:3px 3px 0 var(--ink); color:var(--ink); text-decoration:none;
+    padding:9px 13px; font:inherit; font-weight:900; cursor:pointer;
+  }
+  .now button:active,.gmaps:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+  .tabs{
+    position:sticky; top:0; z-index:15; display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr)); gap:7px;
+    padding:8px 0 12px; background:linear-gradient(var(--paper) 72%, rgba(255,247,236,0));
+  }
+  .tab{
+    min-height:48px; border:3px solid var(--ink); border-radius:14px;
+    background:#fff; box-shadow:3px 3px 0 var(--ink);
+    color:var(--ink); font:inherit; font-weight:900; cursor:pointer;
+  }
+  .tab small{display:block;color:var(--muted);font-size:.68rem;font-weight:900}
+  .tab[aria-selected="true"]{background:var(--teal);color:#fff}
+  .tab[aria-selected="true"] small{color:#fff}
+  .section-title{
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif;
+    font-weight:900; color:var(--muted); margin:4px 4px 10px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .section-title::after{content:"";height:2px;background:var(--line);flex:1}
+  .flow{display:grid;gap:10px}
+  .flow-card{
+    width:100%; text-align:left; cursor:pointer;
+    border:3px solid var(--ink); border-radius:16px; background:#fff;
+    box-shadow:3px 3px 0 var(--ink); padding:12px;
+    color:var(--ink); font:inherit; display:grid; grid-template-columns:86px 1fr; gap:10px;
+  }
+  .flow-card.is-now{border-color:var(--orange);background:var(--gold-soft);box-shadow:5px 5px 0 var(--orange)}
+  .flow-card:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+  .time{
+    border:3px solid var(--ink); border-radius:13px; background:var(--teal-soft);
+    display:grid; place-content:center; text-align:center;
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif;
+    font-weight:900; font-size:.82rem; line-height:1.1;
+  }
+  .time span{display:block;color:var(--muted);font-size:.68rem;margin-top:3px}
+  .title{font-weight:900;font-size:1.02rem;line-height:1.35}
+  .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px;color:var(--muted);font-size:.78rem;font-weight:900}
+  .pill{border:2px solid var(--teal);border-radius:999px;background:var(--teal-soft);padding:2px 8px;color:var(--ink)}
+  .pill.now-pill{border-color:var(--orange);background:var(--orange);color:#fff}
+  .courses{display:grid;gap:8px}
+  .course-card{
+    border:2px solid var(--line); border-radius:13px; background:var(--paper-2);
+    padding:10px; display:grid; grid-template-columns:2.2em 1fr; gap:8px;
+    color:var(--ink); font:inherit; text-align:left; cursor:pointer;
+  }
+  .course-card:active{background:var(--teal-soft)}
+  .course-card b{font-weight:900}
+  .course-card small{display:block;color:var(--muted);font-weight:900;margin-top:2px}
+  .map-shell{padding:12px;scroll-margin-top:68px}
+  .map-stage{
+    position:relative; overflow:hidden; border:3px solid var(--ink);
+    border-radius:14px; background:#ddebcf;
+  }
+  .map-stage img{display:block;width:100%;height:auto}
+  .pin{
+    position:absolute; left:var(--x); top:var(--y); transform:translate(-50%,-50%);
+    width:38px; height:38px; border:3px solid var(--ink); border-radius:50%;
+    background:#fff; color:var(--ink); box-shadow:2px 2px 0 var(--ink);
+    font:900 .78rem 'Space Grotesk','Noto Sans TC',sans-serif;
+    display:grid; place-content:center; cursor:pointer;
+  }
+  .pin.is-on{
+    background:var(--orange); color:#fff;
+    box-shadow:0 0 0 6px rgba(239,107,69,.25), 3px 3px 0 var(--ink);
+    z-index:3;
+  }
+  .pin.group{background:var(--gold-soft)}
+  .place-card{
+    margin-top:12px; border:3px solid var(--ink); border-radius:15px;
+    background:var(--paper-2); padding:14px;
+  }
+  .place-card h2{font-size:1.25rem;line-height:1.28;margin-bottom:5px}
+  .place-card p{color:var(--muted);font-weight:700;line-height:1.55;margin-bottom:10px}
+  .place-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px}
+  .sources{font-size:.82rem;color:var(--muted);font-weight:700;line-height:1.6}
+  .sources a{color:var(--teal);font-weight:900}
+  .foot{
+    text-align:center;margin-top:24px;font-size:.75rem;color:#95877b;
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif;
+  }
+  @media(min-width:760px){
+    body{padding:22px 18px 60px}
+    header,.now,.panel,.map-shell,.sources{padding:22px}
+    h1{font-size:2.7rem}
+    .content{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.92fr);gap:16px;align-items:start}
+    .map-shell{position:sticky;top:12px}
+  }
+  @media(max-width:390px){
+    h1{font-size:1.78rem}
+    header,.now,.panel{padding:15px;border-radius:16px}
+    .flow-card{grid-template-columns:76px 1fr}
+    .pin{width:34px;height:34px;font-size:.72rem}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">2026 Youth Camp</div>
+    <h1>地點<span>速查</span></h1>
+    <p class="lead">樹德科技大學，高雄市燕巢區橫山路59號。</p>
+  </header>
+
+  <section class="now" id="nowPanel" aria-live="polite"></section>
+  <nav class="tabs" id="dayTabs" aria-label="選擇日期"></nav>
+
+  <div class="content">
+    <div>
+      <section class="panel">
+        <div class="section-title" id="dayTitle"></div>
+        <div class="flow" id="flow"></div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title">職能教室</div>
+        <div class="courses" id="courses"></div>
+      </section>
+    </div>
+
+    <section class="map-shell" id="mapShell" aria-label="校園地圖">
+      <div class="map-stage" id="mapStage">
+        <img src="campus-activity-map.png" alt="樹德科技大學營隊活動地圖">
+      </div>
+      <article class="place-card" id="placeCard"></article>
+    </section>
+  </div>
+
+  <section class="sources">
+    資料來源：2026 Youth Camp 大會手冊、樹德科技大學官網與公開校園地圖。
+    <a href="https://www.stu.edu.tw/">樹德科技大學</a>、
+    <a href="https://freshman.stu.edu.tw/%E6%A0%A1%E5%9C%92%E5%9C%B0%E5%9C%96/">校園地圖</a>。
+  </section>
+
+  <p class="foot">AI Creative Camp · Location Guide</p>
+</div>
+
+<script>
+const TZ = 'Asia/Taipei';
+const LOCATIONS = {
+  stu:{code:'STU',title:'樹德科技大學',x:50,y:82,kind:'校區',note:'高雄市燕巢區橫山路59號。',query:'樹德科技大學 高雄市燕巢區橫山路59號'},
+  arrival:{code:'報到',title:'貳姿樓外走廊',x:32,y:36,kind:'報到',note:'7/7 潛能報到地點。',query:'樹德科技大學 貳姿樓'},
+  adminHall:{code:'A館',title:'行政大樓：多功能大禮堂',x:23,y:70,kind:'聚會',note:'脈絡連結、人生GPS、晚會、慶典主要地點。',query:'樹德科技大學 行政大樓 多功能大禮堂'},
+  adminOpen:{code:'空地',title:'行政大樓旁空地',x:28,y:66,kind:'活動',note:'脈絡連結集合與活動區。',query:'樹德科技大學 行政大樓'},
+  stairs:{code:'A',title:'A區：階梯廣場',x:41,y:62,kind:'五新',note:'五新領域展開 A 區。',query:'樹德科技大學 階梯廣場'},
+  designArea:{code:'B',title:'B區：設計大樓區域',x:62,y:53,kind:'五新',note:'五新領域展開 B 區。',query:'樹德科技大學 設計大樓'},
+  design:{code:'D',title:'設計大樓',x:74,y:68,kind:'職能',note:'設計大樓課程與靜態展周邊。',query:'樹德科技大學 設計大樓'},
+  marble:{code:'D廣',title:'設計大樓：大理石廣場',x:67,y:62,kind:'展演',note:'7/9 能量午餐與職能靜態展。',query:'樹德科技大學 設計大樓 大理石廣場'},
+  dining:{code:'餐',title:'餐廳 / 能量補給',x:52,y:17,kind:'餐食',note:'餐食集合點以現場隊輔公告為準。',query:'樹德科技大學 餐廳'},
+  dorm:{code:'宿',title:'宿舍 / 小隊基地',x:23,y:41,kind:'住宿',note:'就寢、晨間充電、小隊基地夜談使用。',query:'樹德科技大學 文薈館 宿舍'},
+  wenhui:{code:'W',title:'文薈館 B1',x:22,y:43,kind:'職能',note:'KPOP 舞蹈 W5B34-2。',query:'樹德科技大學 文薈館'},
+  upperField:{code:'球',title:'上操場 / 風雨球場',x:52,y:14,kind:'職能',note:'籃球員訓練課程地點。',query:'樹德科技大學 上操場 風雨球場'},
+  courseHub:{code:'課',title:'職能課程地點',x:37,y:58,kind:'課程',note:'依課程分散於行政大樓、設計大樓、文薈館與上操場。',query:'樹德科技大學 行政大樓'}
+};
+const DAYS = [
+  {id:'2026-07-07',tab:'7/7',label:'7/7（二）',events:[
+    ['09:00前','各教會自行集合前往','stu','各教會集合後前往樹德科大'],
+    ['09:00-10:00','潛能報到','arrival','貳姿樓外走廊'],
+    ['10:10-10:50','脈絡連結','adminOpen','行政大樓多功能大禮堂旁空地'],
+    ['10:50-12:00','啟航宣示：未來領航儀式','adminHall','行政大樓多功能大禮堂'],
+    ['12:00-13:00','前往教室、能量午餐','dining','餐食集合點以現場公告為準'],
+    ['13:00-15:00','職能探索課程','courseHub','各課程上課地點請看職能教室'],
+    ['15:00-17:10','五新領域展開','stairs','圖示 A、B 區'],
+    ['17:10-18:00','晚間能量補給','dining','餐廳 / 領餐區'],
+    ['18:00-21:00','晚會','adminHall','行政大樓多功能大禮堂'],
+    ['21:00-22:30','小隊基地夜談','dorm','小隊基地依隊輔指定'],
+    ['22:40-23:40','盥洗 / 就寢','dorm','23:40 查房巡邏']
+  ]},
+  {id:'2026-07-08',tab:'7/8',label:'7/8（三）',events:[
+    ['07:00-08:00','小隊晨間充電','dorm','宿舍 / 小隊基地'],
+    ['08:00-09:50','人生GPS','adminHall','行政大樓多功能大禮堂'],
+    ['09:50-12:00','職能探索課程','courseHub','各課程上課地點請看職能教室'],
+    ['12:00-13:00','前往教室、能量午餐','dining','餐食集合點以現場公告為準'],
+    ['13:00-15:00','職能探索課程','courseHub','各課程上課地點請看職能教室'],
+    ['15:00-17:10','五新領域展開','designArea','圖示 A、B 區'],
+    ['17:10-18:00','晚間能量補給','dining','餐廳 / 領餐區'],
+    ['18:00-21:00','晚會','adminHall','行政大樓多功能大禮堂'],
+    ['21:00-22:30','小隊基地夜談','dorm','小隊基地依隊輔指定'],
+    ['22:40-23:40','盥洗 / 就寢','dorm','23:40 查房巡邏']
+  ]},
+  {id:'2026-07-09',tab:'7/9',label:'7/9（四）',events:[
+    ['07:00-08:00','小隊晨間充電','dorm','宿舍 / 小隊基地'],
+    ['08:00-09:50','人生GPS','adminHall','行政大樓多功能大禮堂'],
+    ['10:00-11:00','職能探索課程','courseHub','各課程上課地點請看職能教室'],
+    ['11:00-11:30','區隊表演練習','adminHall','行政大樓多功能大禮堂'],
+    ['11:30-12:10','能量午餐（職能靜態展）','marble','設計大樓：大理石廣場'],
+    ['12:10-13:30','區隊彩排','adminHall','行政大樓多功能大禮堂'],
+    ['13:30-17:00','榮耀時刻 全體解鎖慶典','adminHall','行政大樓多功能大禮堂'],
+    ['17:00-18:00','保持開掛 明年見','stu','離營 / 集合依現場公告']
+  ]},
+  {id:'2026-07-10',tab:'7/10',label:'7/10（五）',events:[
+    ['全日','澎湖學員遊大港','stu','澎湖限定校外行程']
+  ]}
+];
+const COURSES = [
+  [1,'新娘秘書','A0514','行政大樓5F後','adminHall'],
+  [2,'美甲彩繪','A0516','行政大樓5F後','adminHall'],
+  [3,'AI音樂創作','A0518','行政大樓5F後','adminHall'],
+  [4,'美髮造型','A0512','行政大樓5F後','adminHall'],
+  [5,'平面攝影','A0502','行政大樓5F前','adminHall'],
+  [6,'影音剪輯','A0504','行政大樓5F前','adminHall'],
+  [7,'調香精油','D0237','設計大樓2F','design'],
+  [8,'氣球佈置','D0229','設計大樓2F','design'],
+  [9,'籃球員訓練','風雨球場','上操場','upperField'],
+  [10,'西式烘焙','A0402','行政大樓4F前','adminHall'],
+  [11,'表演戲劇','A0404','行政大樓4F前','adminHall'],
+  [12,'練韓文','A0413','行政大樓4F後','adminHall'],
+  [13,'AI影像創作','A0411','行政大樓4F後','adminHall'],
+  [14,'DJ入門','A0415','行政大樓4F後','adminHall'],
+  [15,'咖啡師','A0417','行政大樓4F後','adminHall'],
+  [16,'桌遊部落','D0530','設計大樓5F','design'],
+  [17,'物理治療師','D0528','設計大樓5F','design'],
+  [18,'KPOP舞蹈','W5B34-2','文薈館B1','wenhui']
+];
+let selectedDay = '2026-07-07';
+let selectedLoc = 'stu';
+let currentEvent = null;
+let manualDay = false;
+
+const $ = selector => document.querySelector(selector);
+const pad = value => String(value).padStart(2,'0');
+function minutes(time){
+  if(time.includes('前')) return 8 * 60 + 59;
+  if(time === '全日') return 8 * 60;
+  const [h,m] = time.split(':').map(Number);
+  return h * 60 + m;
+}
+function rangeParts(range){
+  if(range === '全日') return ['08:00','18:00'];
+  if(range.includes('前')) return ['08:00',range.replace('前','')];
+  return range.split('-');
+}
+function stamp(date, min){return Date.parse(`${date}T00:00:00+08:00`) + min * 60000}
+function parseOverride(value){
+  if(!value) return new Date();
+  const raw = value.trim().replace(' ','T');
+  if(/[zZ]|[+-]\d\d:?\d\d$/.test(raw)) return new Date(raw);
+  return new Date(`${raw.length === 16 ? `${raw}:00` : raw}+08:00`);
+}
+function taipeiClock(date){
+  const parts = new Intl.DateTimeFormat('en-CA',{
+    timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit',
+    hour:'2-digit',minute:'2-digit',hour12:false
+  }).formatToParts(date).reduce((bag,part)=>(bag[part.type]=part.value,bag),{});
+  const hour = Number(parts.hour === '24' ? '00' : parts.hour);
+  return {date:`${parts.year}-${parts.month}-${parts.day}`,minute:hour * 60 + Number(parts.minute),label:`${parts.month}/${parts.day} ${pad(hour)}:${parts.minute}`};
+}
+function findNow(clock){
+  const nowStamp = stamp(clock.date, clock.minute);
+  let current = null;
+  let next = null;
+  DAYS.forEach(day => day.events.forEach((event, index) => {
+    const [start,end] = rangeParts(event[0]);
+    const item = {day,event,index,startStamp:stamp(day.id, minutes(start))};
+    const endStamp = stamp(day.id, minutes(end));
+    if(nowStamp >= item.startStamp && nowStamp < endStamp) current = item;
+    if(item.startStamp > nowStamp && (!next || item.startStamp < next.startStamp)) next = item;
+  }));
+  return {current,next};
+}
+function renderTabs(active){
+  $('#dayTabs').innerHTML = DAYS.map(day => `
+    <button class="tab" type="button" data-day="${day.id}" aria-selected="${day.id === active}">
+      ${day.tab}<small>${day.label.replace(day.tab,'')}</small>
+    </button>
+  `).join('');
+  document.querySelectorAll('.tab').forEach(button => button.addEventListener('click', () => {
+    manualDay = true;
+    selectedDay = button.dataset.day;
+    render();
+  }));
+}
+function renderFlow(){
+  const day = DAYS.find(item => item.id === selectedDay) || DAYS[0];
+  $('#dayTitle').textContent = day.label;
+  $('#flow').innerHTML = day.events.map((event,index) => {
+    const loc = LOCATIONS[event[2]];
+    const isNow = currentEvent?.day.id === day.id && currentEvent.index === index;
+    return `<button class="flow-card ${isNow ? 'is-now' : ''}" type="button" data-loc="${event[2]}">
+      <span class="time">${timeBadge(event[0])}</span>
+      <span>
+        <span class="title">${event[1]}</span>
+        <span class="meta">${isNow ? '<span class="pill now-pill">現在</span>' : ''}<span class="pill">${loc.kind}</span><span>${event[3]}</span></span>
+      </span>
+    </button>`;
+  }).join('');
+  document.querySelectorAll('.flow-card').forEach(card => card.addEventListener('click', () => selectLocation(card.dataset.loc, true)));
+}
+function renderCourses(){
+  $('#courses').innerHTML = COURSES.map(course => `
+    <button class="course-card" type="button" data-loc="${course[4]}">
+      <b>${course[0]}</b>
+      <span><b>${course[1]}</b><small>${course[2]} · ${course[3]}</small></span>
+    </button>
+  `).join('');
+  document.querySelectorAll('.course-card').forEach(card => card.addEventListener('click', () => selectLocation(card.dataset.loc, true)));
+}
+function renderPins(){
+  const ids = ['arrival','adminHall','stairs','designArea','design','marble','dining','dorm','wenhui','upperField','courseHub','stu'];
+  $('#mapStage').querySelectorAll('.pin').forEach(pin => pin.remove());
+  ids.forEach(id => {
+    const loc = LOCATIONS[id];
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `pin ${['stairs','designArea'].includes(id) ? 'group' : ''}`;
+    button.dataset.loc = id;
+    button.style.setProperty('--x', `${loc.x}%`);
+    button.style.setProperty('--y', `${loc.y}%`);
+    button.textContent = loc.code;
+    button.setAttribute('aria-label', loc.title);
+    button.addEventListener('click', () => selectLocation(id, false));
+    $('#mapStage').append(button);
+  });
+}
+function timeBadge(range){
+  if(range === '全日' || range.includes('前')) return range;
+  const [start,end] = range.split('-');
+  return `${start}<span>${end}</span>`;
+}
+function mapUrl(loc){
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.query)}`;
+}
+function selectLocation(id, jump){
+  selectedLoc = id;
+  const loc = LOCATIONS[id] || LOCATIONS.stu;
+  document.querySelectorAll('.pin').forEach(pin => pin.classList.toggle('is-on', pin.dataset.loc === id));
+  $('#placeCard').innerHTML = `
+    <div class="place-tags"><span class="pill">${loc.kind}</span><span>${loc.code}</span></div>
+    <h2>${loc.title}</h2>
+    <p>${loc.note}</p>
+    <a class="gmaps" href="${mapUrl(loc)}" target="_blank" rel="noopener">開 Google Maps</a>
+  `;
+  history.replaceState(null, '', `#${id}`);
+  if(jump) $('#mapShell').scrollIntoView({behavior:'smooth', block:'start'});
+}
+function renderNow(clock, found){
+  currentEvent = found.current;
+  if(found.current){
+    const {day,event} = found.current;
+    selectedLoc = event[2];
+    if(!manualDay) selectedDay = day.id;
+    $('#nowPanel').innerHTML = `<small>正在進行 · ${clock.label}</small><strong>${event[1]}</strong><div class="lead">${day.label} · ${event[0]} · ${event[3]}</div><button type="button" id="jumpNow">看現在地點</button>`;
+    $('#jumpNow').addEventListener('click', () => selectLocation(event[2], true));
+    return;
+  }
+  if(found.next){
+    const {day,event} = found.next;
+    if(!manualDay) selectedDay = day.id;
+    $('#nowPanel').innerHTML = `<small>下一段 · ${clock.label}</small><strong>${event[1]}</strong><div class="lead">${day.label} · ${event[0]} · ${event[3]}</div><button type="button" id="jumpNext">看下一段地點</button>`;
+    $('#jumpNext').addEventListener('click', () => selectLocation(event[2], true));
+    return;
+  }
+  $('#nowPanel').innerHTML = '<small>流程結束</small><strong>保持開掛，明年見</strong><div class="lead">2026 Youth Camp</div>';
+}
+function render(){
+  // ponytail: query override keeps QA cheap; normal visitors just use current Taipei time.
+  const clock = taipeiClock(parseOverride(new URLSearchParams(location.search).get('now')));
+  const found = findNow(clock);
+  renderNow(clock, found);
+  renderTabs(selectedDay);
+  renderFlow();
+  renderCourses();
+  renderPins();
+  selectLocation(location.hash.slice(1) || selectedLoc, false);
+}
+function selfTest(){
+  [
+    ['2026-07-07T09:30','潛能報到','arrival'],
+    ['2026-07-08T18:30','晚會','adminHall'],
+    ['2026-07-09T11:45','能量午餐（職能靜態展）','marble']
+  ].forEach(([when,title,loc]) => {
+    const found = findNow(taipeiClock(parseOverride(when)));
+    console.assert(found.current?.event[1] === title, `${when} should be ${title}`);
+    console.assert(found.current?.event[2] === loc, `${when} should be ${loc}`);
+  });
+}
+render();
+setInterval(render, 30000);
+if(new URLSearchParams(location.search).has('selftest')) selfTest();
+</script>
+</body>
+</html>
