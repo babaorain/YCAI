@@ -40,6 +40,37 @@
   tr:nth-child(odd) td{background:#f1f4f8}
   .note{color:var(--muted); font-size:.9rem; font-weight:900; margin-top:12px}
   .warn{color:var(--muted); font-size:.8rem; line-height:1.6; margin-top:8px}
+  @media(max-width:700px){
+    body{padding-left:12px; padding-right:12px}
+    header,.table-wrap{padding:16px; border-radius:16px}
+    .table-wrap{overflow:visible}
+    table,thead,tbody,tr,td{display:block}
+    table{min-width:0; border-collapse:separate; border-spacing:0; background:transparent}
+    thead{display:none}
+    tbody{display:grid; gap:12px}
+    tr{
+      overflow:hidden;
+      border:3px solid var(--ink);
+      border-radius:14px;
+      background:#fff;
+      box-shadow:3px 3px 0 var(--ink);
+    }
+    tr:nth-child(odd) td{background:#fff}
+    td{
+      display:grid;
+      grid-template-columns:5.8em 1fr;
+      gap:8px;
+      border:0;
+      border-bottom:2px solid var(--line);
+      padding:10px 12px;
+    }
+    td:last-child{border-bottom:0}
+    td::before{font-weight:900; color:var(--teal)}
+    td:nth-child(1)::before{content:"節次"}
+    td:nth-child(2)::before{content:"日期時段"}
+    td:nth-child(3)::before{content:"主題"}
+    td:nth-child(4)::before{content:"作品產出"}
+  }
 </style>
 </head>
 <body>

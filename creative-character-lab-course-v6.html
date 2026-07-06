@@ -94,17 +94,6 @@
     margin:6px 0 9px;
   }
   .lead{max-width:58ch;color:var(--muted);font-size:.98rem}
-  .header-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
-  .tag{
-    display:inline-flex;align-items:center;gap:5px;
-    border:2px solid var(--line);
-    background:var(--paper);
-    border-radius:999px;
-    padding:5px 10px;
-    font-size:.78rem;
-    font-weight:700;
-    color:#574c44;
-  }
   .stamp{
     position:absolute;top:18px;right:20px;
     width:94px;height:94px;border-radius:50%;
@@ -152,15 +141,6 @@
     flex:none;
   }
   .card-body{padding:17px 17px 19px}
-  .section-note{
-    color:var(--muted);
-    background:var(--paper);
-    border:2px dashed var(--line);
-    border-radius:12px;
-    padding:10px 12px;
-    font-size:.85rem;
-    margin-bottom:14px;
-  }
   .field{margin-bottom:15px}
   .field:last-child{margin-bottom:0}
   label{display:block;font-weight:900;font-size:.88rem;margin-bottom:6px}
@@ -222,7 +202,7 @@
     background:#fff;
     border-radius:15px;
     padding:15px;
-    min-height:152px;
+    min-height:112px;
     display:flex;
     flex-direction:column;
     gap:8px;
@@ -232,7 +212,6 @@
   .mode-card.on{border-color:var(--ink);box-shadow:var(--shadow);background:var(--paper)}
   .mode-icon{font-size:1.7rem;line-height:1}
   .mode-card strong{font-size:1.02rem;line-height:1.28}
-  .mode-card span{font-size:.82rem;color:var(--muted);line-height:1.45}
   .mode-help{
     margin-top:14px;
     border-left:5px solid var(--teal);
@@ -341,6 +320,17 @@
   .dice-btn:hover{background:#e25a34}
   .dice-btn.rolling{animation:roll .5s ease}
   @keyframes roll{0%{transform:rotate(0)}50%{transform:rotate(8deg) scale(1.04)}100%{transform:rotate(0)}}
+  .prompt-tools{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    flex-wrap:wrap;
+    margin:18px 0 10px;
+  }
+  .prompt-tools .dice-btn{margin-top:0}
+  @media(max-width:520px){
+    .prompt-tools .act{flex:1 1 0}
+  }
   .char-card{border:3px solid var(--ink);border-radius:var(--radius);background:var(--paper-2);box-shadow:var(--shadow);overflow:hidden}
   .cc-empty{padding:32px 20px;text-align:center;color:var(--muted)}
   .cc-head{background:var(--teal);color:#fff;padding:16px 20px;border-bottom:3px solid var(--ink)}
@@ -390,34 +380,23 @@
     <div class="eyebrow">AI Character Lab · Session 01</div>
     <h1>創意角色實驗室</h1>
     <p class="lead">第一節先建立你的角色模型。你可以用自己的照片、手繪草圖，或完全靠文字創作。目標不是一次做完所有作品，而是先做出一個之後可以重複使用、長相穩定的角色設定。</p>
-    <div class="header-tags">
-      <span class="tag">手機可操作</span>
-      <span class="tag">自由創作</span>
-      <span class="tag">角色一致化</span>
-      <span class="tag">Prompt 複製工具</span>
-    </div>
-    <button class="act dice-btn" id="diceBtn" type="button">🎲 隨機骰一個角色</button>
   </header>
 
   <section class="card" id="modeSection">
     <h2><span class="no">0</span>先選你的創作路線</h2>
     <div class="card-body">
-      <div class="section-note">三種路線都可以。這個網頁只負責幫你產生 prompt，不會處理你的照片或圖檔。要用照片或手繪稿建立角色時，複製 prompt 後把圖直接上傳到你使用的 AI 生圖工具即可。</div>
       <div class="mode-grid">
         <button class="mode-card" data-mode="photo" type="button">
           <div class="mode-icon">📷</div>
           <strong>用自己的照片建立虛擬人物</strong>
-          <span>適合想把自己變成動畫、插畫、3D 角色的人。重點是保留自己的感覺，但變成創作角色。</span>
         </button>
         <button class="mode-card" data-mode="sketch" type="button">
           <div class="mode-icon">✍️</div>
           <strong>用手繪草圖建立角色</strong>
-          <span>適合先畫出自己的原創角色，再請 AI 幫你整理成穩定的角色模型。</span>
         </button>
         <button class="mode-card" data-mode="text" type="button">
           <div class="mode-icon">💬</div>
           <strong>完全靠文字描述角色</strong>
-          <span>適合不想上傳圖片，直接用想像力創造人物、動物、機器人或奇幻角色。</span>
         </button>
       </div>
       <div class="mode-help" id="modeHelp">請先選一種創作路線，下面的 prompt 會依照你的選擇自動改寫。</div>
@@ -527,6 +506,11 @@
       </div>
     </section>
 
+  </div>
+
+  <div class="prompt-tools">
+    <button class="act dice-btn" id="diceBtn" type="button">🎲 隨機骰一個角色</button>
+    <button class="act ghost" id="clearAllBtn" type="button">清除所有</button>
   </div>
 
   <section class="output-wrap" id="outputSection">
@@ -1303,12 +1287,38 @@ ${NEGATIVE}`;
     $('#outputSection').scrollIntoView({behavior:'smooth', block:'start'});
   }
 
+  function clearAll(){
+    Object.assign(state, {
+      mode:'',
+      type:'',
+      age:'',
+      style:'',
+      cardStyle:'',
+      stickerTextMode:'none',
+      musicGenre:'',
+      musicMood:'',
+      traits:[]
+    });
+    fieldIds.forEach(id=>{
+      const el = $('#'+id);
+      if(el) el.value = '';
+    });
+    $$('.tab').forEach(tab=>tab.classList.toggle('on', tab.dataset.tab === 'model'));
+    ['model','card','sticker','lyrics'].forEach(name=>{
+      $('#panel-'+name).style.display = name === 'model' ? 'block' : 'none';
+    });
+    try{ localStorage.removeItem(LS_KEY); }catch(e){}
+    render();
+    $('#outputSection').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
   $('#diceBtn').addEventListener('click',()=>{
     const btn = $('#diceBtn');
     btn.classList.add('rolling');
     setTimeout(()=>btn.classList.remove('rolling'),500);
     randomizeAll();
   });
+  $('#clearAllBtn').addEventListener('click',clearAll);
 
   restore();
   render();

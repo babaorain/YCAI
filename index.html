@@ -43,12 +43,13 @@
   }
   header>*{position:relative;z-index:1}
   .kicker{
-    font-family:'Space Grotesk',sans-serif; letter-spacing:.24em; text-transform:uppercase;
-    font-weight:700; font-size:.7rem; color:var(--teal); max-width:100%;
+    font-family:'Space Grotesk',sans-serif; letter-spacing:0;
+    font-weight:900; font-size:clamp(1.55rem,9vw,3rem); color:var(--ink); max-width:100%;
     overflow-wrap:anywhere;
   }
   h1{font-weight:900; letter-spacing:-.02em; line-height:1.1; font-size:clamp(1.9rem,7vw,2.8rem); margin:6px 0 8px}
   h1 .hl{color:var(--orange)}
+  .school{color:var(--teal); font-weight:900; font-size:1.05rem; margin-bottom:6px}
   .lead{color:var(--muted); font-size:.95rem; max-width:46ch}
   .hero-text{min-width:0}
   .site-qr{
@@ -64,7 +65,7 @@
   @media(max-width:430px){
     header{align-items:flex-start}
     .site-qr{width:88px; height:88px}
-    .kicker{letter-spacing:.14em}
+    .kicker{letter-spacing:0}
   }
   .padlet{
     display:flex; align-items:center; justify-content:center; gap:10px;
@@ -113,19 +114,14 @@
 
   <header>
     <div class="hero-text">
-      <div class="kicker">2026 YouthCamp · 7/7 – 7/9</div>
+      <div class="kicker">2026 YouthCamp</div>
+      <div class="school">樹德科技大學</div>
       <h1>AI <span class="hl">創意實驗室</span></h1>
       <p class="lead">上課動手用的工具都在這裡。</p>
       <p class="lead" style="margin-top:8px; font-size:.8rem">📲 小技巧：瀏覽器選單 →「加入主畫面」，之後就能像 App 一樣全螢幕開啟，相機頁不會被網址列擋住。</p>
     </div>
   </header>
 
-  <a class="card c4" href="https://padlet.com/t1992618/youthcampai-eroc48yfelchjkhr">
-    <div class="icon">📤</div>
-    <div><div class="t">作品上傳區（Padlet）</div>
-    <div class="s">每堂課完成後，把作品交到這裡</div></div>
-    <div class="go">▶</div>
-  </a>
   <a class="card c2" href="cheatsheet.html">
     <div class="icon">📋</div>
     <div><div class="t">範本便利貼</div>
@@ -136,6 +132,12 @@
     <div class="icon">🗓</div>
     <div><div class="t">課程表</div>
     <div class="s">七堂課時間、主題和作品產出</div></div>
+    <div class="go">▶</div>
+  </a>
+  <a class="card c4" href="https://padlet.com/t1992618/youthcampai-eroc48yfelchjkhr">
+    <div class="icon">📤</div>
+    <div><div class="t">作品上傳區（Padlet）</div>
+    <div class="s">每堂課完成後，把作品交到這裡</div></div>
     <div class="go">▶</div>
   </a>
   <a class="card c2" href="creative-character-lab-course-v6.html">
