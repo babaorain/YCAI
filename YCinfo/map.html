@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="data:,">
 <meta name="theme-color" content="#26211e">
-<title>2026 Youth Camp｜地點速查</title>
+<title>2026 YouthCamp｜流程表與地圖</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap');
   :root{
@@ -32,23 +32,32 @@
   }
   header{position:relative;overflow:hidden}
   header::after{
-    content:""; position:absolute; width:146px; height:146px; border-radius:50%;
-    background:var(--teal-soft); right:-64px; bottom:-76px;
+    display:none;
   }
   header>*{position:relative;z-index:1}
-  .kicker{
+  h1{
     font-family:'Space Grotesk','Noto Sans TC',sans-serif;
-    color:var(--teal); font-size:.82rem; font-weight:900; letter-spacing:0;
+    font-size:2.35rem; line-height:.98; margin:2px 0 12px;
+    font-weight:900; letter-spacing:0; white-space:nowrap;
   }
-  h1{font-size:2rem;line-height:1.08;margin:6px 0 8px;font-weight:900;letter-spacing:0}
-  h1 span{color:var(--orange)}
-  .lead{color:var(--muted);font-weight:700;line-height:1.55}
-  .now{background:var(--gold-soft);display:grid;gap:7px}
+  .school{color:var(--teal);font-size:1.35rem;font-weight:900;line-height:1.15}
+  .lead{color:var(--ink);font-size:1.05rem;font-weight:900;line-height:1.35;margin-top:10px}
+  .now{
+    background:#fff; display:grid; grid-template-columns:auto 1fr;
+    align-items:center; gap:2px 9px; padding:8px 12px;
+    border-radius:14px; margin-bottom:10px;
+  }
   .now small{
     font-family:'Space Grotesk','Noto Sans TC',sans-serif;
-    color:var(--teal);font-weight:900;font-size:.78rem;
+    color:var(--teal);font-weight:900;font-size:.74rem;grid-row:1 / span 2;
   }
-  .now strong{font-size:1.18rem;line-height:1.35}
+  .now strong{font-size:.88rem;line-height:1.15}
+  .clock-status{color:var(--muted);font-size:.78rem;font-weight:900}
+  .now .now-jump{
+    justify-self:start;border:0;border-radius:0;background:transparent;box-shadow:none;
+    padding:0;color:var(--teal);font-size:.78rem;line-height:1.15;
+  }
+  .now .now-jump:active{transform:none;box-shadow:none}
   .now button,.map-action{
     justify-self:start; display:inline-flex; align-items:center; justify-content:center;
     border:3px solid var(--ink); border-radius:12px; background:var(--gold);
@@ -207,14 +216,17 @@
   }
   @media(min-width:760px){
     body{padding:22px 18px 60px}
-    header,.now,.panel,.map-shell,.sources{padding:22px}
-    h1{font-size:2.7rem}
+    header,.panel,.map-shell,.sources{padding:22px}
+    h1{font-size:4.65rem}
+    .school{font-size:2.35rem}
+    .lead{font-size:1.45rem}
     .content{display:grid;grid-template-columns:minmax(0,1fr) minmax(390px,.92fr);gap:16px;align-items:start}
     .map-shell{position:sticky;top:12px}
   }
   @media(max-width:390px){
-    h1{font-size:1.78rem}
-    header,.now,.panel{padding:15px;border-radius:16px}
+    h1{font-size:2.3rem}
+    .school{font-size:1.22rem}
+    header,.panel{padding:15px;border-radius:16px}
     .flow-card{grid-template-columns:76px 1fr}
     .pin{width:30px;height:30px;font-size:.68rem}
     .pin.is-on::after{max-width:150px;font-size:.72rem}
@@ -224,9 +236,9 @@
 <body>
 <div class="wrap">
   <header>
-    <div class="kicker">2026 Youth Camp</div>
-    <h1>地點<span>速查</span></h1>
-    <p class="lead">樹德科技大學，高雄市燕巢區橫山路59號。</p>
+    <h1>2026 YouthCamp</h1>
+    <div class="school">樹德科技大學</div>
+    <p class="lead">流程表與地圖</p>
   </header>
 
   <section class="now" id="nowPanel" aria-live="polite"></section>
@@ -273,8 +285,8 @@ const params = new URLSearchParams(location.search);
 const DEBUG = params.has('debug');
 const COURSE_TAB = 'courses';
 const LOCATIONS = {
-  gate:{code:'門',title:'校門口 / 警衛室',x:34.5,y:89.4,kind:'校區',aliases:['警衛室','校安中心','旗楠公路入口','橫山路59號'],note:'集合進出校園的辨識點。'},
-  gym:{code:'體',title:'體育館 / 多功能大禮堂',x:13.8,y:82.5,kind:'聚會',aliases:['體育館','多功能大禮堂'],note:'人生GPS、晚會、全體慶典主要地點。'},
+  gate:{code:'門',title:'校門口 / 警衛室',x:34.5,y:89.4,kind:'校區',aliases:['警衛室','校安中心','旗楠公路入口'],note:'集合進出校園的辨識點。'},
+  gym:{code:'體',title:'體育館 / 多功能大禮堂',mapTitle:'體育館',x:13.8,y:82.5,kind:'聚會',aliases:['體育館','多功能大禮堂'],note:'人生GPS、晚會、全體慶典主要地點。'},
   admin:{code:'行',title:'行政大樓',x:23,y:70.8,kind:'職能',aliases:['行政大樓','表演藝術系','休閒遊憩與運動管理系','各行政處室'],note:'行政大樓課程與行政空間。'},
   adminPlaza:{code:'A',title:'A：行政大樓旁廣場',x:23.6,y:82.4,kind:'活動',aliases:['行政大樓旁廣場','脈絡連結地點','五新 A 區'],note:'脈絡連結就在 A；五新活動也會使用此區。'},
   designArea:{code:'B',title:'B：設計大樓區域',x:60,y:77,kind:'活動',aliases:['設計大樓周邊','五新 B 區'],note:'五新活動 B 區。'},
@@ -383,7 +395,13 @@ function taipeiClock(date){
     hour:'2-digit',minute:'2-digit',hour12:false
   }).formatToParts(date).reduce((bag,part)=>(bag[part.type]=part.value,bag),{});
   const hour = Number(parts.hour === '24' ? '00' : parts.hour);
-  return {date:`${parts.year}-${parts.month}-${parts.day}`,minute:hour * 60 + Number(parts.minute),label:`${parts.month}/${parts.day} ${pad(hour)}:${parts.minute}`};
+  const weekday = new Intl.DateTimeFormat('zh-TW',{timeZone:TZ,weekday:'long'}).format(date);
+  return {
+    date:`${parts.year}-${parts.month}-${parts.day}`,
+    minute:hour * 60 + Number(parts.minute),
+    label:`${parts.month}/${parts.day} ${pad(hour)}:${parts.minute}`,
+    fullLabel:`${parts.year}/${parts.month}/${parts.day} ${weekday} ${pad(hour)}:${parts.minute}`
+  };
 }
 function findNow(clock){
   const nowStamp = stamp(clock.date, clock.minute);
@@ -469,7 +487,7 @@ function renderPins(){
     button.type = 'button';
     button.className = `pin ${['adminPlaza','designArea'].includes(id) ? 'group' : ''} ${loc.approx ? 'approx' : ''}`;
     button.dataset.loc = id;
-    button.dataset.title = loc.title;
+    button.dataset.title = loc.mapTitle || loc.title;
     button.style.setProperty('--x', `${loc.x}%`);
     button.style.setProperty('--y', `${loc.y}%`);
     button.textContent = loc.code;
@@ -527,14 +545,14 @@ function clearSelection(userAction){
 function renderNow(clock, found){
   currentEvent = found.current;
   nextEvent = found.next;
+  $('#nowPanel').hidden = false;
   if(found.current){
     const {day,event} = found.current;
-    $('#nowPanel').hidden = false;
-    $('#nowPanel').innerHTML = `<small>正在進行 · ${clock.label}</small><strong>${event[1]}</strong><div class="lead">${day.label} · ${event[0]} · ${event[3]}</div><button type="button" data-jump-loc="${primaryLoc(event)}">看現在地點</button>`;
+    const loc = LOCATIONS[primaryLoc(event)];
+    $('#nowPanel').innerHTML = `<small>現在時間</small><strong>${clock.fullLabel}</strong><button class="now-jump" type="button" data-jump-loc="${primaryLoc(event)}">現在：${event[1]} · ${loc.mapTitle || loc.title}</button>`;
     return;
   }
-  $('#nowPanel').hidden = true;
-  $('#nowPanel').innerHTML = '';
+  $('#nowPanel').innerHTML = `<small>現在時間</small><strong>${clock.fullLabel}</strong><span class="clock-status">目前無進行中活動</span>`;
 }
 function updatePinClasses(){
   const nowLocs = currentEvent ? locIds(currentEvent.event) : [];
