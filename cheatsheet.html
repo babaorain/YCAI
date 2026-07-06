@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>AI 創作營｜範本便利貼</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap');
+  :root{
+    --paper:#fff7ec; --paper-2:#fffdf8; --ink:#26211e; --muted:#75695f;
+    --line:#e5d7c7; --teal:#287c78; --teal-soft:#dff2ee;
+    --orange:#ef6b45; --orange-soft:#fde2d8; --gold:#e0ad45;
+    --blue:#4267b2; --blue-soft:#e4ebff; --green:#48815d; --green-soft:#e4f3e8;
+    --danger:#b84a43; --danger-soft:#f7e0de; --shadow:5px 5px 0 rgba(38,33,30,.9);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Noto Sans TC',sans-serif; background:var(--paper);
+    background-image:radial-gradient(circle at 1px 1px, rgba(38,33,30,.055) 1px, transparent 0);
+    background-size:22px 22px; color:var(--ink); padding:74px 16px 60px;
+  }
+  .wrap{max-width:760px;margin:0 auto}
+  .home-link{
+    position:fixed; top:12px; left:14px; z-index:10;
+    border:2px solid var(--ink); border-radius:999px; padding:7px 12px;
+    background:#fff; color:var(--ink); text-decoration:none;
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif; font-weight:900;
+    font-size:.82rem; box-shadow:2px 2px 0 var(--ink);
+  }
+  header,.card{
+    border:3px solid var(--ink); border-radius:18px; background:#fff;
+    box-shadow:var(--shadow); padding:20px; margin-bottom:16px;
+  }
+  .kicker{font-family:'Space Grotesk',sans-serif; letter-spacing:.24em; text-transform:uppercase; font-weight:700; font-size:.7rem; color:var(--teal)}
+  h1{font-size:clamp(1.8rem,7vw,2.6rem); line-height:1.1; margin:6px 0 10px; font-weight:900}
+  h1 span{color:var(--orange)}
+  .legend{display:flex; flex-wrap:wrap; gap:8px; color:var(--muted); font-size:.84rem; font-weight:900}
+  .legend span{display:inline-flex; align-items:center; gap:5px}
+  .dot{width:12px;height:12px;border-radius:50%;display:inline-block;border:2px solid var(--ink)}
+  .d1{background:var(--teal-soft)} .d2{background:var(--blue-soft)} .d3{background:var(--orange-soft)} .d4{background:var(--green-soft)} .d5{background:var(--danger-soft)}
+  h2{font-size:1.05rem; margin-bottom:12px; line-height:1.4}
+  pre{
+    white-space:pre-wrap; word-break:break-word; background:var(--paper);
+    border:2px dashed var(--line); border-radius:12px; padding:14px;
+    line-height:1.75; font-size:.95rem; margin-bottom:12px;
+  }
+  .copy,.chip{
+    cursor:pointer; border:3px solid var(--ink); border-radius:12px;
+    background:var(--gold); color:var(--ink); box-shadow:3px 3px 0 var(--ink);
+    padding:10px 16px; font:inherit; font-weight:900;
+  }
+  .copy.done,.chip.done{background:var(--teal); color:#fff}
+  .chips{display:flex; flex-wrap:wrap; gap:10px}
+</style>
+</head>
+<body>
+<a class="home-link" href="index.html">← 主頁</a>
+<div class="wrap">
+  <header>
+    <div class="kicker">AI Creative Camp</div>
+    <h1>範本<span>便利貼</span></h1>
+    <div class="legend">
+      <span><i class="dot d1"></i>主角</span><span><i class="dot d2"></i>特徵</span><span><i class="dot d3"></i>畫風</span><span><i class="dot d4"></i>格式</span><span><i class="dot d5"></i>禁止</span>
+    </div>
+  </header>
+
+  <section class="card">
+    <h2>① 場景劇照範本（第 4 堂，附角色參考圖用）</h2>
+    <pre>（附上角色參考圖）同一個角色，臉、髮型、服裝、配色與參考圖完全相同。場景：＿＿（教室／舞台／星空下）。動作：＿＿（揮手登場／跳躍／比讚）。畫風與參考圖一致、直式構圖。不要文字、不要變成別的角色。</pre>
+    <button class="copy" type="button">📋 複製</button>
+  </section>
+
+  <section class="card">
+    <h2>② 一致性 prompt（第 2 堂起通用）</h2>
+    <pre>（附上角色參考圖）畫同一個角色：臉、髮型、服裝、配色與參考圖完全相同。只改成：開心大笑、雙手比讚。Q 版貼圖風格、白色背景。不要文字、不要變成別的角色。</pre>
+    <button class="copy" type="button">📋 複製</button>
+  </section>
+
+  <section class="card">
+    <h2>③ 貼圖 8 連發（短版）</h2>
+    <pre>（附上角色參考圖）同一個角色的貼圖，一張圖 2x4 共 8 格，依序：開心、哭哭、生氣、讚、掰掰、驚訝、愛你、加油。Q 版風格、粗外框、白色背景，每一格都是同一個角色，臉、髮型、服裝、配色完全相同。不要文字、不要浮水印。</pre>
+    <button class="copy" type="button">📋 複製</button>
+  </section>
+
+  <section class="card">
+    <h2>④ 曲風標籤（Suno 用，六顆各自一鍵複製）</h2>
+    <div class="chips">
+      <button class="chip" type="button" data-copy="Mandopop, upbeat, energetic, catchy chorus, bright">🔥 熱血流行</button>
+      <button class="chip" type="button" data-copy="Mandarin ballad, soft piano, emotional, gentle vocal">🌙 溫柔抒情</button>
+      <button class="chip" type="button" data-copy="Mandarin hip hop, playful rap, strong beat, fun">🎤 嘻哈饒舌</button>
+      <button class="chip" type="button" data-copy="EDM, Mandarin pop, bright synths, dance beat">⚡ 電音舞曲</button>
+      <button class="chip" type="button" data-copy="Mandarin rock, electric guitar, powerful, anthem">🎸 搖滾熱唱</button>
+      <button class="chip" type="button" data-copy="lofi, Mandarin pop, chill, relaxed, cozy">☁️ 慵懶放鬆</button>
+    </div>
+  </section>
+</div>
+<script>
+  async function copyText(text, btn){
+    let copied = false;
+    if(navigator.clipboard && window.isSecureContext){
+      try{
+        await navigator.clipboard.writeText(text);
+        copied = true;
+      }catch(err){}
+    }
+    if(!copied){
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+    }
+    const old = btn.textContent;
+    btn.classList.add('done'); btn.textContent = '✓ 已複製';
+    setTimeout(()=>{btn.classList.remove('done'); btn.textContent = old;}, 1400);
+  }
+  document.querySelectorAll('.copy').forEach(btn=>{
+    btn.addEventListener('click', ()=>copyText(btn.previousElementSibling.textContent.trim(), btn));
+  });
+  document.querySelectorAll('.chip').forEach(btn=>{
+    btn.addEventListener('click', ()=>copyText(btn.dataset.copy, btn));
+  });
+</script>
+</body>
+</html>

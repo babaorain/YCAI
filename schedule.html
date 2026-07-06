@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>AI 創作營｜課程表</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap');
+  :root{
+    --paper:#fff7ec; --paper-2:#fffdf8; --ink:#26211e; --muted:#75695f;
+    --line:#e5d7c7; --teal:#287c78; --orange:#ef6b45; --gold:#e0ad45;
+    --shadow:5px 5px 0 rgba(38,33,30,.9);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Noto Sans TC',sans-serif; background:var(--paper);
+    background-image:radial-gradient(circle at 1px 1px, rgba(38,33,30,.055) 1px, transparent 0);
+    background-size:22px 22px; color:var(--ink); padding:74px 16px 60px;
+  }
+  .wrap{max-width:900px;margin:0 auto}
+  .home-link{
+    position:fixed; top:12px; left:14px; z-index:10;
+    border:2px solid var(--ink); border-radius:999px; padding:7px 12px;
+    background:#fff; color:var(--ink); text-decoration:none;
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif; font-weight:900;
+    font-size:.82rem; box-shadow:2px 2px 0 var(--ink);
+  }
+  header,.table-wrap{
+    border:3px solid var(--ink); border-radius:18px; background:#fff;
+    box-shadow:var(--shadow); padding:20px; margin-bottom:16px;
+  }
+  .kicker{font-family:'Space Grotesk',sans-serif; letter-spacing:.24em; text-transform:uppercase; font-weight:700; font-size:.7rem; color:var(--teal)}
+  h1{font-size:clamp(1.8rem,7vw,2.6rem); line-height:1.1; margin:6px 0 8px; font-weight:900}
+  h1 span{color:var(--orange)}
+  .table-wrap{display:block; overflow-x:auto}
+  table{width:100%; min-width:760px; border-collapse:collapse; background:#fff}
+  th,td{border:2px solid var(--ink); padding:12px 14px; text-align:left; vertical-align:top; line-height:1.55}
+  th{background:#31577f; color:#fff; font-size:1rem}
+  tr:nth-child(odd) td{background:#f1f4f8}
+  .note{color:var(--muted); font-size:.9rem; font-weight:900; margin-top:12px}
+  .warn{color:var(--muted); font-size:.8rem; line-height:1.6; margin-top:8px}
+</style>
+</head>
+<body>
+<a class="home-link" href="index.html">← 主頁</a>
+<div class="wrap">
+  <header>
+    <div class="kicker">AI Creative Camp</div>
+    <h1>課程<span>表</span></h1>
+  </header>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>節次</th><th>日期時段</th><th>主題</th><th>作品產出</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>7/7（二）13:00–14:00</td><td>AI 溝通術：Prompt 與角色設計</td><td>角色定裝照</td></tr>
+        <tr><td>2</td><td>7/7（二）14:00–15:00</td><td>角色貼圖工坊</td><td>8 張去背貼圖</td></tr>
+        <tr><td>3</td><td>7/8（三）10:00–11:00</td><td>AI 個人主題曲</td><td>主題曲（連結＋MP3）</td></tr>
+        <tr><td>4</td><td>7/8（三）11:00–12:00</td><td>30 秒角色出道預告片</td><td>30 秒短影音</td></tr>
+        <tr><td>5</td><td>7/8（三）13:00–14:00</td><td>Canva AI 玩具工坊</td><td>自由作品＋補進度</td></tr>
+        <tr><td>6</td><td>7/8（三）14:00–15:00</td><td>個人網站架設（上）</td><td>網站初版</td></tr>
+        <tr><td>7</td><td>7/9（四）10:00–11:00</td><td>個人網站架設（下）＋發布</td><td>公開網站＋QR code</td></tr>
+      </tbody>
+    </table>
+    <p class="note">每堂課結束前：作品上傳 Padlet ✅</p>
+    <p class="warn">⚠️ 第 3 堂主題可能改版（音樂課移除中，見另行討論），表格內容以最終課表為準。</p>
+  </div>
+</div>
+</body>
+</html>
