@@ -1,6 +1,6 @@
 {
-  "name": "AI 創作營",
-  "short_name": "AI創作營",
+  "name": "2026 YouthCamp AI 創意實驗室",
+  "short_name": "AI創意實驗室",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
