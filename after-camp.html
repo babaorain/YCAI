@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>回家繼續玩｜2026 YouthCamp</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap');
+  :root{
+    --paper:#fff7ec; --ink:#26211e; --muted:#75695f; --line:#e5d7c7;
+    --teal:#287c78; --orange:#ef6b45; --gold:#e0ad45; --shadow:5px 5px 0 rgba(38,33,30,.9);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Noto Sans TC',sans-serif; background:var(--paper);
+    background-image:radial-gradient(circle at 1px 1px, rgba(38,33,30,.055) 1px, transparent 0);
+    background-size:22px 22px; color:var(--ink); padding:74px 16px 60px;
+  }
+  .wrap{max-width:780px;margin:0 auto}
+  .home-link{
+    position:fixed; top:12px; left:14px; z-index:10;
+    border:2px solid var(--ink); border-radius:999px; padding:7px 12px;
+    background:#fff; color:var(--ink); text-decoration:none; font-weight:900;
+    font-size:.82rem; box-shadow:2px 2px 0 var(--ink);
+  }
+  header,.card{
+    border:3px solid var(--ink); border-radius:18px; background:#fff;
+    box-shadow:var(--shadow); padding:20px; margin-bottom:16px;
+  }
+  .kicker{font-family:'Space Grotesk',sans-serif; letter-spacing:.14em; color:var(--teal); font-weight:900; font-size:.75rem}
+  h1{font-size:clamp(2rem,8vw,3rem); line-height:1.05; margin:6px 0 8px; font-weight:900}
+  h1 span{color:var(--orange)}
+  .lead{color:var(--muted); font-weight:700; line-height:1.6}
+  h2{font-size:1.15rem; margin-bottom:12px; color:var(--teal)}
+  .tools{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
+  .tool{
+    display:flex; align-items:center; gap:10px; padding:10px;
+    border:2px solid var(--line); border-radius:14px; color:var(--ink); text-decoration:none; font-weight:900;
+  }
+  .tool img{width:34px; height:34px; border-radius:9px; object-fit:contain}
+  ul{display:grid; gap:9px; padding-left:1.2em; line-height:1.65; color:var(--muted); font-weight:700}
+  .challenge{counter-reset:item; display:grid; gap:10px}
+  .challenge li{
+    list-style:none; border:2px solid var(--ink); border-radius:14px; padding:12px; background:#fffdf8;
+    color:var(--ink); box-shadow:2px 2px 0 var(--ink);
+  }
+  .challenge li::before{counter-increment:item; content:counter(item) ". "; color:var(--orange); font-weight:900}
+  @media(max-width:520px){.tools{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<a class="home-link" href="index.html">← 主頁</a>
+<div class="wrap">
+  <header>
+    <div class="kicker">AFTER CAMP</div>
+    <h1>回家<span>繼續玩</span></h1>
+    <p class="lead">這個 App 留在主畫面的理由：作品還可以繼續長大，不只停在營隊最後一天。</p>
+  </header>
+
+  <section class="card">
+    <h2>本營用過的工具</h2>
+    <div class="tools">
+      <a class="tool" href="https://accounts.google.com/"><img src="app-icons/google.png" alt="">Google 帳號</a>
+      <a class="tool store-link" href="https://apps.apple.com/us/app/google-gemini/id6477489729" data-android="https://play.google.com/store/apps/details?id=com.google.android.apps.bard"><img src="app-icons/gemini.jpg" alt="">Gemini</a>
+      <a class="tool store-link" href="https://apps.apple.com/us/app/canva-ai-video-photo-editor/id897446215" data-android="https://play.google.com/store/apps/details?id=com.canva.editor"><img src="app-icons/canva.jpg" alt="">Canva</a>
+      <a class="tool store-link" href="https://apps.apple.com/us/app/tripo-ai-3d-model-generator/id6748596826" data-android="https://play.google.com/store/apps/details?id=ai.holymolly.tripo3daimodel"><img src="app-icons/tripo.jpg" alt="">Tripo</a>
+      <a class="tool store-link" href="https://apps.apple.com/us/app/lightcut-ai-video-editor/id1575860488" data-android="https://play.google.com/store/apps/details?id=com.lightcut.videoeditor"><img src="app-icons/lightcut.jpg" alt="">LightCut</a>
+      <a class="tool store-link" href="https://apps.apple.com/us/app/padlet/id834618886" data-android="https://play.google.com/store/apps/details?id=com.wallwisher.Padlet"><img src="app-icons/padlet.jpg" alt="">Padlet</a>
+      <a class="tool" href="creative-character-lab-course-v6.html">🧪 創意角色實驗室</a>
+      <a class="tool" href="character-camera.html">🎥 角色合成相機</a>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>在家使用安全提醒</h2>
+    <ul>
+      <li>不要上傳身分證、住址、電話、學校證件或家中私人照片。</li>
+      <li>用 AI 做真人照片前，先問本人同不同意。</li>
+      <li>作品公開前先看一次：有沒有個資、奇怪連結、或不想讓陌生人看到的畫面。</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>三個進階挑戰</h2>
+    <ol class="challenge">
+      <li>幫家人做一個角色：訪問他的個性、口頭禪和代表物，再做定裝照。</li>
+      <li>貼圖真的上架 LINE：把 8 張貼圖整理成一套，研究 LINE Creators Market。</li>
+      <li>網站改版：加上作品故事、QR code、訪客留言或新的主題色。</li>
+    </ol>
+  </section>
+</div>
+<script>
+  if(/Android/i.test(navigator.userAgent)){
+    document.querySelectorAll('.store-link[data-android]').forEach(link=>link.href=link.dataset.android);
+  }
+</script>
+</body>
+</html>

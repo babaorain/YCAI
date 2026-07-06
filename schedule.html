@@ -33,11 +33,21 @@
   .kicker{font-family:'Space Grotesk',sans-serif; letter-spacing:.24em; text-transform:uppercase; font-weight:700; font-size:.7rem; color:var(--teal)}
   h1{font-size:clamp(1.8rem,7vw,2.6rem); line-height:1.1; margin:6px 0 8px; font-weight:900}
   h1 span{color:var(--orange)}
+  .today-panel{
+    display:none;
+    border:3px solid var(--ink); border-radius:18px; background:#fff7c9;
+    box-shadow:var(--shadow); padding:16px; margin-bottom:16px;
+  }
+  .today-panel.show{display:block}
+  .today-panel .label{font-family:'Space Grotesk','Noto Sans TC',sans-serif; color:var(--teal); font-weight:900; font-size:.82rem; letter-spacing:.08em}
+  .today-panel .title{font-weight:900; font-size:1.25rem; margin:4px 0}
+  .today-panel .accounts{font-weight:900; color:var(--muted); font-size:.9rem}
   .table-wrap{display:block; overflow-x:auto}
   table{width:100%; min-width:760px; border-collapse:collapse; background:#fff}
   th,td{border:2px solid var(--ink); padding:12px 14px; text-align:left; vertical-align:top; line-height:1.55}
   th{background:#31577f; color:#fff; font-size:1rem}
   tr:nth-child(odd) td{background:#f1f4f8}
+  tr.today-row td{background:#fff7c9!important; border-color:var(--orange); font-weight:900; font-size:1.06rem}
   .note{color:var(--muted); font-size:.9rem; font-weight:900; margin-top:12px}
   .warn{color:var(--muted); font-size:.8rem; line-height:1.6; margin-top:8px}
   @media(max-width:700px){
@@ -56,6 +66,11 @@
       box-shadow:3px 3px 0 var(--ink);
     }
     tr:nth-child(odd) td{background:#fff}
+    tr.today-row{
+      border-color:var(--orange);
+      box-shadow:5px 5px 0 var(--orange);
+    }
+    tr.today-row td{font-size:1.04rem}
     td{
       display:grid;
       grid-template-columns:5.8em 1fr;
@@ -80,23 +95,42 @@
     <div class="kicker">AI Creative Camp</div>
     <h1>課程<span>表</span></h1>
   </header>
+  <section class="today-panel" id="todayPanel" aria-live="polite">
+    <div class="label">今日高亮</div>
+    <div class="title" id="todayTitle">今天沒有營隊課程</div>
+    <div class="accounts">現在需要的帳號：Google ✓ Canva ✓</div>
+  </section>
   <div class="table-wrap">
     <table>
       <thead>
         <tr><th>節次</th><th>日期時段</th><th>主題</th><th>作品產出</th></tr>
       </thead>
       <tbody>
-        <tr><td>1</td><td>7/7（二）13:00–14:00</td><td>AI 溝通術：Prompt 與角色設計</td><td>角色定裝照</td></tr>
-        <tr><td>2</td><td>7/7（二）14:00–15:00</td><td>角色貼圖工坊</td><td>8 張去背貼圖</td></tr>
-        <tr><td>3</td><td>7/8（三）10:00–11:00</td><td>AI 3D 分身 × AR 攝影棚</td><td>3D 分身（GLB）＋AR 攝影展 3 張</td></tr>
-        <tr><td>4</td><td>7/8（三）11:00–12:00</td><td>30 秒角色出道預告片</td><td>30 秒短影音</td></tr>
-        <tr><td>5</td><td>7/8（三）13:00–14:00</td><td>Canva AI 玩具工坊</td><td>自由作品＋補進度</td></tr>
-        <tr><td>6</td><td>7/8（三）14:00–15:00</td><td>個人網站架設（上）</td><td>網站初版</td></tr>
-        <tr><td>7</td><td>7/9（四）10:00–11:00</td><td>個人網站架設（下）＋發布</td><td>公開網站＋QR code</td></tr>
+        <tr data-date="2026-07-07"><td>1</td><td>7/7（二）13:00–14:00</td><td>AI 溝通術：Prompt 與角色設計</td><td>角色定裝照</td></tr>
+        <tr data-date="2026-07-07"><td>2</td><td>7/7（二）14:00–15:00</td><td>角色貼圖工坊</td><td>8 張去背貼圖</td></tr>
+        <tr data-date="2026-07-08"><td>3</td><td>7/8（三）10:00–11:00</td><td>AI 3D 分身 × AR 攝影棚</td><td>3D 分身（GLB）＋AR 攝影展 3 張</td></tr>
+        <tr data-date="2026-07-08"><td>4</td><td>7/8（三）11:00–12:00</td><td>30 秒角色出道預告片</td><td>30 秒短影音</td></tr>
+        <tr data-date="2026-07-08"><td>5</td><td>7/8（三）13:00–14:00</td><td>Canva AI 玩具工坊</td><td>自由作品＋補進度</td></tr>
+        <tr data-date="2026-07-08"><td>6</td><td>7/8（三）14:00–15:00</td><td>個人網站架設（上）</td><td>網站初版</td></tr>
+        <tr data-date="2026-07-09"><td>7</td><td>7/9（四）10:00–11:00</td><td>個人網站架設（下）＋發布</td><td>公開網站＋QR code</td></tr>
       </tbody>
     </table>
     <p class="note">每堂課結束前：作品上傳 Padlet ✅</p>
   </div>
 </div>
+<script>
+  const today = new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei'}).format(new Date());
+  const rows = [...document.querySelectorAll('tr[data-date]')];
+  const todaysRows = rows.filter(row=>row.dataset.date === today);
+  const panel = document.getElementById('todayPanel');
+  const title = document.getElementById('todayTitle');
+  panel.classList.add('show');
+  if(todaysRows.length){
+    todaysRows.forEach(row=>row.classList.add('today-row'));
+    const nums = todaysRows.map(row=>row.cells[0].textContent);
+    const label = nums.length > 1 ? `第 ${nums[0]}–${nums[nums.length-1]} 節` : `第 ${nums[0]} 節`;
+    title.textContent = `${label}｜${todaysRows[0].cells[1].textContent.replace(/\d{1,2}:\d{2}.*/, '').trim()}`;
+  }
+</script>
 </body>
 </html>
