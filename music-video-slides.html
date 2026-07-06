@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="data:,">
-<title>主題曲＋預告片｜投影教材</title>
+<title>3D 分身 AR 攝影棚＋預告片｜投影教材</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap');
   :root{
@@ -187,99 +187,79 @@
 
 <!-- 1 -->
 <section class="slide on" data-session="第 3 堂">
-  <div class="kicker">Session 03 · AI Theme Song</div>
-  <h1>AI 個人主題曲<br>你的角色今天<span class="hl">出道發片</span> 🎵</h1>
-  <p class="big">昨天它有了臉和表情，今天它要有<b>自己的歌</b>。</p>
+  <div class="kicker">Session 03 · 3D Avatar × AR Studio</div>
+  <h1>AI 3D 分身 × <span class="hl">AR 攝影棚</span></h1>
+  <p class="big">昨天你的角色有了臉和表情，今天它要長出立體的身體——然後走進真實世界，跟你合照。</p>
 </section>
 
 <!-- 2 -->
 <section class="slide" data-session="第 3 堂">
-  <div class="kicker">還記得五指口訣嗎？</div>
-  <h1>寫歌，也是<span class="hl">下訂單</span></h1>
-  <p class="big">「幫我寫一首歌」＝「畫一隻貓」，AI 又要開始亂猜了。</p>
-  <div class="legend">
-    <span class="p-who">主角→角色故事</span><span class="p-look">特徵→個性</span><span class="p-style">畫風→曲風</span><span class="p-fmt">格式→長度結構</span><span class="p-no">禁止→不要什麼</span>
+  <div class="kicker">今天的動線</div>
+  <h1>定裝照變<span class="hl">3D 分身</span></h1>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><p>拿出你的<b>角色定裝照</b>（第 1 堂的作品）</p></div>
+    <div class="step"><div class="n">2</div><p>丟進 Tripo → AI 幫你<b>捏成 3D 模型</b></p></div>
+    <div class="step"><div class="n">3</div><p>下載 <b>GLB 檔</b> → 匯入<b>角色合成相機</b></p></div>
+    <div class="step"><div class="n">4</div><p>AR 實拍 → 上傳 Padlet <b>攝影展</b></p></div>
   </div>
-  <p class="muted">同一隻手，換個戰場照樣好用。</p>
 </section>
 
 <!-- 3 -->
 <section class="slide" data-session="第 3 堂">
-  <div class="kicker">歌詞訂單產生器（填好直接複製，貼給 Gemini）</div>
-  <h1>寫歌詞 Prompt</h1>
-  <div class="panel">
-    <div class="formgrid">
-      <input id="ly-name" type="text" placeholder="角色名字">
-      <input id="ly-intro" type="text" placeholder="一句話介紹">
-      <input id="ly-traits" type="text" placeholder="個性（例：勇敢、搞笑）">
-      <input id="ly-phrase" type="text" placeholder="口頭禪（會進副歌）">
-    </div>
-    <div class="selchips" id="ly-genre">
-      <button class="selchip" data-v="熱血流行" type="button">🔥 熱血流行</button>
-      <button class="selchip" data-v="溫柔抒情" type="button">🌙 溫柔抒情</button>
-      <button class="selchip" data-v="嘻哈饒舌" type="button">🎤 嘻哈饒舌</button>
-      <button class="selchip" data-v="電音舞曲" type="button">⚡ 電音舞曲</button>
-      <button class="selchip" data-v="搖滾熱唱" type="button">🎸 搖滾熱唱</button>
-      <button class="selchip" data-v="慵懶放鬆" type="button">☁️ 慵懶放鬆</button>
-    </div>
-    <div class="selchips" id="ly-mood">
-      <button class="selchip" data-v="熱血振奮" type="button">熱血振奮</button>
-      <button class="selchip" data-v="開心搞笑" type="button">開心搞笑</button>
-      <button class="selchip" data-v="溫暖療癒" type="button">溫暖療癒</button>
-      <button class="selchip" data-v="勇敢冒險" type="button">勇敢冒險</button>
-      <button class="selchip" data-v="神祕夢幻" type="button">神祕夢幻</button>
-      <button class="selchip" data-v="酷酷自信" type="button">酷酷自信</button>
-    </div>
-    <pre class="demo" id="ly-out" style="margin-top:12px; font-size:clamp(.85rem,1.7vw,1.15rem); line-height:1.7"></pre>
-    <button class="copy" id="ly-copy" type="button">📋 複製 Prompt</button>
+  <div class="kicker">3D 生成</div>
+  <h1>Tripo：把平面捏成立體</h1>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><p>登入 Tripo（Google 帳號）</p></div>
+    <div class="step"><div class="n">2</div><p>上傳角色定裝照 → 圖生 3D → 送出</p></div>
+    <div class="step"><div class="n">3</div><p>排隊生成中……<b>先跳下一頁開拍</b>，別呆等</p></div>
+    <div class="step"><div class="n">4</div><p>完成後下載 <b>GLB</b> 格式，記住存到哪</p></div>
   </div>
+  <div class="callout">只上傳你的「角色」圖。不要上傳真人照片——免費版生成的模型是公開的。</div>
 </section>
 
 <!-- 4 -->
 <section class="slide" data-session="第 3 堂">
-  <div class="kicker">Suno 操作</div>
-  <h1>四步發片</h1>
+  <div class="kicker">AR Studio</div>
+  <h1>把分身帶進現實 🎥</h1>
   <div class="steps">
-    <div class="step"><div class="n">1</div><p>把 Gemini 寫好的歌詞<b>貼進 Suno</b>（自訂／Custom 模式）</p></div>
-    <div class="step"><div class="n">2</div><p>填<b>曲風標籤</b>（下一頁有現成的可抄）</p></div>
-    <div class="step"><div class="n">3</div><p>生成會出兩個版本 → <b>聽完選一個</b></p></div>
-    <div class="step"><div class="n">4</div><p><b>選較舊的模型</b>生成，才能免費<b>下載 MP3</b>（下載不了就用分享連結）</p></div>
+    <div class="step"><div class="n">1</div><p>開「角色合成相機」→ 選擇你的 GLB 檔</p></div>
+    <div class="step"><div class="n">2</div><p>一指旋轉、雙指縮放移動</p></div>
+    <div class="step"><div class="n">3</div><p>💡 光線面板：亮度、陰影、換光源，讓分身融進場景</p></div>
+    <div class="step"><div class="n">4</div><p>等 GLB 的人先用<b>去背 PNG</b> 練拍，一樣算數</p></div>
   </div>
-  <div class="callout">額度有限：每人最多生成 2–3 次。先把歌詞改到滿意，再按生成。</div>
+  <div class="callout">拍照直接按 📸；想錄運鏡就「隱藏按鈕」＋手機螢幕錄影。</div>
 </section>
 
 <!-- 5 -->
 <section class="slide" data-session="第 3 堂">
-  <div class="kicker">曲風標籤（點一下複製）</div>
-  <h1>你的角色是哪一派？</h1>
-  <div class="chips">
-    <button class="chipbtn" data-copy="Mandopop, upbeat, energetic, catchy chorus, bright" type="button">🔥 熱血流行</button>
-    <button class="chipbtn" data-copy="Mandarin ballad, soft piano, emotional, gentle vocal" type="button">🌙 溫柔抒情</button>
-    <button class="chipbtn" data-copy="Mandarin hip hop, playful rap, strong beat, fun" type="button">🎤 嘻哈饒舌</button>
-    <button class="chipbtn" data-copy="EDM, Mandarin pop, bright synths, dance beat" type="button">⚡ 電音舞曲</button>
-    <button class="chipbtn" data-copy="Mandarin rock, electric guitar, powerful, anthem" type="button">🎸 搖滾熱唱</button>
-    <button class="chipbtn" data-copy="lofi, Mandarin pop, chill, relaxed, cozy" type="button">☁️ 慵懶放鬆</button>
-  </div>
-  <p class="muted">也可以自己混搭——這就是曲風的「畫風」欄。</p>
+  <div class="kicker">拍攝任務</div>
+  <h1>攝影任務卡 📸</h1>
+  <ul class="check">
+    <li>① 分身站在你的手掌上</li>
+    <li>② 你和分身的合照（借同學幫拍更穩）</li>
+    <li>③ 校園場景創意照（樓梯、窗台、操場……）</li>
+    <li>加分題：隱藏按鈕＋螢幕錄影，拍一段運鏡影片</li>
+  </ul>
+  <div class="callout">至少交 3 張。構圖小訣竅：讓分身「踩」在真實的平面上，最像真的。</div>
 </section>
 
 <!-- 6 -->
 <section class="slide" data-session="第 3 堂">
   <div class="kicker">第 3 堂收尾</div>
-  <h1>收藏你的歌 🎧</h1>
+  <h1>AR 攝影展 🏆</h1>
   <ul class="check">
-    <li>選定最終版本 → <b>下載 MP3</b> 存到手機（下一堂當配樂）</li>
-    <li>按「分享」複製連結 → 連結貼到 Padlet（主題曲那一列）</li>
-    <li>戴耳機聽兩位同學的歌，按個愛心</li>
+    <li>作品上傳 Padlet「AR 攝影展」那一列</li>
+    <li>逛展：幫喜歡的照片按 ❤️（不能投自己）</li>
+    <li>三大獎：最佳創意｜最佳合照｜最佳笑果</li>
   </ul>
-  <p class="big">連結之後會<b>嵌進你的網站</b>，MP3 會<b>進你的預告片</b>，都別弄丟。</p>
+  <p class="big">這些照片和影片，就是下一堂<b>出道預告片</b>的素材。</p>
 </section>
 
 <!-- 7 -->
 <section class="slide" data-session="第 4 堂">
   <div class="kicker">Session 04 · Character Trailer</div>
   <h1>30 秒<span class="hl">角色出道預告片</span> 🎬</h1>
-  <p class="big">有臉、有表情、有歌——現在拍 trailer。<br>電影上映前都有預告片，你的角色也要。</p>
+  <p class="big">有臉、有表情、有 AR 照片——現在拍 trailer。<br>電影上映前都有預告片，你的角色也要。</p>
 </section>
 
 <!-- 8 -->
@@ -325,7 +305,7 @@
   <div class="steps">
     <div class="step"><div class="n">1</div><p>Canva 開<b>手機直式影片</b>，照分鏡放入<b>場景圖＋貼圖</b></p></div>
     <div class="step"><div class="n">2</div><p>每張圖加<b>動態效果</b>（縮放／滑入），一張約 3–5 秒</p></div>
-    <div class="step"><div class="n">3</div><p>加<b>字幕</b>（腳本一句一頁）＋<b>你的主題曲 MP3</b>（或音樂庫）</p></div>
+    <div class="step"><div class="n">3</div><p>加<b>字幕</b>（腳本一句一頁）＋<b>Canva 音樂庫 BGM</b></p></div>
     <div class="step"><div class="n">4</div><p><b>匯出 MP4</b>（老師喊到你那組再按）→ 上傳 Padlet</p></div>
   </div>
   <div class="callout">進階挑戰：挑 1–2 個鏡頭用 Canva「圖生影片」變成動態片段——額度有限，省著用。</div>
@@ -338,7 +318,7 @@
   <ul class="check">
     <li>圖片輪播＋文字＋音樂 ＝ 已經達標 ✅</li>
     <li>有時間再加：轉場、特效、AI「圖生影片」動態片段（額度有限）</li>
-    <li>MP3 下載失敗？音樂庫 BGM 頂上，主題曲放網站連結就好</li>
+    <li>素材不夠？AR 照片＋貼圖＋場景圖，三種都能撐起 30 秒</li>
   </ul>
 </section>
 
@@ -350,7 +330,7 @@
   <ul class="check">
     <li>角色定裝照（第 1 堂）</li>
     <li>8 張貼圖（第 2 堂）</li>
-    <li>主題曲連結（第 3 堂）</li>
+    <li>AR 攝影展照片（第 3 堂）</li>
     <li>30 秒預告片（第 4 堂）</li>
   </ul>
   <div class="callout">少哪樣？下午第一節「玩具工坊」就是你的補件時間。</div>
@@ -417,48 +397,6 @@
       }catch(e){ alert('複製失敗，請長按文字手動複製。'); }
     });
   });
-  document.querySelectorAll('.chipbtn').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      try{ await copyToClipboard(btn.dataset.copy); flash(btn); }
-      catch(e){ alert('複製失敗，請長按文字手動複製。'); }
-    });
-  });
-  // 歌詞訂單產生器
-  const lyState = {genre:'', mood:''};
-  function lyEsc(s){ return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-  function lyVal(id){ const el = document.getElementById(id); return el ? el.value.trim() : ''; }
-  function lyRender(){
-    const out = document.getElementById('ly-out');
-    if(!out) return;
-    const name = lyEsc(lyVal('ly-name')) || '＿＿';
-    const intro = lyEsc(lyVal('ly-intro')) || '＿＿';
-    const traits = lyEsc(lyVal('ly-traits'));
-    const phrase = lyEsc(lyVal('ly-phrase'));
-    const genre = lyState.genre || '＿＿';
-    const mood = lyState.mood || '＿＿';
-    out.innerHTML = '幫我的角色寫一首 30–60 秒的主題曲歌詞。'
-      + '<span class="p-who">角色叫' + name + '，是' + intro + '</span>。'
-      + (traits ? '<span class="p-look">個性：' + traits + '</span>。' : '')
-      + '<span class="p-style">曲風：' + genre + '、情緒：' + mood + '</span>。'
-      + '<span class="p-fmt">兩段主歌＋一段重複的副歌' + (phrase ? '，副歌要放進這句口頭禪：「' + phrase + '」' : '') + '。中文、簡單好記</span>。'
-      + '<span class="p-no">不要太長、不要難字</span>。';
-  }
-  ['ly-name','ly-intro','ly-traits','ly-phrase'].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el) el.addEventListener('input', lyRender);
-  });
-  [['ly-genre','genre'],['ly-mood','mood']].forEach(([wrapId,key])=>{
-    const wrap = document.getElementById(wrapId);
-    if(!wrap) return;
-    wrap.querySelectorAll('.selchip').forEach(chip=>{
-      chip.addEventListener('click', ()=>{
-        lyState[key] = lyState[key] === chip.dataset.v ? '' : chip.dataset.v;
-        wrap.querySelectorAll('.selchip').forEach(c=>c.classList.toggle('on', c.dataset.v === lyState[key]));
-        lyRender();
-      });
-    });
-  });
-  lyRender();
 
   window.addEventListener('hashchange', ()=>show(hashIndex(), false));
   show(hashIndex(), false);

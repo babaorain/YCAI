@@ -45,13 +45,14 @@
     border:2px dashed var(--line); border-radius:12px; padding:14px;
     line-height:1.75; font-size:.95rem; margin-bottom:12px;
   }
-  .copy,.chip{
+  .copy{
     cursor:pointer; border:3px solid var(--ink); border-radius:12px;
     background:var(--gold); color:var(--ink); box-shadow:3px 3px 0 var(--ink);
     padding:10px 16px; font:inherit; font-weight:900;
   }
-  .copy.done,.chip.done{background:var(--teal); color:#fff}
-  .chips{display:flex; flex-wrap:wrap; gap:10px}
+  .copy.done{background:var(--teal); color:#fff}
+  .route{display:grid; gap:10px; padding-left:1.4em; line-height:1.7; font-weight:700}
+  .route li{padding-left:.2em}
 </style>
 </head>
 <body>
@@ -84,15 +85,13 @@
   </section>
 
   <section class="card">
-    <h2>④ 曲風標籤（Suno 用，六顆各自一鍵複製）</h2>
-    <div class="chips">
-      <button class="chip" type="button" data-copy="Mandopop, upbeat, energetic, catchy chorus, bright">🔥 熱血流行</button>
-      <button class="chip" type="button" data-copy="Mandarin ballad, soft piano, emotional, gentle vocal">🌙 溫柔抒情</button>
-      <button class="chip" type="button" data-copy="Mandarin hip hop, playful rap, strong beat, fun">🎤 嘻哈饒舌</button>
-      <button class="chip" type="button" data-copy="EDM, Mandarin pop, bright synths, dance beat">⚡ 電音舞曲</button>
-      <button class="chip" type="button" data-copy="Mandarin rock, electric guitar, powerful, anthem">🎸 搖滾熱唱</button>
-      <button class="chip" type="button" data-copy="lofi, Mandarin pop, chill, relaxed, cozy">☁️ 慵懶放鬆</button>
-    </div>
+    <h2>④ Tripo × AR 動線卡</h2>
+    <ol class="route">
+      <li>Tripo 登入 → 上傳定裝照 → 圖生 3D → 等待</li>
+      <li>完成 → 下載 GLB（記住位置！通常在「下載」資料夾）</li>
+      <li>開角色合成相機 → 選擇角色檔 → 挑那顆 GLB</li>
+      <li>拍 3 張任務照 → 上傳 Padlet AR 攝影展</li>
+    </ol>
   </section>
 </div>
 <script>
@@ -116,9 +115,6 @@
   }
   document.querySelectorAll('.copy').forEach(btn=>{
     btn.addEventListener('click', ()=>copyText(btn.previousElementSibling.textContent.trim(), btn));
-  });
-  document.querySelectorAll('.chip').forEach(btn=>{
-    btn.addEventListener('click', ()=>copyText(btn.dataset.copy, btn));
   });
 </script>
 </body>
