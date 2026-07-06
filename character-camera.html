@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="icon" href="data:,">
+<title>角色合成相機｜讓角色闖進現實</title>
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+  :root{
+    --paper:#fff7ec; --ink:#26211e; --muted:#75695f; --line:#e5d7c7;
+    --teal:#287c78; --teal-soft:#dff2ee; --orange:#ef6b45; --gold:#e0ad45;
+    --danger:#b84a43;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Noto Sans TC',sans-serif; background:#000; color:var(--ink);
+    overflow:hidden; position:fixed; inset:0; width:100%;
+  }
+  #stage{position:absolute; inset:0; overflow:hidden; touch-action:none; background:#111}
+  #cam{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover;
+  }
+  #cam.mirror{transform:scaleX(-1)}
+  #png{
+    position:absolute; left:50%; top:50%; width:55vmin;
+    transform:translate(-50%,-50%); transform-origin:center;
+    display:none; pointer-events:none; user-select:none; -webkit-user-drag:none;
+    filter:drop-shadow(0 6px 14px rgba(0,0,0,.35));
+  }
+  model-viewer{
+    position:absolute; inset:0; width:100%; height:100%;
+    display:none; background:transparent; --poster-color:transparent;
+  }
+
+  /* ===== 起始面板 ===== */
+  #setup{
+    position:absolute; inset:0; z-index:30; overflow:auto;
+    background:var(--paper);
+    background-image:radial-gradient(circle at 1px 1px, rgba(38,33,30,.055) 1px, transparent 0);
+    background-size:22px 22px;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+  .panel{
+    width:100%; max-width:460px; background:#fff;
+    border:3px solid var(--ink); border-radius:18px;
+    box-shadow:5px 5px 0 rgba(38,33,30,.9); padding:24px 22px;
+  }
+  .panel h1{font-size:1.5rem; font-weight:900; margin-bottom:6px}
+  .panel h1 span{color:var(--orange)}
+  .panel .sub{color:var(--muted); font-size:.9rem; margin-bottom:18px; line-height:1.6}
+  .bigbtn{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    width:100%; padding:14px; margin-bottom:12px;
+    border:3px solid var(--ink); border-radius:14px;
+    background:var(--gold); color:var(--ink);
+    font:inherit; font-weight:900; font-size:1.02rem; cursor:pointer;
+    box-shadow:3px 3px 0 var(--ink);
+  }
+  .bigbtn:active{transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink)}
+  .bigbtn.ghost{background:#fff}
+  .bigbtn.ok{background:var(--teal); color:#fff; border-color:var(--teal)}
+  .bigbtn:disabled{opacity:.45; box-shadow:none; transform:none; cursor:default}
+  .small{font-size:.78rem; color:var(--muted); line-height:1.6; margin-top:10px}
+  .small b{color:var(--ink)}
+  #setupErr{
+    display:none; margin-top:12px; border-left:6px solid var(--danger);
+    background:#f7e0de; border-radius:0 10px 10px 0;
+    padding:10px 12px; font-size:.85rem; color:#7c2a24; font-weight:700;
+  }
+
+  /* ===== 工具列 ===== */
+  #ui{position:absolute; inset:0; z-index:20; pointer-events:none}
+  .topbar{
+    position:absolute; top:calc(10px + env(safe-area-inset-top)); left:10px; right:10px;
+    display:flex; justify-content:space-between; gap:8px; pointer-events:none;
+  }
+  .chip{
+    pointer-events:auto; cursor:pointer;
+    border:2px solid rgba(255,255,255,.9); border-radius:999px;
+    background:rgba(0,0,0,.45); color:#fff; backdrop-filter:blur(4px);
+    padding:9px 14px; font:inherit; font-weight:900; font-size:.82rem;
+  }
+  .bottombar{
+    position:absolute; left:0; right:0; bottom:calc(14px + env(safe-area-inset-bottom));
+    display:flex; align-items:center; justify-content:center; gap:18px;
+    pointer-events:none;
+  }
+  .roundbtn{
+    pointer-events:auto; cursor:pointer;
+    width:58px; height:58px; border-radius:50%;
+    border:3px solid rgba(255,255,255,.95);
+    background:rgba(0,0,0,.45); color:#fff; backdrop-filter:blur(4px);
+    font-size:1.45rem; display:grid; place-content:center;
+  }
+  #shutter{
+    width:76px; height:76px; background:#fff; border:6px solid rgba(255,255,255,.55);
+    background-clip:padding-box; font-size:2rem;
+  }
+  #recBtn.recording{background:var(--danger); border-color:#fff; animation:pulse 1.2s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(184,74,67,.6)}50%{box-shadow:0 0 0 12px rgba(184,74,67,0)}}
+  #recTime{
+    position:absolute; top:calc(58px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%);
+    display:none; background:var(--danger); color:#fff; font-weight:900;
+    border-radius:999px; padding:5px 14px; font-size:.85rem; letter-spacing:.08em;
+  }
+  #hint3d{
+    position:absolute; bottom:calc(104px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%);
+    display:none; background:rgba(0,0,0,.55); color:#fff; border-radius:12px;
+    padding:8px 14px; font-size:.78rem; font-weight:700; text-align:center;
+    max-width:88vw; line-height:1.5; backdrop-filter:blur(4px); pointer-events:none;
+  }
+  /* 乾淨模式 */
+  body.clean .topbar, body.clean .bottombar, body.clean #hint3d{display:none !important}
+  #cleanDot{
+    display:none; position:absolute; top:calc(12px + env(safe-area-inset-top)); right:12px; z-index:25;
+    width:34px; height:34px; border-radius:50%; border:2px solid rgba(255,255,255,.8);
+    background:rgba(0,0,0,.35); color:#fff; font-size:1rem;
+    place-content:center; cursor:pointer; pointer-events:auto;
+  }
+  body.clean #cleanDot{display:grid}
+
+  /* ===== 預覽 ===== */
+  #preview{
+    position:absolute; inset:0; z-index:40; display:none;
+    background:rgba(0,0,0,.85); padding:18px;
+    flex-direction:column; align-items:center; justify-content:center; gap:14px;
+  }
+  #preview .media{
+    max-width:92vw; max-height:62vh; border-radius:14px;
+    border:3px solid #fff; background:#000;
+  }
+  #preview .pv-note{color:#fff; font-size:.82rem; font-weight:700; opacity:.85; text-align:center; line-height:1.6}
+  #preview .row{display:flex; gap:12px}
+  #preview .pbtn{
+    cursor:pointer; border:3px solid #fff; border-radius:12px;
+    background:var(--gold); color:var(--ink); font:inherit; font-weight:900;
+    padding:12px 20px; font-size:.95rem;
+  }
+  #preview .pbtn.ghost{background:transparent; color:#fff}
+  #flash{position:absolute; inset:0; z-index:35; background:#fff; opacity:0; pointer-events:none; transition:opacity .25s}
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <video id="cam" autoplay playsinline muted></video>
+  <img id="png" alt="角色">
+  <model-viewer id="mv" camera-controls interaction-prompt="none" touch-action="none"
+    shadow-intensity="0" exposure="1" alt="3D 角色"></model-viewer>
+</div>
+
+<div id="ui">
+  <div class="topbar">
+    <button class="chip" id="backBtn" type="button">← 換角色</button>
+    <div style="display:flex; gap:8px">
+      <button class="chip" id="flipBtn" type="button">🔄 翻轉鏡頭</button>
+      <button class="chip" id="cleanBtn" type="button">🫥 隱藏按鈕</button>
+    </div>
+  </div>
+  <div id="recTime">● 00:00</div>
+  <div id="hint3d">一指旋轉角色・雙指縮放移動<br>3D 模式錄影：先「隱藏按鈕」，再用手機的螢幕錄影</div>
+  <div class="bottombar">
+    <button class="roundbtn" id="recBtn" type="button" title="錄影">⏺</button>
+    <button class="roundbtn" id="shutter" type="button" title="拍照">📸</button>
+    <div style="width:58px"></div>
+  </div>
+</div>
+<button id="cleanDot" type="button" title="顯示按鈕">👁</button>
+<div id="flash"></div>
+
+<div id="preview">
+  <img class="media" id="pvImg" alt="拍照結果" style="display:none">
+  <video class="media" id="pvVid" controls playsinline style="display:none"></video>
+  <div class="pv-note" id="pvNote"></div>
+  <div class="row">
+    <button class="pbtn" id="pvSave" type="button">⬇️ 下載存檔</button>
+    <button class="pbtn ghost" id="pvClose" type="button">✕ 關閉</button>
+  </div>
+</div>
+
+<div id="setup">
+  <div class="panel">
+    <h1>🎥 角色合成相機<span>｜讓角色闖進現實</span></h1>
+    <p class="sub">把你的角色（去背 PNG 或 3D 模型 .glb）疊在真實世界上，拍照、錄影，素材直接丟進 Canva 剪預告片。畫面不會上傳，全部只在你的手機裡。</p>
+    <button class="bigbtn" id="pickChar" type="button">🎭 1. 選擇角色檔（PNG／GLB）</button>
+    <button class="bigbtn ghost" id="startCam" type="button" disabled>📷 2. 開啟相機</button>
+    <div class="small">
+      <b>PNG 模式</b>：一指移動、雙指縮放，可拍照＋錄影（無聲，配樂到 Canva 加）。<br>
+      <b>3D 模式（.glb）</b>：一指旋轉、雙指縮放移動，可拍照；錄影請用手機螢幕錄影。
+    </div>
+    <div id="setupErr"></div>
+  </div>
+</div>
+
+<input type="file" id="fileInput" accept=".png,.webp,.jpg,.jpeg,.glb,.gltf,image/*,model/gltf-binary" style="display:none">
+
+<script>
+  const $ = id => document.getElementById(id);
+  const stage = $('stage'), cam = $('cam'), png = $('png'), mv = $('mv');
+  const setupBox = $('setup'), setupErr = $('setupErr');
+  const fileInput = $('fileInput');
+
+  let mode = '';            // 'png' | '3d'
+  let fileUrl = null;
+  let stream = null;
+  let facing = 'environment';
+  let ready = {file:false, cam:false};
+
+  // PNG 疊圖狀態
+  const ov = {x: window.innerWidth/2, y: window.innerHeight/2, s: 1};
+  const BASE_W = () => Math.min(window.innerWidth, window.innerHeight) * 0.55;
+
+  function showErr(msg){
+    setupErr.textContent = msg;
+    setupErr.style.display = 'block';
+  }
+
+  function applyPng(){
+    png.style.width = BASE_W() + 'px';
+    png.style.left = ov.x + 'px';
+    png.style.top = ov.y + 'px';
+    png.style.transform = 'translate(-50%,-50%) scale(' + ov.s + ')';
+  }
+
+  function enterIfReady(){
+    $('startCam').disabled = !ready.file;
+    if(ready.file && ready.cam){
+      setupBox.style.display = 'none';
+      $('recBtn').style.display = (mode === 'png' && window.MediaRecorder) ? 'grid' : 'none';
+      $('hint3d').style.display = (mode === '3d') ? 'block' : 'none';
+    }
+  }
+
+  // ===== 選角色檔 =====
+  $('pickChar').addEventListener('click', ()=>fileInput.click());
+  $('backBtn').addEventListener('click', ()=>{
+    setupBox.style.display = 'flex';
+  });
+  fileInput.addEventListener('change', e=>{
+    const f = e.target.files[0];
+    if(!f) return;
+    const name = f.name.toLowerCase();
+    if(fileUrl) URL.revokeObjectURL(fileUrl);
+    fileUrl = URL.createObjectURL(f);
+    if(name.endsWith('.glb') || name.endsWith('.gltf')){
+      mode = '3d';
+      mv.setAttribute('src', fileUrl);
+      mv.style.display = 'block';
+      png.style.display = 'none';
+    } else {
+      mode = 'png';
+      png.src = fileUrl;
+      png.style.display = 'block';
+      mv.style.display = 'none';
+      ov.x = window.innerWidth/2; ov.y = window.innerHeight/2; ov.s = 1;
+      applyPng();
+    }
+    ready.file = true;
+    $('pickChar').classList.add('ok');
+    $('pickChar').textContent = '✓ 已選：' + f.name + '（可再點換檔）';
+    enterIfReady();
+  });
+
+  // ===== 相機 =====
+  async function openCam(){
+    try{
+      if(stream) stream.getTracks().forEach(t=>t.stop());
+      stream = await navigator.mediaDevices.getUserMedia({
+        video:{facingMode:facing, width:{ideal:1920}, height:{ideal:1080}},
+        audio:false
+      });
+      cam.srcObject = stream;
+      cam.classList.toggle('mirror', facing === 'user');
+      ready.cam = true;
+      enterIfReady();
+    }catch(err){
+      showErr('相機打不開：請確認已允許相機權限，且網址是 https。（' + err.name + '）');
+    }
+  }
+  $('startCam').addEventListener('click', openCam);
+  $('flipBtn').addEventListener('click', ()=>{
+    facing = (facing === 'user') ? 'environment' : 'user';
+    openCam();
+  });
+
+  // ===== PNG 手勢 =====
+  const touches = new Map();
+  let startDist = 0, startScale = 1;
+  stage.addEventListener('touchstart', e=>{
+    if(mode !== 'png') return;
+    for(const t of e.changedTouches) touches.set(t.identifier, {x:t.clientX, y:t.clientY});
+    if(touches.size === 2){
+      const a = [...touches.values()];
+      startDist = Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y);
+      startScale = ov.s;
+    }
+  }, {passive:true});
+  stage.addEventListener('touchmove', e=>{
+    if(mode !== 'png') return;
+    e.preventDefault();
+    if(e.touches.length === 1 && touches.size === 1){
+      const t = e.touches[0];
+      const prev = touches.get(t.identifier);
+      if(prev){
+        ov.x += t.clientX - prev.x;
+        ov.y += t.clientY - prev.y;
+        touches.set(t.identifier, {x:t.clientX, y:t.clientY});
+        applyPng();
+      }
+    } else if(e.touches.length === 2){
+      const d = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      if(startDist > 0){
+        ov.s = Math.min(6, Math.max(0.15, startScale * d / startDist));
+        applyPng();
+      }
+      for(const t of e.touches) touches.set(t.identifier, {x:t.clientX, y:t.clientY});
+    }
+  }, {passive:false});
+  ['touchend','touchcancel'].forEach(ev=>stage.addEventListener(ev, e=>{
+    for(const t of e.changedTouches) touches.delete(t.identifier);
+    if(touches.size < 2) startDist = 0;
+  }, {passive:true}));
+  // 桌機測試：滑鼠拖曳＋滾輪縮放
+  let mouseDown = false, mx = 0, my = 0;
+  stage.addEventListener('mousedown', e=>{ if(mode==='png'){mouseDown=true; mx=e.clientX; my=e.clientY;} });
+  window.addEventListener('mousemove', e=>{
+    if(mouseDown && mode==='png'){ ov.x += e.clientX-mx; ov.y += e.clientY-my; mx=e.clientX; my=e.clientY; applyPng(); }
+  });
+  window.addEventListener('mouseup', ()=>mouseDown=false);
+  stage.addEventListener('wheel', e=>{
+    if(mode!=='png') return;
+    e.preventDefault();
+    ov.s = Math.min(6, Math.max(0.15, ov.s * (e.deltaY<0 ? 1.08 : 0.93)));
+    applyPng();
+  }, {passive:false});
+
+  // ===== 合成繪製 =====
+  function drawFrame(ctx, cw, ch, overlayImg){
+    // 相機（cover）
+    const vw = cam.videoWidth, vh = cam.videoHeight;
+    if(vw && vh){
+      const s = Math.max(cw/vw, ch/vh);
+      const dw = vw*s, dh = vh*s;
+      const dx = (cw-dw)/2, dy = (ch-dh)/2;
+      ctx.save();
+      if(facing === 'user'){ ctx.translate(cw,0); ctx.scale(-1,1); }
+      ctx.drawImage(cam, dx, dy, dw, dh);
+      ctx.restore();
+    }
+    // PNG 角色
+    if(mode === 'png' && png.naturalWidth){
+      const k = cw / window.innerWidth;  // 螢幕座標 → 畫布座標
+      const w = BASE_W() * ov.s * k;
+      const h = w * (png.naturalHeight / png.naturalWidth);
+      ctx.drawImage(png, ov.x*k - w/2, ov.y*(ch/window.innerHeight) - h/2, w, h);
+    }
+    // 3D 角色（截圖疊上）
+    if(mode === '3d' && overlayImg){
+      ctx.drawImage(overlayImg, 0, 0, cw, ch);
+    }
+  }
+
+  // ===== 拍照 =====
+  $('shutter').addEventListener('click', async ()=>{
+    if(!ready.cam) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    const cw = Math.round(window.innerWidth * dpr);
+    const ch = Math.round(window.innerHeight * dpr);
+    const canvas = document.createElement('canvas');
+    canvas.width = cw; canvas.height = ch;
+    const ctx = canvas.getContext('2d');
+
+    let overlayImg = null;
+    if(mode === '3d'){
+      try{
+        const dataUrl = mv.toDataURL('image/png');
+        overlayImg = await new Promise((res, rej)=>{
+          const im = new Image();
+          im.onload = ()=>res(im); im.onerror = rej;
+          im.src = dataUrl;
+        });
+      }catch(e){ /* 模型截圖失敗就只拍背景 */ }
+    }
+    drawFrame(ctx, cw, ch, overlayImg);
+
+    $('flash').style.opacity = '1';
+    setTimeout(()=>$('flash').style.opacity = '0', 180);
+
+    canvas.toBlob(blob=>{
+      if(blob) showPreview('img', blob, 'png');
+    }, 'image/png');
+  });
+
+  // ===== 錄影（PNG 模式）=====
+  let recorder = null, recChunks = [], recTimer = null, recCanvas = null, recRAF = 0, recStart = 0;
+  const recBtn = $('recBtn'), recTime = $('recTime');
+
+  function pickMime(){
+    const list = ['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm'];
+    return list.find(m=>{ try{return MediaRecorder.isTypeSupported(m);}catch(e){return false;} }) || '';
+  }
+
+  recBtn.addEventListener('click', ()=>{
+    if(recorder && recorder.state === 'recording'){ stopRec(); return; }
+    if(!ready.cam || mode !== 'png') return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    recCanvas = document.createElement('canvas');
+    recCanvas.width = Math.round(window.innerWidth * dpr);
+    recCanvas.height = Math.round(window.innerHeight * dpr);
+    const ctx = recCanvas.getContext('2d');
+    const loop = ()=>{
+      drawFrame(ctx, recCanvas.width, recCanvas.height, null);
+      recRAF = requestAnimationFrame(loop);
+    };
+    loop();
+
+    const mime = pickMime();
+    try{
+      recorder = new MediaRecorder(recCanvas.captureStream(30), mime ? {mimeType:mime} : undefined);
+    }catch(e){
+      cancelAnimationFrame(recRAF);
+      alert('這支手機不支援網頁錄影，請改用「隱藏按鈕＋手機螢幕錄影」。');
+      return;
+    }
+    recChunks = [];
+    recorder.ondataavailable = e=>{ if(e.data && e.data.size) recChunks.push(e.data); };
+    recorder.onstop = ()=>{
+      cancelAnimationFrame(recRAF);
+      const type = recorder.mimeType || 'video/webm';
+      const ext = type.includes('mp4') ? 'mp4' : 'webm';
+      showPreview('vid', new Blob(recChunks, {type}), ext);
+    };
+    recorder.start(250);
+    recStart = Date.now();
+    recBtn.classList.add('recording');
+    recTime.style.display = 'block';
+    recTimer = setInterval(()=>{
+      const s = Math.floor((Date.now()-recStart)/1000);
+      recTime.textContent = '● ' + String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+      if(s >= 60) stopRec();   // 最長 60 秒
+    }, 400);
+  });
+
+  function stopRec(){
+    if(recorder && recorder.state === 'recording') recorder.stop();
+    clearInterval(recTimer);
+    recBtn.classList.remove('recording');
+    recTime.style.display = 'none';
+    recTime.textContent = '● 00:00';
+  }
+
+  // ===== 乾淨模式 =====
+  $('cleanBtn').addEventListener('click', ()=>document.body.classList.add('clean'));
+  $('cleanDot').addEventListener('click', ()=>document.body.classList.remove('clean'));
+
+  // ===== 預覽與下載 =====
+  let pvUrl = null, pvExt = 'png';
+  function showPreview(kind, blob, ext){
+    if(pvUrl) URL.revokeObjectURL(pvUrl);
+    pvUrl = URL.createObjectURL(blob);
+    pvExt = ext;
+    $('pvImg').style.display = (kind === 'img') ? 'block' : 'none';
+    $('pvVid').style.display = (kind === 'vid') ? 'block' : 'none';
+    if(kind === 'img'){ $('pvImg').src = pvUrl; }
+    else { $('pvVid').src = pvUrl; }
+    $('pvNote').textContent = (kind === 'img')
+      ? '手機也可以長按圖片 → 存到相簿'
+      : '下載後丟進 Canva 當素材（影片無聲，配樂在 Canva 加）';
+    $('preview').style.display = 'flex';
+  }
+  $('pvSave').addEventListener('click', ()=>{
+    const a = document.createElement('a');
+    a.href = pvUrl;
+    a.download = 'character-' + Date.now() + '.' + pvExt;
+    document.body.appendChild(a); a.click(); a.remove();
+  });
+  $('pvClose').addEventListener('click', ()=>{
+    $('preview').style.display = 'none';
+    $('pvVid').pause && $('pvVid').pause();
+  });
+
+  window.addEventListener('resize', ()=>{ if(mode==='png') applyPng(); });
+</script>
+</body>
+</html>

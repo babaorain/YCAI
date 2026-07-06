@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>玩具工坊＋個人網站｜投影教材</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap');
+  :root{
+    --paper:#fff7ec; --paper-2:#fffdf8; --ink:#26211e; --muted:#75695f;
+    --line:#e5d7c7; --teal:#287c78; --teal-soft:#dff2ee;
+    --orange:#ef6b45; --orange-soft:#fde2d8; --gold:#e0ad45;
+    --blue:#4267b2; --blue-soft:#e4ebff; --green:#48815d; --green-soft:#e4f3e8;
+    --danger:#b84a43; --danger-soft:#f7e0de;
+    --shadow:5px 5px 0 rgba(38,33,30,.9);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Noto Sans TC',sans-serif;
+    background:var(--paper);
+    background-image:radial-gradient(circle at 1px 1px, rgba(38,33,30,.055) 1px, transparent 0);
+    background-size:22px 22px;
+    color:var(--ink); overflow:hidden;
+  }
+  .slide{
+    display:none; height:100dvh; padding:4vh 5vw 96px;
+    flex-direction:column; justify-content:center; gap:2.4vh;
+    max-width:1100px; margin:0 auto;
+  }
+  .slide.on{display:flex}
+  .kicker{
+    font-family:'Space Grotesk',sans-serif; letter-spacing:.22em; text-transform:uppercase;
+    font-weight:700; font-size:clamp(.7rem,1.4vw,.95rem); color:var(--teal);
+  }
+  h1{font-weight:900; letter-spacing:-.02em; line-height:1.12; font-size:clamp(1.7rem,5.2vw,3.6rem)}
+  h1 .hl{color:var(--orange)}
+  .big{font-size:clamp(1.05rem,2.6vw,1.7rem); line-height:1.55}
+  .big b{color:var(--teal)}
+  .muted{color:var(--muted); font-size:clamp(.9rem,1.9vw,1.2rem)}
+  .steps{display:grid; gap:12px}
+  .step{
+    display:flex; gap:14px; align-items:flex-start;
+    border:3px solid var(--ink); border-radius:14px; background:#fff;
+    box-shadow:3px 3px 0 rgba(38,33,30,.85); padding:clamp(10px,2vw,18px);
+  }
+  .step .n{
+    flex:none; width:38px; height:38px; border-radius:50%;
+    background:var(--gold); border:3px solid var(--ink);
+    display:grid; place-content:center; font-weight:900; font-size:1.1rem;
+  }
+  .step p{font-size:clamp(.95rem,2.2vw,1.35rem); line-height:1.5}
+  .step p b{color:var(--orange)}
+  .callout{
+    border-left:8px solid var(--orange); background:var(--orange-soft);
+    border-radius:0 14px 14px 0; padding:12px 16px;
+    font-weight:700; font-size:clamp(1rem,2.3vw,1.45rem);
+  }
+  .check{list-style:none; display:grid; gap:10px}
+  .check li{
+    font-size:clamp(1rem,2.3vw,1.4rem); font-weight:700;
+    padding-left:2.1em; position:relative;
+  }
+  .check li::before{
+    content:"☐"; position:absolute; left:.4em; top:-.05em;
+    color:var(--teal); font-size:1.2em;
+  }
+  table.board{border-collapse:collapse; width:100%; background:#fff; border:3px solid var(--ink); box-shadow:var(--shadow); border-radius:14px; overflow:hidden}
+  table.board th{background:var(--ink); color:var(--paper); padding:10px 12px; font-size:clamp(.85rem,1.8vw,1.15rem); text-align:left}
+  table.board td{border-top:2px solid var(--line); padding:10px 12px; font-weight:700; font-size:clamp(.9rem,2vw,1.25rem); vertical-align:top}
+  table.board td:first-child{color:var(--orange); white-space:nowrap}
+  .zones{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  @media(max-width:640px){.zones{grid-template-columns:1fr}}
+  .zone{
+    border:3px solid var(--ink); border-radius:14px; background:#fff;
+    box-shadow:3px 3px 0 rgba(38,33,30,.85); padding:clamp(12px,2vw,18px);
+  }
+  .zone .z-title{font-weight:900; font-size:clamp(1.05rem,2.4vw,1.5rem)}
+  .zone .z-sub{color:var(--muted); font-size:clamp(.8rem,1.7vw,1.05rem); margin-top:4px}
+  .zone.z1 .z-title{color:var(--teal)} .zone.z2 .z-title{color:var(--blue)}
+  .zone.z3 .z-title{color:var(--orange)} .zone.z4 .z-title{color:var(--green)}
+  .nav{
+    position:fixed; left:0; right:0; bottom:0; z-index:10;
+    display:flex; align-items:center; justify-content:center; gap:14px;
+    padding:12px; background:linear-gradient(transparent, var(--paper) 40%);
+  }
+  .nav button{
+    cursor:pointer; padding:12px 22px; border:3px solid var(--ink); border-radius:14px;
+    background:#fff; box-shadow:3px 3px 0 var(--ink);
+    font:inherit; font-weight:900; font-size:1rem;
+  }
+  .nav button:active{transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink)}
+  .nav .count{
+    font-family:'Space Grotesk',sans-serif; font-weight:700;
+    border:3px solid var(--ink); border-radius:999px; padding:10px 18px; background:var(--gold);
+  }
+  .sessiontag{
+    position:fixed; top:12px; right:14px; z-index:10;
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif; font-weight:900;
+    font-size:.75rem; letter-spacing:.12em;
+    border:2px solid var(--ink); border-radius:999px; padding:5px 12px; background:#fff;
+  }
+  .home-link{
+    position:fixed; top:12px; left:14px; z-index:10;
+    border:2px solid var(--ink); border-radius:999px; padding:7px 12px;
+    background:#fff; color:var(--ink); text-decoration:none;
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif; font-weight:900;
+    font-size:.82rem; box-shadow:2px 2px 0 var(--ink);
+  }
+  .home-link:active{transform:translate(1px,1px); box-shadow:1px 1px 0 var(--ink)}
+  @media(max-width:700px){
+    body{overflow:auto}
+    .slide{
+      height:auto; min-height:100dvh; justify-content:flex-start;
+      padding:74px 16px 104px; gap:16px;
+    }
+    h1{font-size:clamp(1.45rem,8.8vw,2.35rem); line-height:1.14}
+    .big{font-size:1.02rem; line-height:1.5}
+    .steps{gap:10px}
+    .step{gap:10px; padding:12px}
+    .step .n{width:32px; height:32px; font-size:.95rem}
+    .check{gap:8px}
+    .check li{font-size:1rem; line-height:1.45}
+    .callout{font-size:1rem; padding:10px 12px}
+    table.board{display:block; overflow-x:auto}
+    .zones{gap:10px}
+    .zone{padding:12px}
+    .nav{gap:8px; padding:10px 8px}
+    .nav button{padding:10px 12px; border-radius:12px; font-size:.9rem}
+    .nav .count{padding:8px 12px; font-size:.9rem}
+    .sessiontag{top:12px; right:10px; font-size:.68rem; padding:5px 9px}
+    .home-link{top:12px; left:10px; font-size:.78rem; padding:7px 10px}
+  }
+  @media(max-width:420px){
+    .nav{justify-content:space-between}
+    .nav button{padding:9px 10px; font-size:.82rem}
+    .nav .count{padding:7px 9px; font-size:.78rem}
+  }
+</style>
+</head>
+<body>
+
+<a class="home-link" href="index.html">← 主頁</a>
+<div class="sessiontag" id="sessionTag">第 5 堂</div>
+
+<!-- 1 -->
+<section class="slide on" data-session="第 5 堂">
+  <div class="kicker">Session 05 · Canva AI Playground</div>
+  <h1>Canva AI <span class="hl">玩具工坊</span> 🧸</h1>
+  <p class="big">這一節沒有標準答案：用 Canva 的 AI 做<b>好玩的東西</b>——海報、名片、迷你遊戲、梗圖……自己發想、自己調整，做出來可以分享給朋友玩。</p>
+</section>
+
+<!-- 2 -->
+<section class="slide" data-session="第 5 堂">
+  <div class="kicker">只有兩條規則</div>
+  <h1>玩，但要交件 ✌️</h1>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><p>做什麼都行，但<b>下課前 Padlet 四樣素材要到齊</b>：定裝照、貼圖、歌連結、預告片——還缺的先補件再玩</p></div>
+    <div class="step"><div class="n">2</div><p>做出來的東西<b>丟給旁邊同學玩玩看</b>——別人玩得懂，才是好作品</p></div>
+  </div>
+  <div class="callout">下一節你的角色要有自己的家了，建材別缺料。</div>
+</section>
+
+<!-- 3 -->
+<section class="slide" data-session="第 6 堂">
+  <div class="kicker">Session 06 · Website Part 1</div>
+  <h1>你的角色要有<span class="hl">家</span>了 🏠</h1>
+  <p class="big">三天的作品今天全部搬進同一個地方——<b>你的個人品牌網站</b>。明天發布給全世界。</p>
+</section>
+
+<!-- 4 -->
+<section class="slide" data-session="第 6 堂">
+  <div class="kicker">先蓋格局再裝潢</div>
+  <h1>網站四個房間</h1>
+  <div class="zones">
+    <div class="zone z1"><div class="z-title">① 角色介紹</div><div class="z-sub">定裝照＋名字＋一句話介紹（門面）</div></div>
+    <div class="zone z2"><div class="z-title">② 貼圖牆</div><div class="z-sub">8 張貼圖排排站（表情包展示間）</div></div>
+    <div class="zone z3"><div class="z-title">③ 主題曲</div><div class="z-sub">連結按鈕「🎵 聽我的主題曲」（音樂房）</div></div>
+    <div class="zone z4"><div class="z-title">④ 出道預告片</div><div class="z-sub">上傳 MP4（放映室）</div></div>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="slide" data-session="第 6 堂">
+  <div class="kicker">Canva 操作</div>
+  <h1>四步蓋房</h1>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><p>Canva 搜尋「<b>網站</b>」模板，挑一個接近你品牌色的</p></div>
+    <div class="step"><div class="n">2</div><p>照四個房間<b>排出區塊</b>，多的區塊刪掉</p></div>
+    <div class="step"><div class="n">3</div><p>素材從<b>相簿／Padlet</b> 搬進來（就是前四堂的作品）</p></div>
+    <div class="step"><div class="n">4</div><p>主題曲區加<b>按鈕</b> → 貼上 Suno 連結</p></div>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="slide" data-session="第 6 堂">
+  <div class="kicker">第 6 堂收尾</div>
+  <h1>今天蓋到哪算過關？</h1>
+  <ul class="check">
+    <li>四個房間都有東西（不用完美）</li>
+    <li>名字和一句話介紹在最上面</li>
+    <li>按過「預覽」用手機看過一次</li>
+  </ul>
+  <p class="big">明天上午：微調 → <b>發布 → QR code → 互相參觀</b>。今晚睡飽。</p>
+</section>
+
+<!-- 7 -->
+<section class="slide" data-session="第 7 堂">
+  <div class="kicker">Session 07 · Launch Day</div>
+  <h1>發布日 🚀</h1>
+  <p class="big">今天結束時，你會有一個<b>真的網址</b>——掃 QR code 就能看到你三天的所有作品。</p>
+</section>
+
+<!-- 8 -->
+<section class="slide" data-session="第 7 堂">
+  <div class="kicker">發布前最後檢查</div>
+  <h1>品牌一致性檢查 ✅</h1>
+  <ul class="check">
+    <li>角色<b>名字</b>：貼圖、影片、網站都同一個？</li>
+    <li><b>品牌色</b>：網站配色跟角色的主色搭嗎？</li>
+    <li><b>口頭禪</b>：副歌有、影片結尾有、網站也放了嗎？</li>
+  </ul>
+  <div class="callout">迪士尼為什麼一眼認得出來？因為它永遠長一個樣。這就是品牌。</div>
+</section>
+
+<!-- 9 -->
+<section class="slide" data-session="第 7 堂">
+  <div class="kicker">保護自己</div>
+  <h1>公開前的安全線 🔒</h1>
+  <ul class="check">
+    <li>用<b>暱稱</b>，不放真實全名</li>
+    <li>不放學校、班級、住址、電話</li>
+    <li>有自己真臉的照片？先想一下要不要公開</li>
+  </ul>
+  <p class="big">網站發布＝<b>全世界都看得到</b>。角色可以高調，個資要低調。</p>
+</section>
+
+<!-- 10 -->
+<section class="slide" data-session="第 7 堂">
+  <div class="kicker">見證奇蹟的時刻</div>
+  <h1>三步上線</h1>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><p>右上角<b>「發布網站」</b> → 選免費網域（canva.site）</p></div>
+    <div class="step"><div class="n">2</div><p>拿到網址 → 產生 <b>QR code</b></p></div>
+    <div class="step"><div class="n">3</div><p>網址＋QR 貼到 Padlet 最後一列</p></div>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="slide" data-session="第 7 堂">
+  <div class="kicker">開放參觀</div>
+  <h1>掃碼串門子 📱</h1>
+  <ul class="check">
+    <li>掃至少 <b>3 位同學</b>的 QR code 參觀</li>
+    <li>每一站留下<b>一句具體的讚美</b>（「貼圖的生氣臉超好笑」＞「不錯」）</li>
+    <li>發現好點子？回來偷改自己的網站，這不叫抄，叫學習</li>
+  </ul>
+</section>
+
+<!-- 12 -->
+<section class="slide" data-session="第 7 堂">
+  <div class="kicker">結業</div>
+  <h1>三天，你做到了 🏆</h1>
+  <ul class="check">
+    <li>一套跟 AI 溝通的方法（五指口訣）</li>
+    <li>一個長相固定的角色＋8 張貼圖</li>
+    <li>一首主題曲＋一支預告片</li>
+    <li>一個公開上線的個人品牌網站</li>
+  </ul>
+  <p class="big">工具以後會一直換，但<b>把想法說清楚的能力</b>，你帶走了。</p>
+</section>
+
+<div class="nav">
+  <button id="prev" type="button">◀ 上一頁</button>
+  <span class="count" id="count">1 / 12</span>
+  <button id="next" type="button">下一頁 ▶</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let i = 0;
+  function hashIndex(){
+    const match = window.location.hash.match(/^#slide-(\d+)$/);
+    return match ? Number(match[1]) - 1 : 0;
+  }
+  function show(n, syncHash = true){
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s,k)=>s.classList.toggle('on', k === i));
+    document.getElementById('count').textContent = (i+1) + ' / ' + slides.length;
+    document.getElementById('sessionTag').textContent = slides[i].dataset.session || '';
+    if(syncHash && window.location.hash){
+      history.replaceState(null, '', '#slide-' + (i + 1));
+    }
+  }
+  document.getElementById('prev').addEventListener('click', ()=>show(i-1));
+  document.getElementById('next').addEventListener('click', ()=>show(i+1));
+  document.addEventListener('keydown', e=>{
+    if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') show(i+1);
+    if(e.key === 'ArrowLeft' || e.key === 'PageUp') show(i-1);
+  });
+  let tx = null;
+  document.addEventListener('touchstart', e=>{ tx = e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', e=>{
+    if(tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if(Math.abs(dx) > 60) show(i + (dx < 0 ? 1 : -1));
+    tx = null;
+  }, {passive:true});
+  window.addEventListener('hashchange', ()=>show(hashIndex(), false));
+  show(hashIndex(), false);
+</script>
+</body>
+</html>

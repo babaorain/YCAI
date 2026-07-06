@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>3D 模型 AR 體驗機</title>
+
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Noto Sans TC", -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: #f4f2ec;
+      color: #2c2c2a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px 40px;
+    }
+    h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; text-align: center; }
+    .subtitle { font-size: 14px; color: #5f5e5a; margin-bottom: 20px; text-align: center; }
+
+    /* 上傳區（未載入模型時顯示） */
+    .dropzone {
+      width: 100%;
+      max-width: 480px;
+      height: 60vh;
+      min-height: 360px;
+      background: #ffffff;
+      border: 2px dashed #d3d1c7;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      cursor: pointer;
+      text-align: center;
+      padding: 24px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .dropzone.dragover { border-color: #d85a30; background: #faece7; }
+    .dropzone .icon { font-size: 48px; }
+    .dropzone .big { font-size: 17px; font-weight: 500; color: #2c2c2a; }
+    .dropzone .small { font-size: 13px; color: #888780; line-height: 1.6; }
+    .pick-btn {
+      background: #d85a30; color: #fff; border: none;
+      border-radius: 999px; padding: 12px 28px;
+      font-size: 15px; font-weight: 500; font-family: inherit; cursor: pointer;
+    }
+
+    /* 檢視器（載入模型後顯示） */
+    model-viewer {
+      width: 100%; max-width: 480px; height: 60vh; min-height: 360px;
+      background: #ffffff; border-radius: 16px; border: 0.5px solid #d3d1c7;
+      --poster-color: #ffffff; display: none;
+    }
+    .ar-button {
+      position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+      background: #d85a30; color: #fff; border: none; border-radius: 999px;
+      padding: 12px 24px; font-size: 15px; font-weight: 500;
+      font-family: inherit; cursor: pointer; display: flex; align-items: center; gap: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .toolbar {
+      display: none; gap: 10px; margin-top: 14px;
+      width: 100%; max-width: 480px; justify-content: center;
+    }
+    .tool {
+      flex: 1; background: #fff; border: 0.5px solid #d3d1c7;
+      border-radius: 10px; padding: 10px; font-size: 13px; font-weight: 500;
+      font-family: inherit; color: #444441; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+
+    .hint {
+      margin-top: 18px; max-width: 480px; background: #fff;
+      border: 0.5px solid #d3d1c7; border-radius: 12px;
+      padding: 16px 18px; font-size: 14px; line-height: 1.7; color: #444441;
+    }
+    .hint strong { font-weight: 500; color: #2c2c2a; }
+    .hint .row { display: flex; gap: 8px; margin-top: 8px; }
+    .dot {
+      flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+      background: #f5c4b3; color: #712b13; font-size: 12px;
+      display: flex; align-items: center; justify-content: center; font-weight: 500;
+    }
+    .error {
+      display: none; margin-top: 14px; max-width: 480px; width: 100%;
+      background: #fcebeb; border: 0.5px solid #f09595; border-radius: 10px;
+      padding: 12px 16px; font-size: 14px; color: #a32d2d;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>3D 模型 AR 體驗機</h1>
+  <p class="subtitle">載入你自己的模型 · 拖曳旋轉 · 放進真實空間</p>
+
+  <!-- 上傳區 -->
+  <div class="dropzone" id="dropzone">
+    <div class="icon">📦</div>
+    <div class="big">載入你的 3D 模型</div>
+    <div class="small">支援 .glb / .gltf（Android AR）<br>iPhone AR 請另外載入 .usdz</div>
+    <button class="pick-btn" id="pickBtn">選擇檔案</button>
+    <div class="small">或把檔案直接拖進這個框框</div>
+  </div>
+
+  <!-- 檢視器 -->
+  <model-viewer
+    id="viewer"
+    alt="3D 模型"
+    camera-controls
+    auto-rotate
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    shadow-intensity="1"
+    exposure="1">
+    <button slot="ar-button" class="ar-button">📱 放進我的空間（AR）</button>
+  </model-viewer>
+
+  <div class="error" id="errorBox"></div>
+
+  <!-- 換模型 / 載入 usdz 工具列 -->
+  <div class="toolbar" id="toolbar">
+    <button class="tool" id="changeBtn">🔄 換一個模型</button>
+    <button class="tool" id="usdzBtn">🍎 載入 iPhone AR 檔（.usdz）</button>
+  </div>
+
+  <div class="hint">
+    <strong>怎麼玩？</strong>
+    <div class="row"><span class="dot">1</span><div>選你自己的 <strong>.glb</strong> 檔載入，用手指拖曳旋轉、兩指縮放。</div></div>
+    <div class="row"><span class="dot">2</span><div>Android：點橘色按鈕直接進 <strong>AR</strong>，把模型放到桌上。</div></div>
+    <div class="row"><span class="dot">3</span><div>iPhone：需另外用「載入 iPhone AR 檔」按鈕載入 <strong>.usdz</strong> 才能 AR。</div></div>
+  </div>
+
+  <!-- 隱藏的檔案輸入 -->
+  <input type="file" id="glbInput" accept=".glb,.gltf,model/gltf-binary" style="display:none">
+  <input type="file" id="usdzInput" accept=".usdz,model/vnd.usdz+zip" style="display:none">
+
+  <script>
+    const dropzone  = document.getElementById('dropzone');
+    const viewer    = document.getElementById('viewer');
+    const toolbar   = document.getElementById('toolbar');
+    const errorBox  = document.getElementById('errorBox');
+    const glbInput  = document.getElementById('glbInput');
+    const usdzInput = document.getElementById('usdzInput');
+
+    let currentGlbUrl = null;
+    let currentUsdzUrl = null;
+
+    function showError(msg) {
+      errorBox.textContent = msg;
+      errorBox.style.display = 'block';
+      setTimeout(() => { errorBox.style.display = 'none'; }, 4000);
+    }
+
+    function loadGlb(file) {
+      const name = file.name.toLowerCase();
+      if (!name.endsWith('.glb') && !name.endsWith('.gltf')) {
+        showError('請選擇 .glb 或 .gltf 檔案。');
+        return;
+      }
+      if (currentGlbUrl) URL.revokeObjectURL(currentGlbUrl);
+      currentGlbUrl = URL.createObjectURL(file);
+      viewer.setAttribute('src', currentGlbUrl);
+
+      dropzone.style.display = 'none';
+      viewer.style.display = 'block';
+      toolbar.style.display = 'flex';
+    }
+
+    function loadUsdz(file) {
+      if (!file.name.toLowerCase().endsWith('.usdz')) {
+        showError('請選擇 .usdz 檔案（iPhone AR 用）。');
+        return;
+      }
+      if (currentUsdzUrl) URL.revokeObjectURL(currentUsdzUrl);
+      currentUsdzUrl = URL.createObjectURL(file);
+      viewer.setAttribute('ios-src', currentUsdzUrl);
+      showError('已載入 iPhone AR 檔，用 Safari 點 AR 按鈕即可。');
+    }
+
+    // 按鈕觸發檔案選擇
+    document.getElementById('pickBtn').addEventListener('click', (e) => { e.stopPropagation(); glbInput.click(); });
+    document.getElementById('changeBtn').addEventListener('click', () => glbInput.click());
+    document.getElementById('usdzBtn').addEventListener('click', () => usdzInput.click());
+    dropzone.addEventListener('click', () => glbInput.click());
+
+    glbInput.addEventListener('change', (e) => { if (e.target.files[0]) loadGlb(e.target.files[0]); });
+    usdzInput.addEventListener('change', (e) => { if (e.target.files[0]) loadUsdz(e.target.files[0]); });
+
+    // 拖放
+    ['dragover', 'dragenter'].forEach(ev =>
+      dropzone.addEventListener(ev, (e) => { e.preventDefault(); dropzone.classList.add('dragover'); }));
+    ['dragleave', 'dragend'].forEach(ev =>
+      dropzone.addEventListener(ev, () => dropzone.classList.remove('dragover')));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files[0]) loadGlb(e.dataTransfer.files[0]);
+    });
+  </script>
+
+</body>
+</html>

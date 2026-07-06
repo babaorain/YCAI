@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>主題曲＋預告片｜投影教材</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap');
+  :root{
+    --paper:#fff7ec; --paper-2:#fffdf8; --ink:#26211e; --muted:#75695f;
+    --line:#e5d7c7; --teal:#287c78; --teal-soft:#dff2ee;
+    --orange:#ef6b45; --orange-soft:#fde2d8; --gold:#e0ad45;
+    --blue:#4267b2; --blue-soft:#e4ebff; --green:#48815d; --green-soft:#e4f3e8;
+    --danger:#b84a43; --danger-soft:#f7e0de;
+    --shadow:5px 5px 0 rgba(38,33,30,.9);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Noto Sans TC',sans-serif;
+    background:var(--paper);
+    background-image:radial-gradient(circle at 1px 1px, rgba(38,33,30,.055) 1px, transparent 0);
+    background-size:22px 22px;
+    color:var(--ink); overflow:hidden;
+  }
+  .slide{
+    display:none; height:100dvh; padding:4vh 5vw 96px;
+    flex-direction:column; justify-content:center; gap:2.4vh;
+    max-width:1100px; margin:0 auto;
+  }
+  .slide.on{display:flex}
+  .kicker{
+    font-family:'Space Grotesk',sans-serif; letter-spacing:.22em; text-transform:uppercase;
+    font-weight:700; font-size:clamp(.7rem,1.4vw,.95rem); color:var(--teal);
+  }
+  h1{font-weight:900; letter-spacing:-.02em; line-height:1.12; font-size:clamp(1.7rem,5.2vw,3.6rem)}
+  h1 .hl{color:var(--orange)}
+  .big{font-size:clamp(1.05rem,2.6vw,1.7rem); line-height:1.55}
+  .big b{color:var(--teal)}
+  .muted{color:var(--muted); font-size:clamp(.9rem,1.9vw,1.2rem)}
+  .panel{
+    border:3px solid var(--ink); border-radius:18px; background:#fff;
+    box-shadow:var(--shadow); padding:clamp(14px,2.6vw,26px);
+  }
+  pre.demo{
+    white-space:pre-wrap; word-break:break-word;
+    font-family:'Noto Sans TC',sans-serif; font-weight:700;
+    font-size:clamp(.95rem,2.4vw,1.55rem); line-height:1.75;
+  }
+  .p-who{background:var(--teal-soft); border-bottom:4px solid var(--teal); border-radius:4px; padding:0 3px}
+  .p-look{background:var(--blue-soft); border-bottom:4px solid var(--blue); border-radius:4px; padding:0 3px}
+  .p-style{background:var(--orange-soft); border-bottom:4px solid var(--orange); border-radius:4px; padding:0 3px}
+  .p-fmt{background:var(--green-soft); border-bottom:4px solid var(--green); border-radius:4px; padding:0 3px}
+  .p-no{background:var(--danger-soft); border-bottom:4px solid var(--danger); border-radius:4px; padding:0 3px}
+  .legend{display:flex; flex-wrap:wrap; gap:10px}
+  .legend span{
+    border:2px solid var(--ink); border-radius:999px; padding:6px 14px;
+    font-weight:900; font-size:clamp(.8rem,1.7vw,1.05rem); background:#fff;
+  }
+  .steps{display:grid; gap:12px}
+  .step{
+    display:flex; gap:14px; align-items:flex-start;
+    border:3px solid var(--ink); border-radius:14px; background:#fff;
+    box-shadow:3px 3px 0 rgba(38,33,30,.85); padding:clamp(10px,2vw,18px);
+  }
+  .step .n{
+    flex:none; width:38px; height:38px; border-radius:50%;
+    background:var(--gold); border:3px solid var(--ink);
+    display:grid; place-content:center; font-weight:900; font-size:1.1rem;
+  }
+  .step p{font-size:clamp(.95rem,2.2vw,1.35rem); line-height:1.5}
+  .step p b{color:var(--orange)}
+  .chips{display:flex; flex-wrap:wrap; gap:10px}
+  .chipbtn{
+    cursor:pointer; border:3px solid var(--ink); border-radius:999px;
+    background:#fff; box-shadow:3px 3px 0 rgba(38,33,30,.85);
+    padding:10px 16px; font:inherit; font-weight:900;
+    font-size:clamp(.85rem,1.8vw,1.1rem);
+  }
+  .chipbtn:active{transform:translate(2px,2px); box-shadow:1px 1px 0 rgba(38,33,30,.85)}
+  .chipbtn.done{background:var(--teal); color:#fff}
+  .formgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px}
+  @media(max-width:640px){.formgrid{grid-template-columns:1fr}}
+  .formgrid input{
+    width:100%; font:inherit; font-weight:700; color:var(--ink);
+    padding:10px 12px; border:2px solid var(--line); border-radius:12px; background:var(--paper-2);
+    font-size:clamp(.9rem,1.9vw,1.05rem);
+  }
+  .formgrid input:focus{outline:none; border-color:var(--teal); box-shadow:0 0 0 4px var(--teal-soft)}
+  .selchips{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
+  .selchip{
+    cursor:pointer; border:2px solid var(--line); border-radius:999px; background:#fff;
+    padding:7px 13px; font:inherit; font-weight:900; font-size:clamp(.78rem,1.6vw,.98rem);
+  }
+  .selchip.on{background:var(--teal); border-color:var(--teal); color:#fff}
+  .copy{
+    cursor:pointer; align-self:flex-start; margin-top:6px;
+    padding:10px 18px; border:3px solid var(--ink); border-radius:12px;
+    background:var(--gold); box-shadow:3px 3px 0 var(--ink);
+    font:inherit; font-weight:900; font-size:clamp(.85rem,1.8vw,1.1rem);
+  }
+  .copy:active{transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink)}
+  .copy.done{background:var(--teal); color:#fff}
+  .callout{
+    border-left:8px solid var(--orange); background:var(--orange-soft);
+    border-radius:0 14px 14px 0; padding:12px 16px;
+    font-weight:700; font-size:clamp(1rem,2.3vw,1.45rem);
+  }
+  .check{list-style:none; display:grid; gap:10px}
+  .check li{
+    font-size:clamp(1rem,2.3vw,1.4rem); font-weight:700;
+    padding-left:2.1em; position:relative;
+  }
+  .check li::before{
+    content:"☐"; position:absolute; left:.4em; top:-.05em;
+    color:var(--teal); font-size:1.2em;
+  }
+  table.board{border-collapse:collapse; width:100%; background:#fff; border:3px solid var(--ink); box-shadow:var(--shadow); border-radius:14px; overflow:hidden}
+  table.board th{background:var(--ink); color:var(--paper); padding:10px 12px; font-size:clamp(.85rem,1.8vw,1.15rem); text-align:left}
+  table.board td{border-top:2px solid var(--line); padding:10px 12px; font-weight:700; font-size:clamp(.9rem,2vw,1.25rem); vertical-align:top}
+  table.board td:first-child{color:var(--orange); white-space:nowrap}
+  .nav{
+    position:fixed; left:0; right:0; bottom:0; z-index:10;
+    display:flex; align-items:center; justify-content:center; gap:14px;
+    padding:12px; background:linear-gradient(transparent, var(--paper) 40%);
+  }
+  .nav button{
+    cursor:pointer; padding:12px 22px; border:3px solid var(--ink); border-radius:14px;
+    background:#fff; box-shadow:3px 3px 0 var(--ink);
+    font:inherit; font-weight:900; font-size:1rem;
+  }
+  .nav button:active{transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink)}
+  .nav .count{
+    font-family:'Space Grotesk',sans-serif; font-weight:700;
+    border:3px solid var(--ink); border-radius:999px; padding:10px 18px; background:var(--gold);
+  }
+  .sessiontag{
+    position:fixed; top:12px; right:14px; z-index:10;
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif; font-weight:900;
+    font-size:.75rem; letter-spacing:.12em;
+    border:2px solid var(--ink); border-radius:999px; padding:5px 12px; background:#fff;
+  }
+  .home-link{
+    position:fixed; top:12px; left:14px; z-index:10;
+    border:2px solid var(--ink); border-radius:999px; padding:7px 12px;
+    background:#fff; color:var(--ink); text-decoration:none;
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif; font-weight:900;
+    font-size:.82rem; box-shadow:2px 2px 0 var(--ink);
+  }
+  .home-link:active{transform:translate(1px,1px); box-shadow:1px 1px 0 var(--ink)}
+  @media(max-width:700px){
+    body{overflow:auto}
+    .slide{
+      height:auto; min-height:100dvh; justify-content:flex-start;
+      padding:74px 16px 104px; gap:16px;
+    }
+    h1{font-size:clamp(1.45rem,8.8vw,2.35rem); line-height:1.14}
+    .big{font-size:1.02rem; line-height:1.5}
+    .panel{padding:14px}
+    pre.demo{font-size:.92rem; line-height:1.55}
+    .steps{gap:10px}
+    .step{gap:10px; padding:12px}
+    .step .n{width:32px; height:32px; font-size:.95rem}
+    .check{gap:8px}
+    .check li{font-size:1rem; line-height:1.45}
+    .callout{font-size:1rem; padding:10px 12px}
+    .chips{gap:8px}
+    .chipbtn{padding:9px 12px; font-size:.9rem}
+    table.board{display:block; overflow-x:auto}
+    .nav{gap:8px; padding:10px 8px}
+    .nav button{padding:10px 12px; border-radius:12px; font-size:.9rem}
+    .nav .count{padding:8px 12px; font-size:.9rem}
+    .sessiontag{top:12px; right:10px; font-size:.68rem; padding:5px 9px}
+    .home-link{top:12px; left:10px; font-size:.78rem; padding:7px 10px}
+  }
+  @media(max-width:420px){
+    .nav{justify-content:space-between}
+    .nav button{padding:9px 10px; font-size:.82rem}
+    .nav .count{padding:7px 9px; font-size:.78rem}
+  }
+</style>
+</head>
+<body>
+
+<a class="home-link" href="index.html">← 主頁</a>
+<div class="sessiontag" id="sessionTag">第 3 堂</div>
+
+<!-- 1 -->
+<section class="slide on" data-session="第 3 堂">
+  <div class="kicker">Session 03 · AI Theme Song</div>
+  <h1>AI 個人主題曲<br>你的角色今天<span class="hl">出道發片</span> 🎵</h1>
+  <p class="big">昨天它有了臉和表情，今天它要有<b>自己的歌</b>。</p>
+</section>
+
+<!-- 2 -->
+<section class="slide" data-session="第 3 堂">
+  <div class="kicker">還記得五指口訣嗎？</div>
+  <h1>寫歌，也是<span class="hl">下訂單</span></h1>
+  <p class="big">「幫我寫一首歌」＝「畫一隻貓」，AI 又要開始亂猜了。</p>
+  <div class="legend">
+    <span class="p-who">主角→角色故事</span><span class="p-look">特徵→個性</span><span class="p-style">畫風→曲風</span><span class="p-fmt">格式→長度結構</span><span class="p-no">禁止→不要什麼</span>
+  </div>
+  <p class="muted">同一隻手，換個戰場照樣好用。</p>
+</section>
+
+<!-- 3 -->
+<section class="slide" data-session="第 3 堂">
+  <div class="kicker">歌詞訂單產生器（填好直接複製，貼給 Gemini）</div>
+  <h1>寫歌詞 Prompt</h1>
+  <div class="panel">
+    <div class="formgrid">
+      <input id="ly-name" type="text" placeholder="角色名字">
+      <input id="ly-intro" type="text" placeholder="一句話介紹">
+      <input id="ly-traits" type="text" placeholder="個性（例：勇敢、搞笑）">
+      <input id="ly-phrase" type="text" placeholder="口頭禪（會進副歌）">
+    </div>
+    <div class="selchips" id="ly-genre">
+      <button class="selchip" data-v="熱血流行" type="button">🔥 熱血流行</button>
+      <button class="selchip" data-v="溫柔抒情" type="button">🌙 溫柔抒情</button>
+      <button class="selchip" data-v="嘻哈饒舌" type="button">🎤 嘻哈饒舌</button>
+      <button class="selchip" data-v="電音舞曲" type="button">⚡ 電音舞曲</button>
+      <button class="selchip" data-v="搖滾熱唱" type="button">🎸 搖滾熱唱</button>
+      <button class="selchip" data-v="慵懶放鬆" type="button">☁️ 慵懶放鬆</button>
+    </div>
+    <div class="selchips" id="ly-mood">
+      <button class="selchip" data-v="熱血振奮" type="button">熱血振奮</button>
+      <button class="selchip" data-v="開心搞笑" type="button">開心搞笑</button>
+      <button class="selchip" data-v="溫暖療癒" type="button">溫暖療癒</button>
+      <button class="selchip" data-v="勇敢冒險" type="button">勇敢冒險</button>
+      <button class="selchip" data-v="神祕夢幻" type="button">神祕夢幻</button>
+      <button class="selchip" data-v="酷酷自信" type="button">酷酷自信</button>
+    </div>
+    <pre class="demo" id="ly-out" style="margin-top:12px; font-size:clamp(.85rem,1.7vw,1.15rem); line-height:1.7"></pre>
+    <button class="copy" id="ly-copy" type="button">📋 複製 Prompt</button>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="slide" data-session="第 3 堂">
+  <div class="kicker">Suno 操作</div>
+  <h1>四步發片</h1>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><p>把 Gemini 寫好的歌詞<b>貼進 Suno</b>（自訂／Custom 模式）</p></div>
+    <div class="step"><div class="n">2</div><p>填<b>曲風標籤</b>（下一頁有現成的可抄）</p></div>
+    <div class="step"><div class="n">3</div><p>生成會出兩個版本 → <b>聽完選一個</b></p></div>
+    <div class="step"><div class="n">4</div><p><b>選較舊的模型</b>生成，才能免費<b>下載 MP3</b>（下載不了就用分享連結）</p></div>
+  </div>
+  <div class="callout">額度有限：每人最多生成 2–3 次。先把歌詞改到滿意，再按生成。</div>
+</section>
+
+<!-- 5 -->
+<section class="slide" data-session="第 3 堂">
+  <div class="kicker">曲風標籤（點一下複製）</div>
+  <h1>你的角色是哪一派？</h1>
+  <div class="chips">
+    <button class="chipbtn" data-copy="Mandopop, upbeat, energetic, catchy chorus, bright" type="button">🔥 熱血流行</button>
+    <button class="chipbtn" data-copy="Mandarin ballad, soft piano, emotional, gentle vocal" type="button">🌙 溫柔抒情</button>
+    <button class="chipbtn" data-copy="Mandarin hip hop, playful rap, strong beat, fun" type="button">🎤 嘻哈饒舌</button>
+    <button class="chipbtn" data-copy="EDM, Mandarin pop, bright synths, dance beat" type="button">⚡ 電音舞曲</button>
+    <button class="chipbtn" data-copy="Mandarin rock, electric guitar, powerful, anthem" type="button">🎸 搖滾熱唱</button>
+    <button class="chipbtn" data-copy="lofi, Mandarin pop, chill, relaxed, cozy" type="button">☁️ 慵懶放鬆</button>
+  </div>
+  <p class="muted">也可以自己混搭——這就是曲風的「畫風」欄。</p>
+</section>
+
+<!-- 6 -->
+<section class="slide" data-session="第 3 堂">
+  <div class="kicker">第 3 堂收尾</div>
+  <h1>收藏你的歌 🎧</h1>
+  <ul class="check">
+    <li>選定最終版本 → <b>下載 MP3</b> 存到手機（下一堂當配樂）</li>
+    <li>按「分享」複製連結 → 連結貼到 Padlet（主題曲那一列）</li>
+    <li>戴耳機聽兩位同學的歌，按個愛心</li>
+  </ul>
+  <p class="big">連結之後會<b>嵌進你的網站</b>，MP3 會<b>進你的預告片</b>，都別弄丟。</p>
+</section>
+
+<!-- 7 -->
+<section class="slide" data-session="第 4 堂">
+  <div class="kicker">Session 04 · Character Trailer</div>
+  <h1>30 秒<span class="hl">角色出道預告片</span> 🎬</h1>
+  <p class="big">有臉、有表情、有歌——現在拍 trailer。<br>電影上映前都有預告片，你的角色也要。</p>
+</section>
+
+<!-- 8 -->
+<section class="slide" data-session="第 4 堂">
+  <div class="kicker">先寫劇本再動手</div>
+  <h1>三段式分鏡</h1>
+  <table class="board">
+    <tr><th>秒數</th><th>演什麼</th><th>用什麼素材</th></tr>
+    <tr><td>0–5</td><td>登場 hook：角色蹦出＋名字</td><td>定裝照＋品牌色背景</td></tr>
+    <tr><td>5–20</td><td>亮點三連發：個性／能力／表情快閃</td><td>貼圖輪播（開心→驚訝→耍酷）</td></tr>
+    <tr><td>20–30</td><td>口頭禪 slogan＋「來我的網站找我！」</td><td>資料卡那句話</td></tr>
+  </table>
+</section>
+
+<!-- 9 -->
+<section class="slide" data-session="第 4 堂">
+  <div class="kicker">3 分鐘寫完的劇本</div>
+  <h1>填空腳本</h1>
+  <div class="panel">
+    <pre class="demo">我是<span class="p-who">＿＿</span>，一個<span class="p-look">＿＿的＿＿</span>。
+我最會<span class="p-look">＿＿</span>，心情不好時我會<span class="p-look">＿＿</span>。
+記住我的一句話：<span class="p-style">「＿＿！」</span>
+想認識我？<span class="p-fmt">來我的網站找我！</span></pre>
+  </div>
+  <p class="big">填完就是<b>旁白兼字幕</b>——一句一畫面，直接對應分鏡。</p>
+</section>
+
+<!-- 9b -->
+<section class="slide" data-session="第 4 堂">
+  <div class="kicker">先拍劇照（一致性三招再上場）</div>
+  <h1>用 Gemini 生 3 張場景圖</h1>
+  <div class="panel">
+    <pre class="demo">（附上角色參考圖）<span class="p-who">同一個角色</span>，<span class="p-look">臉、髮型、服裝、配色與參考圖完全相同</span>。場景：＿＿（教室／舞台／星空下）。動作：＿＿（揮手登場／跳躍／比讚）。<span class="p-style">畫風與參考圖一致</span>、<span class="p-fmt">直式構圖</span>。<span class="p-no">不要文字、不要變成別的角色</span>。</pre>
+    <button class="copy" type="button">📋 複製範本</button>
+  </div>
+  <p class="muted">照分鏡生 3 張：登場 1 張＋亮點 1–2 張＋結尾 1 張。</p>
+</section>
+
+<!-- 10 -->
+<section class="slide" data-session="第 4 堂">
+  <div class="kicker">Canva 操作</div>
+  <h1>組裝你的預告片</h1>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><p>Canva 開<b>手機直式影片</b>，照分鏡放入<b>場景圖＋貼圖</b></p></div>
+    <div class="step"><div class="n">2</div><p>每張圖加<b>動態效果</b>（縮放／滑入），一張約 3–5 秒</p></div>
+    <div class="step"><div class="n">3</div><p>加<b>字幕</b>（腳本一句一頁）＋<b>你的主題曲 MP3</b>（或音樂庫）</p></div>
+    <div class="step"><div class="n">4</div><p><b>匯出 MP4</b>（老師喊到你那組再按）→ 上傳 Padlet</p></div>
+  </div>
+  <div class="callout">進階挑戰：挑 1–2 個鏡頭用 Canva「圖生影片」變成動態片段——額度有限，省著用。</div>
+</section>
+
+<!-- 11 -->
+<section class="slide" data-session="第 4 堂">
+  <div class="kicker">達標線</div>
+  <h1>不用炫，要<span class="hl">完整</span></h1>
+  <ul class="check">
+    <li>圖片輪播＋文字＋音樂 ＝ 已經達標 ✅</li>
+    <li>有時間再加：轉場、特效、AI「圖生影片」動態片段（額度有限）</li>
+    <li>MP3 下載失敗？音樂庫 BGM 頂上，主題曲放網站連結就好</li>
+  </ul>
+</section>
+
+<!-- 12 -->
+<section class="slide" data-session="第 4 堂">
+  <div class="kicker">上午收工檢查</div>
+  <h1>網站入場券 🎟</h1>
+  <p class="big">下午要蓋角色的家，四樣建材缺一不可：</p>
+  <ul class="check">
+    <li>角色定裝照（第 1 堂）</li>
+    <li>8 張貼圖（第 2 堂）</li>
+    <li>主題曲連結（第 3 堂）</li>
+    <li>30 秒預告片（第 4 堂）</li>
+  </ul>
+  <div class="callout">少哪樣？下午第一節「玩具工坊」就是你的補件時間。</div>
+</section>
+
+<div class="nav">
+  <button id="prev" type="button">◀ 上一頁</button>
+  <span class="count" id="count">1 / 12</span>
+  <button id="next" type="button">下一頁 ▶</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let i = 0;
+  function hashIndex(){
+    const match = window.location.hash.match(/^#slide-(\d+)$/);
+    return match ? Number(match[1]) - 1 : 0;
+  }
+  function show(n, syncHash = true){
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s,k)=>s.classList.toggle('on', k === i));
+    document.getElementById('count').textContent = (i+1) + ' / ' + slides.length;
+    document.getElementById('sessionTag').textContent = slides[i].dataset.session || '';
+    if(syncHash && window.location.hash){
+      history.replaceState(null, '', '#slide-' + (i + 1));
+    }
+  }
+  document.getElementById('prev').addEventListener('click', ()=>show(i-1));
+  document.getElementById('next').addEventListener('click', ()=>show(i+1));
+  document.addEventListener('keydown', e=>{
+    if(/^(INPUT|TEXTAREA)$/.test(e.target.tagName)) return;
+    if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') show(i+1);
+    if(e.key === 'ArrowLeft' || e.key === 'PageUp') show(i-1);
+  });
+  let tx = null;
+  document.addEventListener('touchstart', e=>{ tx = e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', e=>{
+    if(tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if(Math.abs(dx) > 60) show(i + (dx < 0 ? 1 : -1));
+    tx = null;
+  }, {passive:true});
+
+  async function copyToClipboard(text){
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(text);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+    }
+  }
+  function flash(btn){
+    const o = btn.textContent;
+    btn.classList.add('done'); btn.textContent = '✓ 已複製';
+    setTimeout(()=>{ btn.classList.remove('done'); btn.textContent = o; }, 1400);
+  }
+  document.querySelectorAll('.copy').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      try{
+        await copyToClipboard(btn.parentElement.querySelector('pre.demo').textContent.trim());
+        flash(btn);
+      }catch(e){ alert('複製失敗，請長按文字手動複製。'); }
+    });
+  });
+  document.querySelectorAll('.chipbtn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      try{ await copyToClipboard(btn.dataset.copy); flash(btn); }
+      catch(e){ alert('複製失敗，請長按文字手動複製。'); }
+    });
+  });
+  // 歌詞訂單產生器
+  const lyState = {genre:'', mood:''};
+  function lyEsc(s){ return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+  function lyVal(id){ const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+  function lyRender(){
+    const out = document.getElementById('ly-out');
+    if(!out) return;
+    const name = lyEsc(lyVal('ly-name')) || '＿＿';
+    const intro = lyEsc(lyVal('ly-intro')) || '＿＿';
+    const traits = lyEsc(lyVal('ly-traits'));
+    const phrase = lyEsc(lyVal('ly-phrase'));
+    const genre = lyState.genre || '＿＿';
+    const mood = lyState.mood || '＿＿';
+    out.innerHTML = '幫我的角色寫一首 30–60 秒的主題曲歌詞。'
+      + '<span class="p-who">角色叫' + name + '，是' + intro + '</span>。'
+      + (traits ? '<span class="p-look">個性：' + traits + '</span>。' : '')
+      + '<span class="p-style">曲風：' + genre + '、情緒：' + mood + '</span>。'
+      + '<span class="p-fmt">兩段主歌＋一段重複的副歌' + (phrase ? '，副歌要放進這句口頭禪：「' + phrase + '」' : '') + '。中文、簡單好記</span>。'
+      + '<span class="p-no">不要太長、不要難字</span>。';
+  }
+  ['ly-name','ly-intro','ly-traits','ly-phrase'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('input', lyRender);
+  });
+  [['ly-genre','genre'],['ly-mood','mood']].forEach(([wrapId,key])=>{
+    const wrap = document.getElementById(wrapId);
+    if(!wrap) return;
+    wrap.querySelectorAll('.selchip').forEach(chip=>{
+      chip.addEventListener('click', ()=>{
+        lyState[key] = lyState[key] === chip.dataset.v ? '' : chip.dataset.v;
+        wrap.querySelectorAll('.selchip').forEach(c=>c.classList.toggle('on', c.dataset.v === lyState[key]));
+        lyRender();
+      });
+    });
+  });
+  lyRender();
+
+  window.addEventListener('hashchange', ()=>show(hashIndex(), false));
+  show(hashIndex(), false);
+</script>
+</body>
+</html>

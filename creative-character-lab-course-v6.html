@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>創意角色實驗室｜AI 角色模型建立</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap');
+
+  :root{
+    --paper:#fff7ec;
+    --paper-2:#fffdf8;
+    --ink:#26211e;
+    --muted:#75695f;
+    --line:#e5d7c7;
+    --teal:#287c78;
+    --teal-soft:#dff2ee;
+    --orange:#ef6b45;
+    --orange-soft:#fde2d8;
+    --gold:#e0ad45;
+    --blue:#4267b2;
+    --blue-soft:#e4ebff;
+    --green:#48815d;
+    --green-soft:#e4f3e8;
+    --danger:#b84a43;
+    --shadow:4px 4px 0 rgba(38,33,30,.9);
+    --radius:16px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Noto Sans TC',sans-serif;
+    background:var(--paper);
+    background-image:radial-gradient(circle at 1px 1px, rgba(38,33,30,.055) 1px, transparent 0);
+    background-size:22px 22px;
+    color:var(--ink);
+    line-height:1.6;
+    padding:20px 14px 110px;
+	  }
+	  button,input,textarea,select{font:inherit}
+	  button{border:none}
+	  .wrap{max-width:980px;margin:0 auto}
+	  .home-link{
+	    display:inline-flex;align-items:center;justify-content:center;
+	    margin:0 0 14px;
+	    border:2px solid var(--ink);
+	    border-radius:999px;
+	    padding:8px 13px;
+	    background:#fff;
+	    color:var(--ink);
+	    text-decoration:none;
+	    box-shadow:2px 2px 0 var(--ink);
+	    font-family:'Space Grotesk','Noto Sans TC',sans-serif;
+	    font-weight:900;
+	    font-size:.84rem;
+	  }
+	  .home-link:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--ink)}
+
+  header{
+    border:3px solid var(--ink);
+    background:#fff;
+    box-shadow:var(--shadow);
+    border-radius:var(--radius);
+    padding:26px 26px 24px;
+    position:relative;
+    overflow:hidden;
+    margin-bottom:22px;
+  }
+  header::after{
+    content:"";
+    position:absolute;
+    width:170px;height:170px;
+    border-radius:50%;
+    background:var(--teal-soft);
+    right:-70px;bottom:-80px;
+    z-index:0;
+  }
+  header>*{position:relative;z-index:1}
+  .eyebrow{
+    font-family:'Space Grotesk',sans-serif;
+    letter-spacing:.24em;
+    font-size:.7rem;
+    text-transform:uppercase;
+    color:var(--teal);
+    font-weight:700;
+  }
+  h1{
+    font-size:clamp(1.8rem,6vw,3rem);
+    font-weight:900;
+    letter-spacing:-.03em;
+    line-height:1.05;
+    margin:6px 0 9px;
+  }
+  .lead{max-width:58ch;color:var(--muted);font-size:.98rem}
+  .header-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+  .tag{
+    display:inline-flex;align-items:center;gap:5px;
+    border:2px solid var(--line);
+    background:var(--paper);
+    border-radius:999px;
+    padding:5px 10px;
+    font-size:.78rem;
+    font-weight:700;
+    color:#574c44;
+  }
+  .stamp{
+    position:absolute;top:18px;right:20px;
+    width:94px;height:94px;border-radius:50%;
+    border:3px solid var(--orange);
+    color:var(--orange);
+    display:grid;place-content:center;text-align:center;
+    font-family:'Space Grotesk',sans-serif;font-weight:700;
+    font-size:.62rem;letter-spacing:.12em;line-height:1.35;
+    transform:rotate(-10deg);opacity:.93;
+  }
+  .stamp b{font-size:1.35rem;display:block;letter-spacing:0}
+  @media(max-width:640px){
+    header{padding:22px 18px 20px}
+    .stamp{display:none}
+    .lead{font-size:.92rem}
+  }
+
+  .grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:18px}
+  @media(min-width:880px){.grid{grid-template-columns:1fr 1fr}}
+
+  .card{
+    border:3px solid var(--ink);
+    background:#fff;
+    box-shadow:var(--shadow);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .card h2{
+    font-size:.78rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif;
+    font-weight:700;
+    background:var(--ink);
+    color:var(--paper);
+    padding:11px 16px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .card h2 .no{
+    background:var(--gold);
+    color:var(--ink);
+    width:24px;height:24px;border-radius:50%;
+    display:grid;place-content:center;
+    font-size:.82rem;
+    flex:none;
+  }
+  .card-body{padding:17px 17px 19px}
+  .section-note{
+    color:var(--muted);
+    background:var(--paper);
+    border:2px dashed var(--line);
+    border-radius:12px;
+    padding:10px 12px;
+    font-size:.85rem;
+    margin-bottom:14px;
+  }
+  .field{margin-bottom:15px}
+  .field:last-child{margin-bottom:0}
+  label{display:block;font-weight:900;font-size:.88rem;margin-bottom:6px}
+  label .hint{font-weight:400;color:#928477;font-size:.75rem;margin-left:4px}
+
+  input[type=text],textarea,select{
+    width:100%;
+    color:var(--ink);
+    padding:11px 12px;
+    border:2px solid var(--line);
+    border-radius:12px;
+    background:var(--paper-2);
+    transition:border-color .15s, box-shadow .15s, background .15s;
+    font-size:.94rem;
+  }
+  input[type=file]{
+    width:100%;
+    border:2px dashed var(--line);
+    border-radius:12px;
+    padding:12px;
+    background:var(--paper);
+    color:var(--muted);
+    font-size:.86rem;
+  }
+  textarea{resize:vertical;min-height:74px}
+  input:focus,textarea:focus,select:focus{
+    outline:none;border-color:var(--teal);
+    box-shadow:0 0 0 4px var(--teal-soft);
+    background:#fff;
+  }
+  .two-col{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:640px){.two-col{grid-template-columns:1fr 1fr}}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    cursor:pointer;
+    padding:7px 12px;
+    border:2px solid var(--line);
+    border-radius:999px;
+    background:#fff;
+    color:var(--ink);
+    transition:all .12s ease;
+    user-select:none;
+    font-size:.84rem;
+    font-weight:700;
+  }
+  .chip:hover{border-color:var(--teal);transform:translateY(-1px)}
+  .chip.on{background:var(--teal);border-color:var(--teal);color:#fff}
+  .chip.style-chip.on{background:var(--orange);border-color:var(--orange)}
+  .chip.type-chip.on{background:var(--blue);border-color:var(--blue)}
+  .chip.trait-chip.on{background:var(--green);border-color:var(--green)}
+
+  .mode-grid{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:740px){.mode-grid{grid-template-columns:repeat(3,1fr)}}
+  .mode-card{
+    cursor:pointer;
+    text-align:left;
+    border:3px solid var(--line);
+    background:#fff;
+    border-radius:15px;
+    padding:15px;
+    min-height:152px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    transition:transform .12s, box-shadow .12s, border-color .12s, background .12s;
+  }
+  .mode-card:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 rgba(38,33,30,.35)}
+  .mode-card.on{border-color:var(--ink);box-shadow:var(--shadow);background:var(--paper)}
+  .mode-icon{font-size:1.7rem;line-height:1}
+  .mode-card strong{font-size:1.02rem;line-height:1.28}
+  .mode-card span{font-size:.82rem;color:var(--muted);line-height:1.45}
+  .mode-help{
+    margin-top:14px;
+    border-left:5px solid var(--teal);
+    background:var(--teal-soft);
+    border-radius:0 12px 12px 0;
+    padding:11px 13px;
+    color:#315d5a;
+    font-size:.86rem;
+  }
+  .ref-panel{display:none;margin-top:13px;padding:13px;border:2px dashed var(--line);border-radius:14px;background:var(--paper-2)}
+  .preview-wrap{margin-top:10px;display:none;align-items:center;gap:12px}
+  .preview-wrap img{width:82px;height:82px;object-fit:cover;border:3px solid var(--ink);border-radius:14px;background:#fff;box-shadow:2px 2px 0 var(--ink)}
+  .preview-wrap p{font-size:.8rem;color:var(--muted)}
+
+  .completion{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:10px;
+    margin:18px 0 0;
+    border:3px solid var(--ink);
+    border-radius:var(--radius);
+    background:#fff;
+    box-shadow:var(--shadow);
+    padding:14px;
+  }
+  .meter-top{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:900;font-size:.88rem}
+  .meter-text{color:var(--muted);font-weight:700;font-size:.8rem}
+  .meter{height:13px;border:2px solid var(--ink);border-radius:999px;overflow:hidden;background:var(--paper)}
+  .meter-fill{height:100%;width:0;background:var(--teal);transition:width .18s}
+  .tips{display:flex;flex-wrap:wrap;gap:8px;color:#65584f;font-size:.78rem}
+  .tips span{border:1px solid var(--line);border-radius:999px;padding:3px 8px;background:var(--paper-2)}
+  .fixed-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .fixed-list span{border:2px solid var(--line);border-radius:999px;padding:6px 10px;background:#fff;font-size:.82rem;font-weight:900;color:#574c44}
+  .fixed-model-note{border-style:solid;background:var(--teal-soft);border-color:var(--teal);color:#315d5a}
+
+  .output-wrap{margin-top:20px}
+  .output-wrap .card h2{background:var(--orange)}
+  .out-tabs{display:flex;gap:0;border-bottom:3px solid var(--ink);overflow-x:auto;background:var(--orange-soft)}
+  .tab{
+    flex:1 0 auto;
+    cursor:pointer;
+    padding:12px 11px;
+    border-right:3px solid var(--ink);
+    background:var(--orange-soft);
+    color:var(--ink);
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif;
+    font-weight:900;
+    font-size:.82rem;
+    white-space:nowrap;
+  }
+  .tab:last-child{border-right:none}
+  .tab.on,.tab:hover{background:#fff}
+  .out-panel{padding:17px}
+  pre{
+    white-space:pre-wrap;
+    word-break:break-word;
+    font-family:'Space Grotesk',ui-monospace,monospace;
+    font-size:.88rem;
+    line-height:1.68;
+    color:var(--ink);
+    background:var(--paper);
+    border:2px dashed var(--line);
+    border-radius:12px;
+    padding:15px;
+    min-height:145px;
+  }
+  .note{
+    font-size:.83rem;
+    color:#5d534d;
+    margin:0 0 11px;
+    background:var(--blue-soft);
+    border-left:5px solid var(--blue);
+    padding:10px 12px;
+    border-radius:0 10px 10px 0;
+  }
+  .warning-note{background:var(--orange-soft);border-left-color:var(--orange)}
+
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .act{
+    cursor:pointer;
+    padding:11px 16px;
+    border:2px solid var(--ink);
+    border-radius:12px;
+    background:var(--gold);
+    color:var(--ink);
+    box-shadow:2px 2px 0 var(--ink);
+    transition:transform .08s, box-shadow .08s, background .15s;
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif;
+    font-weight:900;
+    font-size:.88rem;
+  }
+	  .act:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
+	  .act:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--ink)}
+	  .act:disabled{
+	    cursor:not-allowed;
+	    opacity:.48;
+	    background:#eee5dc;
+	    color:#83776d;
+	    box-shadow:none;
+	    transform:none;
+	  }
+	  .act.ghost{background:#fff}
+  .act.danger{background:#fff;color:var(--danger);border-color:var(--danger);box-shadow:2px 2px 0 var(--danger)}
+  .act.copied{background:var(--teal);color:#fff;border-color:var(--teal)}
+  .dice-btn{margin-top:16px;background:var(--orange);color:#fff;border-color:var(--ink)}
+  .dice-btn:hover{background:#e25a34}
+  .dice-btn.rolling{animation:roll .5s ease}
+  @keyframes roll{0%{transform:rotate(0)}50%{transform:rotate(8deg) scale(1.04)}100%{transform:rotate(0)}}
+  .char-card{border:3px solid var(--ink);border-radius:var(--radius);background:var(--paper-2);box-shadow:var(--shadow);overflow:hidden}
+  .cc-empty{padding:32px 20px;text-align:center;color:var(--muted)}
+  .cc-head{background:var(--teal);color:#fff;padding:16px 20px;border-bottom:3px solid var(--ink)}
+  .cc-name{font-size:24px;font-weight:800;line-height:1.2}
+  .cc-sub{margin-top:4px;font-size:13px;opacity:.9}
+  .cc-body{padding:16px 20px;display:flex;flex-direction:column;gap:12px}
+  .cc-intro{font-size:15px;line-height:1.6;color:var(--ink);background:var(--teal-soft);border-radius:10px;padding:10px 12px}
+  .cc-quote{font-size:16px;font-weight:700;color:var(--orange);border-left:4px solid var(--orange);padding:6px 0 6px 12px}
+  .cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .cc-item{background:var(--paper);border:2px solid var(--line);border-radius:10px;padding:8px 10px}
+  .cc-item .k{font-size:11px;color:var(--muted);letter-spacing:.04em}
+  .cc-item .v{font-size:14px;font-weight:700;color:var(--ink);margin-top:2px;line-height:1.4}
+  .cc-tags{display:flex;flex-wrap:wrap;gap:6px}
+  .cc-tag{background:var(--orange-soft);border:2px solid var(--orange);color:var(--ink);font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px}
+  @media(max-width:420px){.cc-grid{grid-template-columns:1fr}}
+  .mini-help{font-size:.78rem;color:var(--muted);margin-top:10px}
+
+  .sticky-bar{
+    position:fixed;
+    left:10px;right:10px;bottom:10px;
+    z-index:50;
+    background:#fff;
+    border:3px solid var(--ink);
+    border-radius:17px;
+    box-shadow:var(--shadow);
+    padding:10px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .sticky-info{min-width:0;flex:1}
+  .sticky-title{font-weight:900;font-size:.84rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sticky-small{font-size:.74rem;color:var(--muted)}
+  .sticky-bar .act{padding:9px 12px;font-size:.78rem;box-shadow:1px 1px 0 var(--ink);white-space:nowrap}
+  @media(min-width:900px){.sticky-bar{display:none}}
+
+  .foot{text-align:center;margin-top:30px;font-size:.78rem;color:#95877b;font-family:'Space Grotesk','Noto Sans TC',sans-serif;letter-spacing:.04em}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="home-link" href="index.html">← 主頁</a>
+
+  <header>
+    <div class="stamp"><span>CREATIVE<br><b>LAB</b><br>MODEL</span></div>
+    <div class="eyebrow">AI Character Lab · Session 01</div>
+    <h1>創意角色實驗室</h1>
+    <p class="lead">第一節先建立你的角色模型。你可以用自己的照片、手繪草圖，或完全靠文字創作。目標不是一次做完所有作品，而是先做出一個之後可以重複使用、長相穩定的角色設定。</p>
+    <div class="header-tags">
+      <span class="tag">手機可操作</span>
+      <span class="tag">自由創作</span>
+      <span class="tag">角色一致化</span>
+      <span class="tag">Prompt 複製工具</span>
+    </div>
+    <button class="act dice-btn" id="diceBtn" type="button">🎲 隨機骰一個角色</button>
+  </header>
+
+  <section class="card" id="modeSection">
+    <h2><span class="no">0</span>先選你的創作路線</h2>
+    <div class="card-body">
+      <div class="section-note">三種路線都可以。這個網頁只負責幫你產生 prompt，不會處理你的照片或圖檔。要用照片或手繪稿建立角色時，複製 prompt 後把圖直接上傳到你使用的 AI 生圖工具即可。</div>
+      <div class="mode-grid">
+        <button class="mode-card" data-mode="photo" type="button">
+          <div class="mode-icon">📷</div>
+          <strong>用自己的照片建立虛擬人物</strong>
+          <span>適合想把自己變成動畫、插畫、3D 角色的人。重點是保留自己的感覺，但變成創作角色。</span>
+        </button>
+        <button class="mode-card" data-mode="sketch" type="button">
+          <div class="mode-icon">✍️</div>
+          <strong>用手繪草圖建立角色</strong>
+          <span>適合先畫出自己的原創角色，再請 AI 幫你整理成穩定的角色模型。</span>
+        </button>
+        <button class="mode-card" data-mode="text" type="button">
+          <div class="mode-icon">💬</div>
+          <strong>完全靠文字描述角色</strong>
+          <span>適合不想上傳圖片，直接用想像力創造人物、動物、機器人或奇幻角色。</span>
+        </button>
+      </div>
+      <div class="mode-help" id="modeHelp">請先選一種創作路線，下面的 prompt 會依照你的選擇自動改寫。</div>
+      <div class="ref-panel" id="refPanel" style="display:none">
+        <p class="note" id="refNote"></p>
+      </div>
+    </div>
+  </section>
+
+  <div class="completion" aria-live="polite">
+    <div class="meter-top">
+      <span id="completionTitle">角色模型完成度 0%</span>
+      <span class="meter-text" id="completionHint">先選創作路線</span>
+    </div>
+    <div class="meter"><div class="meter-fill" id="meterFill"></div></div>
+    <div class="tips" id="missingTips"></div>
+  </div>
+
+  <div class="grid">
+
+    <section class="card">
+      <h2><span class="no">1</span>外觀固定點</h2>
+      <div class="card-body">
+        <p class="note" id="appearanceHint">這一頁決定「角色設定圖」長什麼樣子。名字、個性、能力那些之後在「角色資料卡」分頁才填。</p>
+        <div class="field" id="typeField">
+          <label>角色類型</label>
+          <div class="chips" data-single="type">
+            <button class="chip type-chip" data-v="human virtual avatar" type="button">人類虛擬人物</button>
+            <button class="chip type-chip" data-v="animal companion character" type="button">動物夥伴</button>
+            <button class="chip type-chip" data-v="fantasy original character" type="button">奇幻角色</button>
+            <button class="chip type-chip" data-v="robot or futuristic character" type="button">機器人 / 未來角色</button>
+            <button class="chip type-chip" data-v="original mascot creature" type="button">原創生物</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>年齡感 / 成熟度 <span class="hint">可選可不選</span></label>
+          <div class="chips" data-single="age">
+            <button class="chip" data-v="childlike and playful" type="button">童趣</button>
+            <button class="chip" data-v="teenage, energetic and curious" type="button">青少年感</button>
+            <button class="chip" data-v="young adult, calm and capable" type="button">年輕大人感</button>
+            <button class="chip" data-v="timeless mascot, no specific age" type="button">不設定年齡</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>一句話介紹這個角色 <span class="hint">也會用在資料卡</span></label>
+          <input type="text" id="intro" placeholder="例：一個用音樂修理壞心情的星球旅人">
+        </div>
+        <div class="two-col">
+          <div class="field appearance-body">
+            <label>身形 / 輪廓</label>
+            <input type="text" id="body" placeholder="例：小小圓圓、瘦高、像雲一樣柔軟">
+          </div>
+          <div class="field appearance-body">
+            <label>臉型 + 表情感</label>
+            <input type="text" id="face" placeholder="例：圓臉、溫柔微笑、臉頰有星星印記">
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="field appearance-body">
+            <label>眼睛</label>
+            <input type="text" id="eyes" placeholder="例：大大的黑眼睛、綠色貓眼、像玻璃珠">
+          </div>
+          <div class="field">
+            <label>髮型 / 毛色 / 頭部特徵</label>
+            <input type="text" id="hair" placeholder="例：短黑髮、銀色捲毛、頭上有兩根天線">
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label>固定服裝</label>
+            <input type="text" id="outfit" placeholder="例：黃色外套、白色帽T、藍色吊帶褲">
+          </div>
+          <div class="field">
+            <label>固定配件</label>
+            <input type="text" id="acc" placeholder="例：圓框眼鏡、星星耳環、紅色圍巾">
+          </div>
+        </div>
+        <div class="field">
+          <label>主要顏色 <span class="hint">建議 2–3 個</span></label>
+          <input type="text" id="palette" placeholder="例：天空藍、奶油白、亮橘色">
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="no">2</span>畫風與基準模型</h2>
+      <div class="card-body">
+        <div class="field">
+          <label>選一種主要畫風</label>
+          <div class="chips" data-single="style">
+            <button class="chip style-chip" data-v="soft 3D animation character style, warm lighting, clean rounded shapes" type="button">柔和 3D 動畫</button>
+            <button class="chip style-chip" data-v="stylized 3D cartoon character, soft rounded features, big expressive eyes, glossy render" type="button">立體卡通 3D</button>
+            <button class="chip style-chip" data-v="Japanese anime character style, clean line art, cel shading, bright colors" type="button">日系動畫</button>
+            <button class="chip style-chip" data-v="90s retro anime style, soft grain, muted vintage colors" type="button">復古動畫</button>
+            <button class="chip style-chip" data-v="flat vector illustration style, bold shapes, simple color blocks, thick outline" type="button">扁平插畫</button>
+            <button class="chip style-chip" data-v="cute chibi sticker style, big head small body, thick clean outline" type="button">Q版貼圖</button>
+            <button class="chip style-chip" data-v="kawaii pastel mascot style, rounded soft shapes, gentle pastel colors" type="button">粉嫩吉祥物</button>
+            <button class="chip style-chip" data-v="hand-drawn comic style, expressive lines, playful sketch texture" type="button">手繪漫畫感</button>
+            <button class="chip style-chip" data-v="crayon and colored pencil children illustration style, warm hand-drawn texture" type="button">蠟筆童趣</button>
+            <button class="chip style-chip" data-v="storybook watercolor illustration style, soft texture, gentle colors" type="button">繪本水彩</button>
+            <button class="chip style-chip" data-v="pixel art character style, crisp pixels, limited retro color palette" type="button">像素風</button>
+            <button class="chip style-chip" data-v="clay stop-motion character style, soft clay texture, handmade feel" type="button">黏土定格</button>
+            <button class="chip style-chip" data-v="cyberpunk sci-fi character style, neon accents, futuristic details" type="button">科幻賽博</button>
+            <button class="chip style-chip" data-v="Korean webtoon character style, clean soft shading, trendy modern look" type="button">韓系網漫</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <section class="output-wrap" id="outputSection">
+    <div class="card">
+      <h2><span class="no">✓</span>輸出你的角色模型 Prompt</h2>
+      <div class="out-tabs">
+        <button class="tab on" data-tab="model" type="button">角色設定圖</button>
+        <button class="tab" data-tab="card" type="button">角色資料卡</button>
+        <button class="tab" data-tab="sticker" type="button">貼圖 8 連發</button>
+        <button class="tab" data-tab="lyrics" type="button">主題曲歌詞</button>
+      </div>
+      <div class="out-panel">
+        <div id="panel-model">
+          <p class="note">這段就是你的原始角色設定。用來生成第一張角色圖，也可以當後續所有創作的固定基底。</p>
+          <pre id="out-model">請先選創作路線，並填寫角色資料。</pre>
+        </div>
+        <div id="panel-card" style="display:none">
+          <p class="note">先在「角色設定圖」分頁把外觀做好、生成角色圖，再回來填這裡。以下欄位不影響外觀，只會寫進資料卡。</p>
+          <div class="field">
+            <label>角色名字 <span class="hint">可中文、英文、綽號</span></label>
+            <input type="text" id="name" placeholder="例：阿澄 / Momo / 星球修理員">
+          </div>
+          <div class="field">
+            <label>選 2–4 個個性關鍵字</label>
+            <div class="chips" data-multi="traits">
+              <button class="chip trait-chip" data-v="warm and friendly" type="button">溫暖</button>
+              <button class="chip trait-chip" data-v="brave and adventurous" type="button">勇敢</button>
+              <button class="chip trait-chip" data-v="funny and playful" type="button">搞笑</button>
+              <button class="chip trait-chip" data-v="calm and thoughtful" type="button">冷靜</button>
+              <button class="chip trait-chip" data-v="mysterious and imaginative" type="button">神秘</button>
+              <button class="chip trait-chip" data-v="reliable and caring" type="button">可靠</button>
+              <button class="chip trait-chip" data-v="energetic and expressive" type="button">有活力</button>
+              <button class="chip trait-chip" data-v="creative and experimental" type="button">愛實驗</button>
+              <button class="chip trait-chip" data-v="smart and curious" type="button">聰明好奇</button>
+              <button class="chip trait-chip" data-v="healing and gentle" type="button">療癒</button>
+            </div>
+          </div>
+          <div class="two-col">
+            <div class="field">
+              <label>代表能力 / 興趣</label>
+              <input type="text" id="skill" placeholder="例：畫畫、唱歌、籃球、寫程式">
+            </div>
+            <div class="field">
+              <label>招牌道具</label>
+              <input type="text" id="prop" placeholder="例：魔法筆、耳機、藍色背包">
+            </div>
+          </div>
+          <div class="field">
+            <label>角色常說的一句話 <span class="hint">可空白</span></label>
+            <input type="text" id="phrase" placeholder="例：先試試看再說！">
+          </div>
+          <div class="field">
+            <label>資料卡設計風格 <span class="hint">只有這個會變，其他版面固定一致</span></label>
+            <div class="chips" data-single="cardStyle" id="cardStyleChips"></div>
+          </div>
+          <p class="note">下面是「畫出角色資料卡」的生圖 prompt。生成時記得附上你一開始的角色設計圖當參考，AI 會用同一個角色畫一張介紹卡。</p>
+          <pre id="out-card">請先填寫角色資料。</pre>
+        </div>
+        <div id="panel-sticker" style="display:none">
+          <p class="note warning-note">這是一組通用的貼圖參考 prompt，不需要先完成角色模型也能用。主要是拿你生出來的角色設計圖當參考，再套這些表情動作。文字預設不加最穩；要加字可切換中文、英文或自訂。</p>
+          <div class="field">
+            <label>貼圖文字設定</label>
+            <div class="chips" data-single="stickerTextMode">
+              <button class="chip" data-v="none" type="button">不加文字</button>
+              <button class="chip" data-v="zh" type="button">中文</button>
+              <button class="chip" data-v="en" type="button">英文</button>
+              <button class="chip" data-v="custom" type="button">自訂</button>
+            </div>
+          </div>
+          <div class="field" id="customStickerField" style="display:none">
+            <label>自訂貼圖文字 <span class="hint">一行一個，依序套到 8 張貼圖</span></label>
+            <textarea id="customStickerWords" placeholder="例：
+開心
+哭哭
+生氣
+讚
+掰掰
+驚訝
+愛你
+加油"></textarea>
+          </div>
+          <pre id="out-sticker">資料足夠後，貼圖 prompt 會出現在這裡。</pre>
+        </div>
+        <div id="panel-lyrics" style="display:none">
+          <p class="note">名字、介紹、個性、口頭禪會自動帶入（在「角色資料卡」分頁填）。這裡只要選曲風和情緒，就會生成兩段：①給 Gemini 寫歌詞的 prompt ②給 Suno 的曲風標籤。</p>
+          <div class="field">
+            <label>曲風</label>
+            <div class="chips" data-single="musicGenre">
+              <button class="chip" data-v="熱血流行" type="button">🔥 熱血流行</button>
+              <button class="chip" data-v="溫柔抒情" type="button">🌙 溫柔抒情</button>
+              <button class="chip" data-v="嘻哈饒舌" type="button">🎤 嘻哈饒舌</button>
+              <button class="chip" data-v="電音舞曲" type="button">⚡ 電音舞曲</button>
+              <button class="chip" data-v="搖滾熱唱" type="button">🎸 搖滾熱唱</button>
+              <button class="chip" data-v="慵懶放鬆" type="button">☁️ 慵懶放鬆</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>情緒</label>
+            <div class="chips" data-single="musicMood">
+              <button class="chip" data-v="熱血振奮" type="button">熱血振奮</button>
+              <button class="chip" data-v="開心搞笑" type="button">開心搞笑</button>
+              <button class="chip" data-v="溫暖療癒" type="button">溫暖療癒</button>
+              <button class="chip" data-v="勇敢冒險" type="button">勇敢冒險</button>
+              <button class="chip" data-v="神祕夢幻" type="button">神祕夢幻</button>
+              <button class="chip" data-v="酷酷自信" type="button">酷酷自信</button>
+            </div>
+          </div>
+          <p class="note">① 複製下面這段，貼給 Gemini 寫歌詞：</p>
+          <pre id="out-lyrics">請先填寫角色資料。</pre>
+          <p class="note" style="margin-top:12px">② Suno 的「曲風／風格」欄貼這段（歌詞貼 Gemini 寫好的）：</p>
+          <pre id="out-sunotags" style="min-height:0">請先選曲風。</pre>
+          <button class="act ghost" id="copyTagsBtn" type="button" style="margin-top:10px">📋 複製曲風標籤</button>
+        </div>
+
+        <div class="btn-row">
+          <button class="act" id="copyBtn" type="button">📋 複製這段 Prompt</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">Creative Character Lab · 先建立角色設定，再延伸動作、場景與貼圖</p>
+</div>
+
+<div class="sticky-bar">
+  <div class="sticky-info">
+    <div class="sticky-title" id="stickyTitle">角色模型完成度 0%</div>
+    <div class="sticky-small" id="stickySmall">先選創作路線</div>
+  </div>
+  <button class="act ghost" id="jumpOutput" type="button">看 Prompt</button>
+  <button class="act" id="stickyCopy" type="button">複製</button>
+</div>
+
+<script>
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+  const LS_KEY = 'creative-character-lab-course-v6';
+
+  const fieldIds = [
+    'name','intro','skill','prop','phrase','body','face','eyes','hair','outfit','acc','palette','customStickerWords'
+  ];
+
+  const state = {
+    mode:'',
+    type:'',
+    age:'',
+    style:'',
+    cardStyle:'',
+    stickerTextMode:'none',
+    musicGenre:'',
+    musicMood:'',
+    traits:[]
+  };
+
+  const CARD_STYLES = [
+    {label:'可愛童趣', v:'cute, colorful, playful kid-friendly card with rounded corners and soft shapes.'},
+    {label:'夢幻粉嫩', v:'dreamy pastel card with soft gradients, sparkles, and gentle rounded frame.'},
+    {label:'電玩卡牌', v:'video-game trading-card style with a bold frame, tech accents, and dynamic energy.'},
+    {label:'復古貼紙', v:'retro sticker-book style card with thick outlines, halftone texture, and warm vintage colors.'},
+    {label:'簡約現代', v:'clean minimal modern card with lots of white space, thin lines, and neat typography.'},
+    {label:'奇幻魔法', v:'fantasy storybook card with ornate golden frame, magical glow, and decorative flourishes.'}
+  ];
+
+  const modeText = {
+    photo:{
+      label:'用自己的照片建立虛擬人物',
+      help:'路線：先用自己的照片作為身份參考，再把自己轉成原創虛擬角色。重點是保留臉部特徵、髮型印象與整體氣質，但不是做證件照。',
+      refLabel:'上傳自己的參考照片',
+      prompt:'Creation route: Use the uploaded personal reference photo as the main identity reference. Transform the person into an original virtual character while preserving the core facial identity, hairstyle impression, proportions, and overall vibe. Do not copy the photo background.'
+    },
+    sketch:{
+      label:'用手繪草圖建立角色',
+      help:'路線：先拍下自己的手繪草圖，再請 AI 幫你整理成穩定的角色模型。重點是保留草圖的輪廓、符號與創作想法。',
+      refLabel:'上傳手繪草圖或角色草稿',
+      prompt:'Creation route: Use the uploaded hand-drawn sketch as the main design reference. Clean up the sketch into a consistent original character while preserving the silhouette, key symbols, handmade creative feeling, and core design idea.'
+    },
+    text:{
+      label:'完全靠文字描述角色',
+      help:'路線：不用上傳圖片，直接靠想像力建立角色。請把固定特徵寫清楚，之後角色才比較不會變來變去。',
+      refLabel:'',
+      prompt:'Creation route: Create this character from text description only. Make the design original, clear, memorable, and easy to keep consistent across future images.'
+    }
+  };
+
+  const NEGATIVE = 'Negative prompt: two different characters, inconsistent character between views, different face across views, different hairstyle, different outfit, changing colors, extra fingers, deformed hands, distorted anatomy, blurry, low quality, watermark, random text, logo, messy background.';
+
+  const EXPERIMENTS = [
+    ['表情測試 1：開心', 'happy, big cheerful smile, energetic pose'],
+    ['表情測試 2：驚訝', 'surprised, wide eyes, open mouth, playful reaction'],
+    ['表情測試 3：思考', 'thinking pose, one hand on chin, curious expression'],
+    ['表情測試 4：加油', 'cheering, fist raised, encouraging expression'],
+    ['動作測試 1：揮手', 'waving hello, friendly and clear silhouette'],
+    ['動作測試 2：拿著道具', 'holding the signature prop clearly, proud expression'],
+    ['場景測試 1：創意教室', 'standing in a bright creative classroom, simple background'],
+    ['場景測試 2：角色卡', 'clean character card layout, name label area, simple background, no actual text']
+  ];
+
+  const STICKERS = [
+    ['開心','Happy','happy, big cheerful smile'],
+    ['哭哭','Cry','crying with big teary eyes'],
+    ['生氣','Angry','angry, pouting, puffed cheeks'],
+    ['讚','Good','giving a thumbs up, confident'],
+    ['掰掰','Bye','waving goodbye'],
+    ['驚訝','Wow','shocked, wide eyes, open mouth'],
+    ['愛你','Love','making a heart shape with hands'],
+    ['加油','Go!','cheering, fist raised, energetic']
+  ];
+
+  function val(id){
+    const el = $('#'+id);
+    return el ? el.value.trim() : '';
+  }
+
+  function sentence(label, content){
+    return content ? `${label}: ${content}.` : '';
+  }
+
+  function compactLines(lines){
+    return lines.filter(Boolean).join('\n');
+  }
+
+  function visualCount(){
+    const ids = state.mode === 'photo'
+      ? ['hair','outfit','acc','palette']
+      : ['body','face','eyes','hair','outfit','acc','palette'];
+    return ids.filter(id => val(id)).length;
+  }
+
+  function readyEnough(){
+    return state.mode && (val('name') || state.type || val('intro')) && state.style && visualCount() >= 2;
+  }
+
+  function buildModel(){
+    if(!state.mode){ return '請先選創作路線，並填寫角色資料。'; }
+
+    const route = modeText[state.mode]?.prompt || '';
+    const traits = state.traits.length ? state.traits.join(', ') : '';
+    const characterType = state.type || 'original character';
+    const name = val('name') || 'Unnamed character';
+    const isPhoto = state.mode === 'photo';
+    const isSketch = state.mode === 'sketch';
+
+    const appearanceLines = isPhoto
+      ? [
+          // 照片路線：臉/眼睛/身形以本人為準，不覆寫
+          'Keep the real face, eyes, and body proportions from the uploaded reference photo. Do not invent a new face.',
+          sentence('Hair, fur, or head feature', val('hair')),
+          sentence('Signature outfit', val('outfit')),
+          sentence('Signature accessories', val('acc')),
+          sentence('Signature prop', val('prop')),
+          sentence('Main color palette', val('palette'))
+        ]
+      : isSketch
+        ? [
+            'Keep the silhouette, pose feeling, and key shapes from the uploaded sketch as the base.',
+            sentence('Body shape or silhouette', val('body')),
+            sentence('Face and expression style', val('face')),
+            sentence('Eyes', val('eyes')),
+            sentence('Hair, fur, or head feature', val('hair')),
+            sentence('Signature outfit', val('outfit')),
+            sentence('Signature accessories', val('acc')),
+            sentence('Signature prop', val('prop')),
+            sentence('Main color palette', val('palette'))
+          ]
+        : [
+            sentence('Body shape or silhouette', val('body')),
+            sentence('Face and expression style', val('face')),
+            sentence('Eyes', val('eyes')),
+            sentence('Hair, fur, or head feature', val('hair')),
+            sentence('Signature outfit', val('outfit')),
+            sentence('Signature accessories', val('acc')),
+            sentence('Signature prop', val('prop')),
+            sentence('Main color palette', val('palette'))
+          ];
+
+    const lines = [
+      route,
+      '',
+      isPhoto
+        ? 'Turn the person in the reference photo into a stylized original character, keeping their real identity but applying the settings below.'
+        : 'Create one original character design based on the following fixed settings.',
+      `Character name: ${name}.`,
+      isPhoto ? '' : `Character type: ${characterType}.`,
+      state.age ? `Age vibe: ${state.age}.` : '',
+      val('intro') ? `Character concept: ${val('intro')}.` : '',
+      traits ? `Personality vibe to show through expression and pose: ${traits}.` : '',
+      ...appearanceLines,
+      state.style ? `Visual style: ${state.style}.` : 'Visual style: clean original character design.',
+      '',
+      'OUTPUT: ONE single image — a character reference sheet (model sheet) of THIS SAME ONE character on a plain solid WHITE background, containing:',
+      '- full body front view (neutral standing), full body 3/4 view, full body back view',
+      '- one row of head close-ups (front / 3/4 / side)',
+      '- one row of 3 facial expressions (neutral, happy, surprised) using the SAME face',
+      '',
+      'Rules: ONE character repeated, never different characters. Face, hairstyle or head feature, body proportions, outfit, accessories, prop, and color palette must stay IDENTICAL in every view. Even flat lighting, clean spacing between views, like an official model sheet. No text, no labels, no logo, no watermark.',
+      '',
+      'This sheet is the FIXED master model of the character: in all future images keep it identical — same face, hair, proportions, outfit, accessories, and colors.',
+      NEGATIVE
+    ];
+    return compactLines(lines);
+  }
+
+  function esc(s){ return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+  function buildCard(){
+    const el = $('#out-card');
+    if(!el) return;
+
+    const name = val('name');
+    const anyData = name || val('intro') || val('skill') || val('prop') || val('phrase') || state.type || state.traits.length;
+    if(!state.mode || !anyData){
+      el.textContent = '請先填寫角色資料。';
+      return;
+    }
+
+    // 把英文 data-v 轉回繁體中文（卡片內容全繁中）
+    const TYPE_ZH = {
+      'human virtual avatar':'人類虛擬人物',
+      'animal companion character':'動物夥伴',
+      'fantasy original character':'奇幻角色',
+      'robot or futuristic character':'機器人 / 未來角色',
+      'original mascot creature':'原創生物'
+    };
+    const AGE_ZH = {
+      'childlike and playful':'童趣',
+      'teenage, energetic and curious':'青少年感',
+      'young adult, calm and capable':'年輕大人感',
+      'timeless mascot, no specific age':'不設定年齡'
+    };
+    const TRAIT_ZH = {
+      'warm and friendly':'溫暖','brave and adventurous':'勇敢','funny and playful':'搞笑',
+      'calm and thoughtful':'冷靜','mysterious and imaginative':'神秘','reliable and caring':'可靠',
+      'energetic and expressive':'有活力','creative and experimental':'愛實驗',
+      'smart and curious':'聰明好奇','healing and gentle':'療癒'
+    };
+    const traitsZh = state.traits.map(t => TRAIT_ZH[t] || t);
+
+    // 卡片上要顯示的文字內容（全繁體中文）
+    const infoLines = [];
+    infoLines.push(`名稱：${name || '未命名角色'}`);
+    if(state.type) infoLines.push(`類型：${TYPE_ZH[state.type] || state.type}`);
+    if(val('intro')) infoLines.push(`介紹：${val('intro')}`);
+    if(traitsZh.length) infoLines.push(`個性：${traitsZh.join('、')}`);
+    if(val('skill')) infoLines.push(`能力 / 興趣：${val('skill')}`);
+    if(val('prop')) infoLines.push(`招牌道具：${val('prop')}`);
+    if(val('phrase')) infoLines.push(`常說的一句話：「${val('phrase')}」`);
+
+    const infoBlock = infoLines.map(l => '  - ' + l).join('\n');
+
+    const cardStyle = state.cardStyle || CARD_STYLES[0].v;
+
+    const lines = [
+      'Use the SAME character from the reference character design sheet as the subject.',
+      'Keep the character 100% identical to the reference: same face, hairstyle or head feature, body proportions, outfit, accessories, and color palette. Draw the character in the EXACT same art style, rendering, line quality, shading, and material / texture as the reference image (for example if the reference is 3D glossy, keep it 3D glossy; if it is flat vector, keep it flat vector). Do not redesign, re-render, or change the material of the character.',
+      '',
+      'Create ONE single image: a character profile card (character info card) for this character.',
+      '',
+      'CANVAS: fixed 16:9 landscape aspect ratio, horizontal card that fills the whole 16:9 frame.',
+      '',
+      'FIXED LAYOUT (identical for every character — only the character artwork and the text values change, never the positions or sizes):',
+      '- One horizontal card that fills the entire 16:9 canvas, with a clear outer border / frame and consistent inner margins.',
+      '- Left third: the character shown full-body in a friendly pose that shows its personality.',
+      '- Top of the right area: a title bar containing the character name, as the largest text on the card.',
+      '- Right two-thirds: a tidy text info panel listing the fields below, one field per line, left-aligned, evenly spaced.',
+      '- Bottom strip of the right area: a row of small simple icons showing the character\'s ability / hobby and its signature prop.',
+      '',
+      'FIXED TYPOGRAPHY (keep these text sizes and proportions the same every time so all cards look consistent):',
+      '- Title (character name): largest, bold.',
+      '- Field labels and values: one consistent medium size, clearly smaller than the title.',
+      '- The catchphrase line: slightly emphasized but not larger than the title.',
+      '- Even line spacing, consistent left alignment, same relative text scale on every card.',
+      '',
+      'ALL text on the card must be written in correct, clear Traditional Chinese characters (繁體中文), spelled exactly as given. Do NOT use English, do NOT use Simplified Chinese. Keep every label and every value in Traditional Chinese:',
+      infoBlock,
+      '',
+      `Card design theme (this is the ONLY thing that changes the visual style of the frame/background): ${cardStyle}`,
+      'Negative prompt: different character, changed face, changed outfit, different art style from reference, different material or texture from reference, English text, Simplified Chinese, wrong or garbled text, inconsistent text sizes, messy layout, unreadable text, wrong aspect ratio, portrait orientation, watermark, low quality.'
+    ];
+
+    el.textContent = compactLines(lines);
+  }
+
+  function customStickerWords(){
+    return val('customStickerWords')
+      .split(/\n+/)
+      .map(s => s.trim())
+      .filter(Boolean);
+  }
+
+  function stickerTextInstruction(zh, en, index){
+    const mode = state.stickerTextMode || 'none';
+    if(mode === 'zh'){
+      return `Render the text in Traditional Chinese characters (繁體中文). The characters must be exactly 「${zh}」, written correctly and clearly as Traditional Chinese, not English, not Simplified Chinese.`;
+    }
+    if(mode === 'en'){
+      return `Render the text in English letters. The text must be exactly "${en}", written correctly and clearly in English.`;
+    }
+    if(mode === 'custom'){
+      const words = customStickerWords();
+      const word = words[index] || zh;
+      const isChinese = /[\u4e00-\u9fff]/.test(word);
+      return isChinese
+        ? `Render the text in Traditional Chinese characters (繁體中文). The characters must be exactly 「${word}」, written correctly and clearly as Traditional Chinese, not English, not Simplified Chinese.`
+        : `Render the text in English letters. The text must be exactly "${word}", written correctly and clearly in English.`;
+    }
+    return 'No text on the sticker.';
+  }
+
+  function buildSticker(){
+    const textMode = state.stickerTextMode || 'none';
+
+    const list = STICKERS.map(([zh,en,emotion],i)=>{
+      const label = String(i+1).padStart(2,'0');
+      let textPart = '';
+      if(textMode === 'zh'){
+        textPart = ` — 文字（繁體中文）：「${zh}」`;
+      } else if(textMode === 'en'){
+        textPart = ` — text (English): "${en}"`;
+      } else if(textMode === 'custom'){
+        const words = customStickerWords();
+        const word = words[i] || zh;
+        const isCh = /[\u4e00-\u9fff]/.test(word);
+        textPart = isCh ? ` — 文字（繁體中文）：「${word}」` : ` — text (English): "${word}"`;
+      }
+      return `${label}. ${emotion}${textPart}`;
+    }).join('\n');
+
+    let textRule;
+    if(textMode === 'none'){
+      textRule = 'No text on the stickers.';
+    } else if(textMode === 'zh'){
+      textRule = 'On each sticker render its short text in correct, clear Traditional Chinese characters (繁體中文) — not English, not Simplified Chinese.';
+    } else if(textMode === 'en'){
+      textRule = 'On each sticker render its short text in correct, clear English letters.';
+    } else {
+      textRule = 'On each sticker render its short text exactly as listed: Chinese words in correct Traditional Chinese characters (繁體中文), English words in English letters.';
+    }
+
+    const textNote = textMode === 'none'
+      ? '文字設定：不加文字。'
+      : textMode === 'zh'
+        ? '文字設定：加繁體中文短字。'
+        : textMode === 'en'
+          ? '文字設定：加英文短字。'
+          : '文字設定：使用自訂文字（中文自動用繁體中文、英文用英文）。';
+
+    return `以下是「一張大圖 8 格貼圖」的 prompt（生成時記得一起附上你的角色設計圖當參考）。
+${textNote}
+
+──────── 複製以下 ────────
+
+Create ONE single large image that is a 2x4 grid (8 cells) of stickers of the SAME character from the reference character design sheet.
+Keep the character identical in every cell: same face, hairstyle or head feature, body proportions, outfit, accessories, and color palette. Do not redesign the character.
+
+Style for every cell: cute chibi sticker style, single character centered, thick clean outline, simple clear silhouette, white or transparent background, even spacing between cells.
+${textRule}
+
+The 8 cells, in order, each showing this action / expression:
+${list}
+
+${NEGATIVE}`;
+  }
+
+  const GENRE_TAGS = {
+    '熱血流行':'Mandopop, upbeat, energetic, catchy chorus, bright',
+    '溫柔抒情':'Mandarin ballad, soft piano, emotional, gentle vocal',
+    '嘻哈饒舌':'Mandarin hip hop, playful rap, strong beat, fun',
+    '電音舞曲':'EDM, Mandarin pop, bright synths, dance beat',
+    '搖滾熱唱':'Mandarin rock, electric guitar, powerful, anthem',
+    '慵懶放鬆':'lofi, Mandarin pop, chill, relaxed, cozy'
+  };
+  const MOOD_TAGS = {
+    '熱血振奮':'inspiring','開心搞笑':'playful, happy','溫暖療癒':'warm, healing',
+    '勇敢冒險':'adventurous','神祕夢幻':'dreamy, mysterious','酷酷自信':'confident, cool'
+  };
+  const TRAIT_ZH_L = {
+    'warm and friendly':'溫暖','brave and adventurous':'勇敢','funny and playful':'搞笑',
+    'calm and thoughtful':'冷靜','mysterious and imaginative':'神秘','reliable and caring':'可靠',
+    'energetic and expressive':'有活力','creative and experimental':'愛實驗',
+    'smart and curious':'聰明好奇','healing and gentle':'療癒'
+  };
+  function sunoTags(){
+    if(!state.musicGenre) return '請先選曲風。';
+    return GENRE_TAGS[state.musicGenre] + (state.musicMood ? ', ' + MOOD_TAGS[state.musicMood] : '');
+  }
+  function buildLyrics(){
+    const el = $('#out-lyrics'), tagEl = $('#out-sunotags');
+    if(!el || !tagEl) return;
+    tagEl.textContent = sunoTags();
+    const name = val('name'), intro = val('intro'), phrase = val('phrase');
+    if(!name && !intro){
+      el.textContent = '請先到「角色資料卡」分頁填角色名字或一句話介紹。';
+      return;
+    }
+    const traitsZh = state.traits.map(t=>TRAIT_ZH_L[t]||t).join('、');
+    const lines = [
+      '幫我的角色寫一首 30–60 秒的主題曲歌詞。',
+      `角色叫 ${name || '（未命名）'}${intro ? '，是' + intro : ''}。`,
+      traitsZh ? `個性：${traitsZh}。` : '',
+      `曲風：${state.musicGenre || '請幫我建議一種適合的'}、情緒：${state.musicMood || '照角色個性決定'}。`,
+      '結構：兩段主歌＋一段重複的副歌。' + (phrase ? `副歌一定要放進這句口頭禪：「${phrase}」。` : ''),
+      '中文歌詞、簡單好記、適合青少年唱。不要太長、不要難字。'
+    ];
+    el.textContent = lines.filter(Boolean).join('\n');
+  }
+
+	  function activeOutputText(){
+	    const active = $('.tab.on')?.dataset.tab || 'model';
+	    const map = {model:'#out-model', card:'#out-card', sticker:'#out-sticker', lyrics:'#out-lyrics'};
+	    const sel = map[active];
+	    return sel ? $(sel).textContent : '';
+	  }
+
+	  function isCopyableText(text){
+	    return !!text && !text.startsWith('請先') && !text.includes('會出現在這裡');
+	  }
+
+	  function updateCopyButtons(){
+	    const canCopy = isCopyableText(activeOutputText());
+	    ['copyBtn','stickyCopy'].forEach(id=>{
+	      const btn = $('#'+id);
+	      if(btn) btn.disabled = !canCopy;
+	    });
+	  }
+
+  function updateModeUI(){
+    $$('.mode-card').forEach(card=>card.classList.toggle('on', card.dataset.mode === state.mode));
+    if(state.mode){
+      $('#modeHelp').textContent = modeText[state.mode].help;
+      if(state.mode === 'photo'){
+        $('#refPanel').style.display = 'block';
+        $('#refNote').textContent = '複製下面的 prompt 後，到你用的 AI 生圖工具，把你自己的照片直接上傳到那裡，再貼上這段 prompt 一起生成。這個網頁不需要、也不會存取你的照片。';
+      } else if(state.mode === 'sketch'){
+        $('#refPanel').style.display = 'block';
+        $('#refNote').textContent = '複製下面的 prompt 後，到你用的 AI 生圖工具，把你的手繪草圖直接上傳到那裡，再貼上這段 prompt 一起生成。這個網頁不需要、也不會存取你的圖。';
+      } else {
+        $('#refPanel').style.display = 'none';
+      }
+    } else {
+      $('#modeHelp').textContent = '請先選一種創作路線，下面的 prompt 會依照你的選擇自動改寫。';
+      $('#refPanel').style.display = 'none';
+    }
+
+    // 照片路線：臉/眼睛/身形以本人為準，隱藏這些欄位
+    const isPhoto = state.mode === 'photo';
+    $$('.appearance-body').forEach(f=>{ f.style.display = isPhoto ? 'none' : ''; });
+
+    // 照片路線：本人就是角色類型，不需選擇
+    const typeField = $('#typeField');
+    if(typeField) typeField.style.display = isPhoto ? 'none' : '';
+    if(isPhoto && state.type){ state.type = ''; }
+
+    const hint = $('#appearanceHint');
+    if(hint){
+      if(isPhoto){
+        hint.textContent = '你選了「用照片建立」。臉、眼睛、身形會用你本人的照片當基礎，所以這裡只要設定想搭配的服裝、配件、配色和畫風。名字、個性、能力之後在「角色資料卡」分頁才填。';
+      } else if(state.mode === 'sketch'){
+        hint.textContent = '你選了「手繪草圖」。AI 會照你的草圖輪廓來畫，下面補上想固定的細節與配色。名字、個性、能力之後在「角色資料卡」分頁才填。';
+      } else {
+        hint.textContent = '這一頁決定「角色設定圖」長什麼樣子。名字、個性、能力那些之後在「角色資料卡」分頁才填。';
+      }
+    }
+  }
+
+  function updateChipUI(){
+    $$('[data-single]').forEach(group=>{
+      const key = group.dataset.single;
+      group.querySelectorAll('.chip').forEach(chip=>{
+        chip.classList.toggle('on', state[key] === chip.dataset.v);
+      });
+    });
+    $$('[data-multi]').forEach(group=>{
+      const key = group.dataset.multi;
+      const arr = state[key] || [];
+      group.querySelectorAll('.chip').forEach(chip=>{
+        chip.classList.toggle('on', arr.includes(chip.dataset.v));
+      });
+    });
+  }
+
+  function updateProgress(){
+    const checks = [
+      {ok:!!state.mode, label:'選創作路線'},
+      {ok:visualCount() >= 2, label:'至少 2 個外觀設定'},
+      {ok:!!(val('outfit') || val('acc') || val('palette')), label:'服裝 / 配件 / 顏色'},
+      {ok:!!state.style, label:'主要畫風'}
+    ];
+    const done = checks.filter(c=>c.ok).length;
+    const percent = Math.round(done / checks.length * 100);
+    $('#meterFill').style.width = percent + '%';
+    $('#completionTitle').textContent = `角色設定圖完成度 ${percent}%`;
+    $('#stickyTitle').textContent = `角色設定圖完成度 ${percent}%`;
+    const missing = checks.filter(c=>!c.ok).slice(0,4).map(c=>c.label);
+    const hint = percent >= 100 ? '可以複製 prompt 去生成角色設定圖，之後再做資料卡' : `還差：${missing.join('、')}`;
+    $('#completionHint').textContent = hint;
+    $('#stickySmall').textContent = hint;
+    $('#missingTips').innerHTML = missing.length ? missing.map(m=>`<span>補：${m}</span>`).join('') : '<span>外觀設定足夠，去生成你的角色設定圖</span>';
+  }
+
+	  function render(){
+	    updateModeUI();
+	    updateChipUI();
+	    updateProgress();
+	    $('#customStickerField').style.display = (state.stickerTextMode === 'custom') ? 'block' : 'none';
+	    $('#out-model').textContent = buildModel();
+	    buildCard();
+	    $('#out-sticker').textContent = buildSticker();
+	    buildLyrics();
+	    updateCopyButtons();
+	    save();
+	  }
+
+  function save(){
+    const fields = {};
+    fieldIds.forEach(id=>fields[id]=val(id));
+    const payload = {state, fields};
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(payload)); }catch(e){}
+  }
+
+  function restore(){
+    try{
+      const raw = localStorage.getItem(LS_KEY);
+      if(!raw) return;
+      const payload = JSON.parse(raw);
+      if(payload.state){ Object.assign(state, payload.state); }
+      if(!Array.isArray(state.traits)) state.traits = [];
+      if(!state.stickerTextMode) state.stickerTextMode = 'none';
+      if(payload.fields){
+        Object.entries(payload.fields).forEach(([id,value])=>{
+          const el = $('#'+id);
+          if(el) el.value = value || '';
+        });
+      }
+    }catch(e){}
+  }
+
+	  async function copyText(text, btn){
+	    if(!isCopyableText(text)) return;
+    try{
+      if(navigator.clipboard && window.isSecureContext){
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      if(btn){
+        const original = btn.textContent;
+        btn.classList.add('copied');
+        btn.textContent = '✓ 已複製';
+        setTimeout(()=>{btn.classList.remove('copied');btn.textContent = original;},1400);
+      }
+    }catch(e){
+      alert('複製失敗，請長按文字手動複製。');
+    }
+  }
+
+  // 注入資料卡設計風格選項
+  (function injectCardStyles(){
+    const wrap = $('#cardStyleChips');
+    if(!wrap) return;
+    wrap.innerHTML = CARD_STYLES.map(s =>
+      `<button class="chip" data-v="${s.v.replace(/"/g,'&quot;')}" type="button">${s.label}</button>`
+    ).join('');
+  })();
+
+	  $$('.mode-card').forEach(card=>{
+	    card.addEventListener('click',()=>{
+	      state.mode = card.dataset.mode;
+	      render();
+	    });
+	  });
+
+  $$('[data-single]').forEach(group=>{
+    const key = group.dataset.single;
+    group.querySelectorAll('.chip').forEach(chip=>{
+      chip.addEventListener('click',()=>{
+        state[key] = state[key] === chip.dataset.v ? '' : chip.dataset.v;
+        if(key === 'stickerTextMode' && !state[key]) state.stickerTextMode = 'none';
+        render();
+      });
+    });
+  });
+
+  $$('[data-multi]').forEach(group=>{
+    const key = group.dataset.multi;
+    group.querySelectorAll('.chip').forEach(chip=>{
+      chip.addEventListener('click',()=>{
+        const arr = state[key] || [];
+        const i = arr.indexOf(chip.dataset.v);
+        if(i >= 0) arr.splice(i,1);
+        else arr.push(chip.dataset.v);
+        state[key] = arr;
+        render();
+      });
+    });
+  });
+
+  fieldIds.forEach(id=>{
+    const el = $('#'+id);
+    if(el) el.addEventListener('input',render);
+  });
+
+	  function syncCopyBtn(){
+	    $('#copyBtn').textContent = '📋 複製這段 Prompt';
+	    $('#copyBtn').style.opacity = '';
+	    updateCopyButtons();
+	  }
+
+  $$('.tab').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      $$('.tab').forEach(t=>t.classList.remove('on'));
+      tab.classList.add('on');
+      ['model','card','sticker','lyrics'].forEach(name=>{
+        $('#panel-'+name).style.display = tab.dataset.tab === name ? 'block' : 'none';
+      });
+      syncCopyBtn();
+    });
+  });
+
+  $('#copyBtn').addEventListener('click',()=>{ if($('#copyBtn').disabled) return; copyText(activeOutputText(), $('#copyBtn')); });
+  const tagsBtn = $('#copyTagsBtn');
+  if(tagsBtn) tagsBtn.addEventListener('click',()=>{
+    const t = $('#out-sunotags').textContent;
+    if(!t || t.startsWith('請先')) return;
+    copyText(t, tagsBtn);
+  });
+  $('#stickyCopy').addEventListener('click',()=>copyText(activeOutputText(), $('#stickyCopy')));
+  $('#jumpOutput').addEventListener('click',()=>$('#outputSection').scrollIntoView({behavior:'smooth', block:'start'}));
+
+  const RANDOM_POOL = {
+    name:['阿澄','小星','Momo','布丁','電電','雲寶','咕嚕','小豆','Kiki','阿光','泡泡','點點'],
+    intro:['一個用音樂修理壞心情的星球旅人','喜歡收集怪點子的發明小天才','會把烏雲變成棉花糖的療癒精靈','守護森林的迷你冒險家','用畫筆打開任意門的畫家貓','愛實驗的機器人小助手','專門收集笑聲的雲朵旅人','把每天都當成大冒險的小勇者'],
+    skill:['畫畫','唱歌','籃球','寫程式','照顧朋友','發明小道具','跳舞','講冷笑話','種花','修理東西'],
+    prop:['魔法筆','耳機','藍色背包','小機器人','星星吊墜','發光的球','復古相機','萬能工具箱','會說話的雨傘','迷你音箱'],
+    phrase:['先試試看再說！','今天也要閃閃發光～','沒問題，交給我！','一起去冒險吧！','慢慢來比較快','我最喜歡新點子了'],
+    body:['小小圓圓','瘦高靈活','像雲一樣柔軟','結實矮壯','圓滾滾像顆球','修長優雅'],
+    face:['圓臉、溫柔微笑','臉頰有星星印記','大大的招牌笑容','安靜內斂的表情','臉上有小雀斑','總是好奇張望'],
+    eyes:['大大的黑眼睛','綠色貓眼','像玻璃珠一樣亮','瞇瞇笑眼','琥珀色圓眼','一藍一綠的異色瞳'],
+    hair:['短黑髮','銀色捲毛','頭上有兩根天線','蓬鬆的橘色亂髮','紮兩個小啾啾','光頭上有一片葉子','藍紫漸層長髮'],
+    outfit:['黃色外套','白色帽T','藍色吊帶褲','紅色連身裙','綠色工作服','星空圖案披風','條紋毛衣'],
+    acc:['圓框眼鏡','星星耳環','紅色圍巾','小背包','發光手環','貝雷帽','蝴蝶結領帶'],
+    palette:['天空藍、奶油白、亮橘色','薄荷綠、米白、鵝黃','珊瑚粉、淺灰、金色','深藍、銀色、螢光青','南瓜橘、焦糖棕、奶油白']
+  };
+
+  function randPick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function randInt(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+
+  function randomizeAll(){
+    // 單選類
+    state.mode = randPick(['photo','sketch','text','text','text']); // 偏文字，最不需上傳
+    state.type = randPick($$('[data-single="type"] .chip').map(c=>c.dataset.v));
+    state.age = randPick($$('[data-single="age"] .chip').map(c=>c.dataset.v));
+    state.style = randPick($$('[data-single="style"] .chip').map(c=>c.dataset.v));
+    state.cardStyle = randPick(CARD_STYLES).v;
+    state.musicGenre = randPick(Object.keys(GENRE_TAGS));
+    state.musicMood = randPick(Object.keys(MOOD_TAGS));
+    // 個性 2-4 個
+    const allTraits = $$('[data-multi="traits"] .chip').map(c=>c.dataset.v);
+    const shuffled = allTraits.slice().sort(()=>Math.random()-0.5);
+    state.traits = shuffled.slice(0, randInt(2,4));
+    // 文字欄位
+    Object.entries(RANDOM_POOL).forEach(([id,pool])=>{
+      const el = $('#'+id);
+      if(el) el.value = randPick(pool);
+    });
+    render();
+    $('#outputSection').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  $('#diceBtn').addEventListener('click',()=>{
+    const btn = $('#diceBtn');
+    btn.classList.add('rolling');
+    setTimeout(()=>btn.classList.remove('rolling'),500);
+    randomizeAll();
+  });
+
+  restore();
+  render();
+</script>
+</body>
+</html>

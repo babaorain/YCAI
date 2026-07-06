@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>AI 溝通術｜Prompt 教學投影</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap');
+  :root{
+    --paper:#fff7ec; --paper-2:#fffdf8; --ink:#26211e; --muted:#75695f;
+    --line:#e5d7c7; --teal:#287c78; --teal-soft:#dff2ee;
+    --orange:#ef6b45; --orange-soft:#fde2d8; --gold:#e0ad45;
+    --blue:#4267b2; --blue-soft:#e4ebff; --green:#48815d; --green-soft:#e4f3e8;
+    --danger:#b84a43; --danger-soft:#f7e0de;
+    --shadow:5px 5px 0 rgba(38,33,30,.9);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Noto Sans TC',sans-serif;
+    background:var(--paper);
+    background-image:radial-gradient(circle at 1px 1px, rgba(38,33,30,.055) 1px, transparent 0);
+    background-size:22px 22px;
+    color:var(--ink); overflow:hidden;
+  }
+  .slide{
+    display:none; height:100dvh; padding:4vh 5vw 96px;
+    flex-direction:column; justify-content:center; gap:2.4vh;
+    max-width:1100px; margin:0 auto;
+  }
+  .slide.on{display:flex}
+  .kicker{
+    font-family:'Space Grotesk',sans-serif; letter-spacing:.22em; text-transform:uppercase;
+    font-weight:700; font-size:clamp(.7rem,1.4vw,.95rem); color:var(--teal);
+  }
+  h1{font-weight:900; letter-spacing:-.02em; line-height:1.12; font-size:clamp(1.7rem,5.2vw,3.6rem)}
+  h1 .hl{color:var(--orange)}
+  .big{font-size:clamp(1.05rem,2.6vw,1.7rem); line-height:1.55}
+  .big b{color:var(--teal)}
+  .muted{color:var(--muted); font-size:clamp(.9rem,1.9vw,1.2rem)}
+  .panel{
+    border:3px solid var(--ink); border-radius:18px; background:#fff;
+    box-shadow:var(--shadow); padding:clamp(14px,2.6vw,26px);
+  }
+  pre.demo{
+    white-space:pre-wrap; word-break:break-word;
+    font-family:'Noto Sans TC',sans-serif; font-weight:700;
+    font-size:clamp(1.05rem,2.8vw,1.9rem); line-height:1.7;
+  }
+  .p-who{background:var(--teal-soft); border-bottom:4px solid var(--teal); border-radius:4px; padding:0 3px}
+  .p-look{background:var(--blue-soft); border-bottom:4px solid var(--blue); border-radius:4px; padding:0 3px}
+  .p-style{background:var(--orange-soft); border-bottom:4px solid var(--orange); border-radius:4px; padding:0 3px}
+  .p-fmt{background:var(--green-soft); border-bottom:4px solid var(--green); border-radius:4px; padding:0 3px}
+  .p-no{background:var(--danger-soft); border-bottom:4px solid var(--danger); border-radius:4px; padding:0 3px}
+  .legend{display:flex; flex-wrap:wrap; gap:10px}
+  .legend span{
+    border:2px solid var(--ink); border-radius:999px; padding:6px 14px;
+    font-weight:900; font-size:clamp(.8rem,1.7vw,1.05rem); background:#fff;
+  }
+  .steps{display:grid; gap:12px}
+  .step{
+    display:flex; gap:14px; align-items:flex-start;
+    border:3px solid var(--ink); border-radius:14px; background:#fff;
+    box-shadow:3px 3px 0 rgba(38,33,30,.85); padding:clamp(10px,2vw,18px);
+  }
+  .step .n{
+    flex:none; width:38px; height:38px; border-radius:50%;
+    background:var(--gold); border:3px solid var(--ink);
+    display:grid; place-content:center; font-weight:900; font-size:1.1rem;
+  }
+  .step p{font-size:clamp(.95rem,2.2vw,1.35rem); line-height:1.5}
+  .step p b{color:var(--orange)}
+  .fingers{display:grid; grid-template-columns:repeat(5,1fr); gap:10px}
+  @media(max-width:700px){.fingers{grid-template-columns:1fr 1fr; }}
+  .finger{
+    border:3px solid var(--ink); border-radius:14px; background:#fff;
+    box-shadow:3px 3px 0 rgba(38,33,30,.85); padding:12px 10px; text-align:center;
+  }
+  .finger .emoji{font-size:clamp(1.6rem,3.4vw,2.6rem)}
+  .finger .name{font-weight:900; font-size:clamp(1rem,2.2vw,1.5rem); margin-top:4px}
+  .finger .q{color:var(--muted); font-size:clamp(.75rem,1.5vw,1rem)}
+  .finger.f1 .name{color:var(--teal)} .finger.f2 .name{color:var(--blue)}
+  .finger.f3 .name{color:var(--orange)} .finger.f4 .name{color:var(--green)}
+  .finger.f5 .name{color:var(--danger)}
+  .copy{
+    cursor:pointer; align-self:flex-start; margin-top:6px;
+    padding:10px 18px; border:3px solid var(--ink); border-radius:12px;
+    background:var(--gold); box-shadow:3px 3px 0 var(--ink);
+    font:inherit; font-weight:900; font-size:clamp(.85rem,1.8vw,1.1rem);
+  }
+  .copy:active{transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink)}
+  .copy.done{background:var(--teal); color:#fff}
+  .callout{
+    border-left:8px solid var(--orange); background:var(--orange-soft);
+    border-radius:0 14px 14px 0; padding:12px 16px;
+    font-weight:700; font-size:clamp(1rem,2.3vw,1.45rem);
+  }
+  .check{list-style:none; display:grid; gap:10px}
+  .check li{
+    font-size:clamp(1rem,2.3vw,1.4rem); font-weight:700;
+    padding-left:2.1em; position:relative;
+  }
+  .check li::before{
+    content:"☐"; position:absolute; left:.4em; top:-.05em;
+    color:var(--teal); font-size:1.2em;
+  }
+  .nav{
+    position:fixed; left:0; right:0; bottom:0; z-index:10;
+    display:flex; align-items:center; justify-content:center; gap:14px;
+    padding:12px; background:linear-gradient(transparent, var(--paper) 40%);
+  }
+  .nav button{
+    cursor:pointer; padding:12px 22px; border:3px solid var(--ink); border-radius:14px;
+    background:#fff; box-shadow:3px 3px 0 var(--ink);
+    font:inherit; font-weight:900; font-size:1rem;
+  }
+  .nav button:active{transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink)}
+  .nav .count{
+    font-family:'Space Grotesk',sans-serif; font-weight:700;
+    border:3px solid var(--ink); border-radius:999px; padding:10px 18px; background:var(--gold);
+  }
+  .sessiontag{
+    position:fixed; top:12px; right:14px; z-index:10;
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif; font-weight:900;
+    font-size:.75rem; letter-spacing:.12em;
+    border:2px solid var(--ink); border-radius:999px; padding:5px 12px; background:#fff;
+  }
+  .home-link{
+    position:fixed; top:12px; left:14px; z-index:10;
+    border:2px solid var(--ink); border-radius:999px; padding:7px 12px;
+    background:#fff; color:var(--ink); text-decoration:none;
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif; font-weight:900;
+    font-size:.82rem; box-shadow:2px 2px 0 var(--ink);
+  }
+  .home-link:active{transform:translate(1px,1px); box-shadow:1px 1px 0 var(--ink)}
+  @media(max-width:700px){
+    body{overflow:auto}
+    .slide{
+      height:auto; min-height:100dvh; justify-content:flex-start;
+      padding:74px 16px 104px; gap:16px;
+    }
+    h1{font-size:clamp(1.45rem,8.8vw,2.35rem); line-height:1.14}
+    .big{font-size:1.02rem; line-height:1.5}
+    .panel{padding:14px}
+    pre.demo{font-size:.95rem; line-height:1.55}
+    .steps{gap:10px}
+    .step{gap:10px; padding:12px}
+    .step .n{width:32px; height:32px; font-size:.95rem}
+    .check{gap:8px}
+    .check li{font-size:1rem; line-height:1.45}
+    .callout{font-size:1rem; padding:10px 12px}
+    .nav{gap:8px; padding:10px 8px}
+    .nav button{padding:10px 12px; border-radius:12px; font-size:.9rem}
+    .nav .count{padding:8px 12px; font-size:.9rem}
+    .sessiontag{top:12px; right:10px; font-size:.68rem; padding:5px 9px}
+    .home-link{top:12px; left:10px; font-size:.78rem; padding:7px 10px}
+  }
+  @media(max-width:420px){
+    .nav{justify-content:space-between}
+    .nav button{padding:9px 10px; font-size:.82rem}
+    .nav .count{padding:7px 9px; font-size:.78rem}
+  }
+</style>
+</head>
+<body>
+
+<a class="home-link" href="index.html">← 主頁</a>
+<div class="sessiontag" id="sessionTag">第 1 堂</div>
+
+<!-- 1 -->
+<section class="slide on" data-session="第 1 堂">
+  <div class="kicker">Session 01 · AI Communication</div>
+  <h1>AI 溝通術<br>你不是在畫圖，<br>你是在<span class="hl">下訂單</span></h1>
+  <p class="big">今天結束時，你會有一個<b>長相固定的專屬角色</b>，之後三天它會出現在你的貼圖、影片和網站裡。</p>
+</section>
+
+<!-- 2 -->
+<section class="slide" data-session="第 1 堂">
+  <div class="kicker">先搞懂你的對手</div>
+  <h1>AI ＝ 超會畫圖、但<span class="hl">完全不認識你</span>的外星實習生</h1>
+  <p class="big">它畫工一流，但它不知道你喜歡什麼、想要什麼。<br><b>你沒說的，它全部用猜的。</b></p>
+</section>
+
+<!-- 3 -->
+<section class="slide" data-session="第 1 堂">
+  <div class="kicker">實驗 ①</div>
+  <h1>全班一起輸入這三個字</h1>
+  <div class="panel">
+    <pre class="demo">畫一隻貓</pre>
+    <button class="copy" type="button">📋 複製</button>
+  </div>
+  <div class="callout">生成後，跟旁邊同學的貓比一比：一樣嗎？</div>
+</section>
+
+<!-- 4 -->
+<section class="slide" data-session="第 1 堂">
+  <div class="kicker">發現了什麼？</div>
+  <h1>每個人的貓<span class="hl">都不一樣</span></h1>
+  <p class="big">因為你只給了 3 個字，剩下的顏色、體型、表情、風格……全是 AI 亂猜的。</p>
+  <p class="big"><b>好的 prompt ＝ 把「猜」變成「訂單」。</b></p>
+</section>
+
+<!-- 5 -->
+<section class="slide" data-session="第 1 堂">
+  <div class="kicker">升級 ②：把主角講清楚</div>
+  <h1>加上「特徵」</h1>
+  <div class="panel">
+    <pre class="demo"><span class="p-who">一隻橘色圓滾滾的胖貓</span>，<span class="p-look">戴圓框眼鏡，一臉不爽</span></pre>
+    <button class="copy" type="button">📋 複製</button>
+  </div>
+  <p class="muted">再生成一次。這次全班的貓，是不是開始長得像了？</p>
+</section>
+
+<!-- 6 -->
+<section class="slide" data-session="第 1 堂">
+  <div class="kicker">升級 ③：完整訂單</div>
+  <h1>五種顏色 ＝ 五個零件</h1>
+  <div class="panel">
+    <pre class="demo"><span class="p-who">一隻橘色圓滾滾的胖貓</span>，<span class="p-look">戴圓框眼鏡，一臉不爽</span>。<span class="p-style">柔和 3D 動畫風格</span>。<span class="p-fmt">全身圖、白色背景</span>。<span class="p-no">不要文字、不要浮水印</span>。</pre>
+    <button class="copy" type="button">📋 複製</button>
+  </div>
+  <div class="legend">
+    <span class="p-who">主角</span><span class="p-look">特徵</span><span class="p-style">畫風</span><span class="p-fmt">格式</span><span class="p-no">禁止</span>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="slide" data-session="第 1 堂">
+  <div class="kicker">記住它，一隻手就夠</div>
+  <h1>五指口訣</h1>
+  <div class="fingers">
+    <div class="finger f1"><div class="emoji">👍</div><div class="name">主角</div><div class="q">誰？</div></div>
+    <div class="finger f2"><div class="emoji">☝️</div><div class="name">特徵</div><div class="q">長什麼樣？</div></div>
+    <div class="finger f3"><div class="emoji">🖐</div><div class="name">畫風</div><div class="q">什麼風格？</div></div>
+    <div class="finger f4"><div class="emoji">💍</div><div class="name">格式</div><div class="q">要什麼輸出？</div></div>
+    <div class="finger f5"><div class="emoji">🤙</div><div class="name">禁止</div><div class="q">不要什麼？</div></div>
+  </div>
+  <div class="callout">寫完 prompt，五根手指數一遍：五個都有，才算完整訂單。</div>
+</section>
+
+<!-- 8 -->
+<section class="slide" data-session="第 1 堂">
+  <div class="kicker">換你了</div>
+  <h1>任務：打造你的角色</h1>
+  <ul class="check">
+    <li>用五指口訣，手寫「你的角色」的 prompt</li>
+    <li>貼到 Gemini 生成</li>
+    <li>不滿意？<b>一次只改一個零件</b>，再生一次</li>
+  </ul>
+  <div class="callout">科學家精神：一次只改一個地方，你才知道是哪裡造成差別。</div>
+</section>
+
+<!-- 9 -->
+<section class="slide" data-session="第 1 堂">
+  <div class="kicker">第 1 堂收尾</div>
+  <h1>角色定裝照 📸</h1>
+  <ul class="check">
+    <li>選出最滿意的一張 ＝ 你的「角色參考圖」</li>
+    <li>存到手機相簿</li>
+    <li>上傳到作品區</li>
+  </ul>
+  <p class="big">之後三天的貼圖、影片、網站，全靠這張圖。<b>弄丟它，角色就換人了。</b></p>
+</section>
+
+<!-- 10 -->
+<section class="slide" data-session="第 2 堂">
+  <div class="kicker">Session 02 · 實驗 ②</div>
+  <h1>把剛剛的 prompt<br><span class="hl">原封不動</span>再生一次</h1>
+  <div class="callout">跟你的定裝照比一比……怎麼變了一個人？！</div>
+  <p class="big">因為 <b>AI 沒有記憶</b>。它不記得上一張畫了什麼。</p>
+</section>
+
+<!-- 11 -->
+<section class="slide" data-session="第 2 堂">
+  <div class="kicker">讓角色不變臉</div>
+  <h1>一致性三招</h1>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><p><b>附上角色參考圖</b>（你的定裝照）</p></div>
+    <div class="step"><div class="n">2</div><p><b>把固定點寫死</b>：臉、髮型、服裝、配色「完全相同」</p></div>
+    <div class="step"><div class="n">3</div><p><b>只改表情和動作</b>，其他都不動</p></div>
+  </div>
+  <div class="panel">
+    <pre class="demo">（附上角色參考圖）畫<span class="p-who">同一個角色</span>：<span class="p-look">臉、髮型、服裝、配色與參考圖完全相同</span>。只改成：開心大笑、雙手比讚。<span class="p-style">Q 版貼圖風格</span>、<span class="p-fmt">白色背景</span>。<span class="p-no">不要文字、不要變成別的角色</span>。</pre>
+    <button class="copy" type="button">📋 複製</button>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="slide" data-session="第 2 堂">
+  <div class="kicker">貼圖任務</div>
+  <h1>8 格連發</h1>
+  <div class="panel">
+    <pre class="demo">（附上角色參考圖）同一個角色的貼圖，一張圖 2x4 共 8 格，依序：開心、哭哭、生氣、讚、掰掰、驚訝、愛你、加油。Q 版風格、粗外框、白色背景，每一格都是同一個角色，臉、髮型、服裝、配色完全相同。不要文字、不要浮水印。</pre>
+    <button class="copy" type="button">📋 複製</button>
+  </div>
+  <p class="muted">整張失敗的話，改成一次生 1–2 格就好。</p>
+</section>
+
+<!-- 13 -->
+<section class="slide" data-session="第 2 堂">
+  <div class="kicker">收成時間</div>
+  <h1>Canva 去背 ＋ 裁切</h1>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><p>把 8 格大圖上傳到 Canva</p></div>
+    <div class="step"><div class="n">2</div><p>點圖片 → <b>背景移除</b></p></div>
+    <div class="step"><div class="n">3</div><p>逐格<b>裁切</b>成一張一張</p></div>
+    <div class="step"><div class="n">4</div><p>下載 PNG → 上傳作品區</p></div>
+  </div>
+</section>
+
+<!-- 14 -->
+<section class="slide" data-session="第 2 堂">
+  <div class="kicker">最終考驗</div>
+  <h1>第 9 張挑戰 🏆</h1>
+  <p class="big">不用任何工具、不看範例，<b>徒手寫出</b>第 9 個表情的 prompt。</p>
+  <ul class="check">
+    <li>五指五個零件都有</li>
+    <li>有「同一個角色、保持不變」的一致性指令</li>
+    <li>給老師過目 → 通過才能生成</li>
+  </ul>
+  <div class="callout">通過 ＝ 貼圖大師認證。明天開始寫歌詞，靠的也是同一套功夫。</div>
+</section>
+
+<div class="nav">
+  <button id="prev" type="button">◀ 上一頁</button>
+  <span class="count" id="count">1 / 14</span>
+  <button id="next" type="button">下一頁 ▶</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let i = 0;
+  function hashIndex(){
+    const match = window.location.hash.match(/^#slide-(\d+)$/);
+    return match ? Number(match[1]) - 1 : 0;
+  }
+  function show(n, syncHash = true){
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s,k)=>s.classList.toggle('on', k === i));
+    document.getElementById('count').textContent = (i+1) + ' / ' + slides.length;
+    document.getElementById('sessionTag').textContent = slides[i].dataset.session || '';
+    if(syncHash && window.location.hash){
+      history.replaceState(null, '', '#slide-' + (i + 1));
+    }
+  }
+  document.getElementById('prev').addEventListener('click', ()=>show(i-1));
+  document.getElementById('next').addEventListener('click', ()=>show(i+1));
+  document.addEventListener('keydown', e=>{
+    if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') show(i+1);
+    if(e.key === 'ArrowLeft' || e.key === 'PageUp') show(i-1);
+  });
+  let tx = null;
+  document.addEventListener('touchstart', e=>{ tx = e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', e=>{
+    if(tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if(Math.abs(dx) > 60) show(i + (dx < 0 ? 1 : -1));
+    tx = null;
+  }, {passive:true});
+
+  document.querySelectorAll('.copy').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const text = btn.parentElement.querySelector('pre.demo').textContent.trim();
+      try{
+        if(navigator.clipboard && window.isSecureContext){
+          await navigator.clipboard.writeText(text);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+          document.body.appendChild(ta); ta.select();
+          document.execCommand('copy'); document.body.removeChild(ta);
+        }
+        const o = btn.textContent;
+        btn.classList.add('done'); btn.textContent = '✓ 已複製';
+        setTimeout(()=>{ btn.classList.remove('done'); btn.textContent = o; }, 1400);
+      }catch(e){ alert('複製失敗，請長按文字手動複製。'); }
+    });
+  });
+  window.addEventListener('hashchange', ()=>show(hashIndex(), false));
+  show(hashIndex(), false);
+</script>
+</body>
+</html>
