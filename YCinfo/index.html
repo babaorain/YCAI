@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<meta name="theme-color" content="#26211e">
+<title>2026 Youth Camp｜流程表</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap');
+  :root{
+    --paper:#fff7ec; --paper-2:#fffdf8; --ink:#26211e; --muted:#75695f;
+    --line:#e5d7c7; --teal:#287c78; --teal-soft:#dff2ee;
+    --orange:#ef6b45; --orange-soft:#fde2d8; --gold:#e0ad45; --gold-soft:#fff7c9;
+    --blue:#4267b2; --blue-soft:#e4ebff; --green:#48815d; --green-soft:#e4f3e8;
+    --shadow:5px 5px 0 rgba(38,33,30,.9);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Noto Sans TC',sans-serif;
+    background:var(--paper);
+    background-image:radial-gradient(circle at 1px 1px, rgba(38,33,30,.055) 1px, transparent 0);
+    background-size:22px 22px;
+    color:var(--ink);
+    padding:74px 14px 52px;
+  }
+  .wrap{max-width:820px;margin:0 auto}
+  .home-link{
+    position:fixed; top:12px; left:14px; z-index:20;
+    border:2px solid var(--ink); border-radius:999px; padding:7px 12px;
+    background:#fff; color:var(--ink); text-decoration:none;
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif; font-weight:900;
+    font-size:.82rem; box-shadow:2px 2px 0 var(--ink);
+  }
+  .home-link:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--ink)}
+  header,.now-panel,.reference{
+    border:3px solid var(--ink); border-radius:18px; background:#fff;
+    box-shadow:var(--shadow); padding:20px; margin-bottom:16px;
+  }
+  header{position:relative;overflow:hidden}
+  header::after{
+    content:""; position:absolute; width:150px; height:150px; border-radius:50%;
+    background:var(--teal-soft); right:-64px; bottom:-78px;
+  }
+  header>*{position:relative;z-index:1}
+  .kicker{
+    font-family:'Space Grotesk',sans-serif; font-weight:900;
+    color:var(--teal); font-size:.84rem; letter-spacing:0;
+  }
+  h1{font-size:2.1rem; line-height:1.08; margin:6px 0 8px; font-weight:900; letter-spacing:0}
+  h1 span{color:var(--orange)}
+  .lead{color:var(--muted);font-weight:700;line-height:1.55}
+  .now-panel{
+    background:var(--gold-soft);
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+  .now-label{
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif;
+    color:var(--teal); font-size:.78rem; font-weight:900; letter-spacing:0;
+  }
+  .now-title{font-weight:900;font-size:1.25rem;line-height:1.35}
+  .now-time{color:var(--muted);font-weight:900;font-size:.9rem}
+  .now-action{
+    justify-self:start;
+    border:3px solid var(--ink); border-radius:12px; background:var(--gold);
+    box-shadow:3px 3px 0 var(--ink); color:var(--ink);
+    padding:9px 14px; font:inherit; font-weight:900; cursor:pointer;
+  }
+  .now-action:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+  .day-tabs{
+    position:sticky; top:56px; z-index:10;
+    display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px;
+    padding:8px 0 14px; background:linear-gradient(var(--paper) 72%, rgba(255,247,236,0));
+  }
+  .day-tab{
+    min-height:50px;
+    border:3px solid var(--ink); border-radius:14px; background:#fff;
+    box-shadow:3px 3px 0 var(--ink); color:var(--ink);
+    font:inherit; font-weight:900; cursor:pointer;
+    display:grid; place-content:center; gap:1px;
+  }
+  .day-tab small{
+    display:block;
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif;
+    color:var(--muted); font-size:.72rem; font-weight:900;
+  }
+  .day-tab[aria-selected="true"]{background:var(--teal);color:#fff}
+  .day-tab[aria-selected="true"] small{color:#fff}
+  .day-tab.is-current{box-shadow:3px 3px 0 var(--orange)}
+  .day-heading{
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif;
+    font-weight:900; color:var(--muted); margin:8px 4px 10px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .day-heading::after{content:"";height:2px;background:var(--line);flex:1}
+  .timeline{display:grid;gap:12px}
+  details.event{
+    --accent:var(--teal);
+    --tint:var(--teal-soft);
+    border:3px solid var(--ink); border-radius:16px; background:#fff;
+    box-shadow:3px 3px 0 var(--ink); overflow:hidden;
+  }
+  details.event[open]{background:var(--paper-2)}
+  details.event.is-now{
+    border-color:var(--orange);
+    box-shadow:6px 6px 0 var(--orange);
+    background:var(--gold-soft);
+  }
+  summary{
+    list-style:none; cursor:pointer; min-height:72px; padding:12px;
+    display:grid; grid-template-columns:74px 1fr 28px; align-items:center; gap:10px;
+  }
+  summary::-webkit-details-marker{display:none}
+  .time{
+    align-self:stretch; border:3px solid var(--ink); border-radius:13px;
+    background:var(--tint); display:grid; place-content:center;
+    text-align:center; font-family:'Space Grotesk','Noto Sans TC',sans-serif;
+    font-weight:900; font-size:.82rem; line-height:1.1;
+  }
+  .time span{display:block;color:var(--muted);font-size:.7rem;margin-top:4px}
+  .event-title{font-weight:900;font-size:1.06rem;line-height:1.35}
+  .event-meta{
+    display:flex; flex-wrap:wrap; gap:6px; align-items:center;
+    margin-top:6px; color:var(--muted); font-size:.78rem; font-weight:900;
+  }
+  .pill{
+    border:2px solid var(--accent); border-radius:999px;
+    background:var(--tint); color:var(--ink); padding:2px 8px;
+  }
+  .now-pill{background:var(--orange);border-color:var(--orange);color:#fff}
+  .chev{
+    color:var(--orange); font-size:1.45rem; font-weight:900; text-align:center;
+    transition:transform .14s;
+  }
+  details[open] .chev{transform:rotate(180deg)}
+  .event-detail{
+    border-top:2px solid var(--line);
+    padding:12px 14px 15px 96px;
+    color:var(--muted); font-weight:700; line-height:1.58;
+  }
+  .kind-ceremony{--accent:var(--gold);--tint:var(--gold-soft)}
+  .kind-meal{--accent:var(--blue);--tint:var(--blue-soft)}
+  .kind-explore{--accent:var(--green);--tint:var(--green-soft)}
+  .kind-field,.kind-mingle,.kind-night{--accent:var(--orange);--tint:var(--orange-soft)}
+  .kind-move,.kind-rest{--accent:var(--muted);--tint:#f1eee9}
+  .kind-worship,.kind-closing{--accent:var(--gold);--tint:var(--gold-soft)}
+  .reference{margin-top:18px}
+  .reference summary{
+    min-height:0; padding:0; display:flex; justify-content:space-between; gap:12px;
+    font-weight:900; color:var(--teal);
+  }
+  .reference img{
+    display:block; width:100%; height:auto; margin-top:14px;
+    border:2px solid var(--line); border-radius:12px; background:#fff;
+  }
+  .foot{
+    text-align:center; margin-top:26px; font-size:.75rem; color:#95877b;
+    font-family:'Space Grotesk','Noto Sans TC',sans-serif; letter-spacing:0;
+  }
+  @media(min-width:680px){
+    body{padding-left:20px;padding-right:20px}
+    header,.now-panel,.reference{padding:22px}
+    h1{font-size:2.7rem}
+    .now-panel{grid-template-columns:1fr auto;align-items:center}
+    .now-action{grid-row:1 / span 3;grid-column:2}
+    summary{grid-template-columns:92px 1fr 32px;padding:14px}
+    .event-detail{padding-left:124px}
+  }
+  @media(max-width:390px){
+    body{padding-left:10px;padding-right:10px}
+    h1{font-size:1.86rem}
+    header,.now-panel,.reference{padding:16px;border-radius:16px}
+    summary{grid-template-columns:68px 1fr 24px;gap:8px}
+    .time{font-size:.76rem}
+    .event-title{font-size:1rem}
+    .event-detail{padding-left:90px}
+  }
+</style>
+</head>
+<body>
+<a class="home-link" href="../index.html">← 主頁</a>
+<div class="wrap">
+  <header>
+    <div class="kicker">2026 Youth Camp</div>
+    <h1>營隊<span>流程表</span></h1>
+    <p class="lead">7/7（二）到 7/9（四）</p>
+  </header>
+
+  <section class="now-panel" id="nowPanel" aria-live="polite"></section>
+  <nav class="day-tabs" id="dayTabs" aria-label="選擇日期"></nav>
+  <main id="scheduleRoot"></main>
+
+  <details class="reference">
+    <summary>原始表格 <span class="chev">⌄</span></summary>
+    <img src="schedule-reference.jpg" alt="2026 Youth Camp 原始流程表">
+  </details>
+
+  <p class="foot">AI Creative Camp · 2026 Youth Camp</p>
+</div>
+
+<script>
+const TZ = 'Asia/Taipei';
+const DAYS = [
+  {
+    id:'2026-07-07', label:'7/7（二）', short:'7/7',
+    events:[
+      {start:'09:00', end:'10:00', duration:'1H', kind:'arrival', title:'集合報到'},
+      {start:'10:00', end:'10:50', duration:'50', kind:'mingle', title:'相見歡活動'},
+      {start:'10:50', end:'11:00', duration:'10', kind:'move', title:'排隊進場'},
+      {start:'11:00', end:'12:00', duration:'1H', kind:'ceremony', title:'開幕、授旗儀式', note:'讚美、玉芝牧師、授旗'},
+      {start:'12:00', end:'13:00', duration:'1H', kind:'meal', title:'前往教室、午餐'},
+      {start:'13:00', end:'14:00', duration:'1H', kind:'explore', title:'職能探索 1'},
+      {start:'14:00', end:'15:00', duration:'1H', kind:'explore', title:'職能探索 2'},
+      {start:'15:00', end:'15:10', duration:'10', kind:'move', title:'前往活動場地'},
+      {start:'15:10', end:'17:10', duration:'2H', kind:'field', title:'五新大地活動'},
+      {start:'17:10', end:'18:00', duration:'50', kind:'meal', title:'晚餐'},
+      {start:'18:00', end:'18:10', duration:'10', kind:'move', title:'排隊進場'},
+      {start:'18:10', end:'21:10', duration:'3H', kind:'worship', title:'晚會一', note:'賢智牧師'},
+      {start:'21:10', end:'21:40', duration:'30', kind:'team', title:'小隊凝聚'},
+      {start:'21:40', end:'22:40', duration:'1H', kind:'night', title:'夜教'},
+      {start:'22:40', end:'23:40', showEnd:false, duration:'就寢前', kind:'rest', title:'盥洗 / 就寢', note:'23:40 查房巡邏'}
+    ]
+  },
+  {
+    id:'2026-07-08', label:'7/8（三）', short:'7/8',
+    events:[
+      {start:'07:00', end:'08:00', duration:'1H', kind:'meal', title:'小隊晨耕 / 早餐'},
+      {start:'08:00', end:'09:50', duration:'50', kind:'ceremony', title:'講座 1：超趨帆'},
+      {start:'09:50', end:'10:00', duration:'10', kind:'move', title:'前往教室'},
+      {start:'10:00', end:'11:00', duration:'1H', kind:'explore', title:'職能探索 3'},
+      {start:'11:00', end:'12:00', duration:'1H', kind:'explore', title:'職能探索 4'},
+      {start:'12:00', end:'13:00', duration:'1H', kind:'meal', title:'午餐'},
+      {start:'13:00', end:'14:00', duration:'1H', kind:'explore', title:'職能探索 5'},
+      {start:'14:00', end:'15:00', duration:'1H', kind:'explore', title:'職能探索 6'},
+      {start:'15:00', end:'15:10', duration:'10', kind:'move', title:'前往活動場地'},
+      {start:'15:10', end:'17:10', duration:'2H', kind:'field', title:'五新大地活動'},
+      {start:'17:10', end:'18:00', duration:'50', kind:'meal', title:'晚餐'},
+      {start:'18:00', end:'18:10', duration:'10', kind:'move', title:'排隊進場'},
+      {start:'18:10', end:'21:10', duration:'3H', kind:'worship', title:'晚會二', note:'志彬牧師'},
+      {start:'21:10', end:'21:40', duration:'30', kind:'team', title:'小隊凝聚'},
+      {start:'21:40', end:'22:40', duration:'1H', kind:'night', title:'水球大戰'},
+      {start:'22:40', end:'23:40', showEnd:false, duration:'就寢前', kind:'rest', title:'盥洗 / 就寢', note:'23:40 查房巡邏'}
+    ]
+  },
+  {
+    id:'2026-07-09', label:'7/9（四）', short:'7/9',
+    events:[
+      {start:'07:00', end:'08:00', duration:'1H', kind:'meal', title:'小隊晨耕 / 早餐'},
+      {start:'08:00', end:'09:50', duration:'50', kind:'ceremony', title:'講座 2：待安排'},
+      {start:'09:50', end:'10:00', duration:'10', kind:'move', title:'前往教室'},
+      {start:'10:00', end:'11:00', duration:'1H', kind:'explore', title:'職能探索 7'},
+      {start:'11:00', end:'12:00', duration:'1H', kind:'explore', title:'各區表演練習'},
+      {start:'12:00', end:'12:40', duration:'40', kind:'meal', title:'午餐'},
+      {start:'12:40', end:'14:00', duration:'1H20', kind:'ceremony', title:'各區彩排', note:'一區 20 分鐘'},
+      {start:'14:00', end:'14:10', duration:'10', kind:'move', title:'全體進場'},
+      {start:'14:10', end:'17:10', duration:'3H', kind:'closing', title:'閉幕式 / 頒獎', note:'美玲牧師'},
+      {start:'17:10', end:'23:59', showEnd:false, duration:'', kind:'closing', title:'我們明年見 👋'}
+    ]
+  }
+];
+const KIND_LABEL = {
+  arrival:'報到', mingle:'活動', move:'移動', ceremony:'聚會',
+  meal:'餐食', explore:'職能', field:'大地', worship:'晚會',
+  team:'小隊', night:'夜間', rest:'就寢', closing:'閉幕'
+};
+let selectedDayId = '';
+let manualDay = false;
+let currentKey = '';
+
+const $ = selector => document.querySelector(selector);
+const pad = value => String(value).padStart(2,'0');
+const minutes = time => {
+  const [h,m] = time.split(':').map(Number);
+  return h * 60 + m;
+};
+const stamp = (date, minute) => Date.parse(`${date}T00:00:00+08:00`) + minute * 60000;
+const eventKey = (day,event) => `${day.id}-${event.start}-${event.title}`;
+const displayTime = event => event.showEnd === false ? `${event.start}-` : `${event.start}-${event.end}`;
+function parseOverride(value){
+  if(!value) return new Date();
+  const raw = value.trim().replace(' ','T');
+  if(/[zZ]|[+-]\d\d:?\d\d$/.test(raw)) return new Date(raw);
+  return new Date(`${raw.length === 16 ? `${raw}:00` : raw}+08:00`);
+}
+function taipeiClock(date){
+  const parts = new Intl.DateTimeFormat('en-CA',{
+    timeZone:TZ, year:'numeric', month:'2-digit', day:'2-digit',
+    hour:'2-digit', minute:'2-digit', hour12:false
+  }).formatToParts(date).reduce((bag,part)=>{
+    bag[part.type] = part.value;
+    return bag;
+  },{});
+  const hour = Number(parts.hour === '24' ? '00' : parts.hour);
+  return {date:`${parts.year}-${parts.month}-${parts.day}`, minute:hour * 60 + Number(parts.minute), label:`${parts.month}/${parts.day} ${pad(hour)}:${parts.minute}`};
+}
+function locate(clock){
+  const nowStamp = stamp(clock.date, clock.minute);
+  let current = null;
+  let next = null;
+  DAYS.forEach(day=>{
+    day.events.forEach(event=>{
+      const startStamp = stamp(day.id, minutes(event.start));
+      const endStamp = stamp(day.id, minutes(event.end));
+      const item = {day,event,key:eventKey(day,event),startStamp};
+      if(nowStamp >= startStamp && nowStamp < endStamp) current = item;
+      if(startStamp > nowStamp && (!next || startStamp < next.startStamp)) next = item;
+    });
+  });
+  return {current,next};
+}
+function nearestDayId(clock){
+  const sameDay = DAYS.find(day => day.id === clock.date);
+  if(sameDay) return sameDay.id;
+  return stamp(clock.date, clock.minute) < stamp(DAYS[0].id, 0) ? DAYS[0].id : DAYS[DAYS.length - 1].id;
+}
+function renderTabs(activeDayId, activeDayFromClock){
+  $('#dayTabs').innerHTML = DAYS.map(day => `
+    <button class="day-tab ${day.id === activeDayFromClock ? 'is-current' : ''}" type="button"
+      data-day="${day.id}" aria-selected="${day.id === activeDayId}">
+      ${day.short}<small>${day.label.replace(day.short,'')}</small>
+    </button>
+  `).join('');
+}
+function renderSchedule(dayId){
+  const day = DAYS.find(item => item.id === dayId) || DAYS[0];
+  $('#scheduleRoot').innerHTML = `
+    <div class="day-heading">${day.label}</div>
+    <section class="timeline" aria-label="${day.label} 流程">
+      ${day.events.map(event=>{
+        const key = eventKey(day,event);
+        const isNow = key === currentKey;
+        return `
+          <details class="event kind-${event.kind} ${isNow ? 'is-now' : ''}" data-key="${key}" ${isNow ? 'open' : ''}>
+            <summary>
+              <span class="time">${event.start}<span>${event.showEnd === false ? '之後' : event.end}</span></span>
+              <span>
+                <span class="event-title">${event.title}</span>
+                <span class="event-meta">
+                  ${isNow ? '<span class="pill now-pill">現在</span>' : ''}
+                  <span class="pill">${KIND_LABEL[event.kind]}</span>
+                  ${event.duration ? `<span>${event.duration}</span>` : ''}
+                </span>
+              </span>
+              <span class="chev" aria-hidden="true">⌄</span>
+            </summary>
+            <div class="event-detail">
+              <div>${displayTime(event)}</div>
+              ${event.note ? `<div>${event.note}</div>` : ''}
+            </div>
+          </details>
+        `;
+      }).join('')}
+    </section>
+  `;
+}
+function renderNow(clock, found){
+  const panel = $('#nowPanel');
+  if(found.current){
+    const {day,event} = found.current;
+    panel.innerHTML = `
+      <div class="now-label">正在進行 · ${clock.label}</div>
+      <div class="now-title">${event.title}</div>
+      <div class="now-time">${day.label} ${displayTime(event)}${event.note ? ` · ${event.note}` : ''}</div>
+      <button class="now-action" type="button" id="jumpNow">看現在</button>
+    `;
+    $('#jumpNow').addEventListener('click',()=>{
+      manualDay = false;
+      selectedDayId = day.id;
+      update();
+      document.querySelector('.event.is-now')?.scrollIntoView({behavior:'smooth', block:'center'});
+    });
+    return;
+  }
+  if(found.next){
+    const {day,event} = found.next;
+    panel.innerHTML = `
+      <div class="now-label">下一段 · ${clock.label}</div>
+      <div class="now-title">${event.title}</div>
+      <div class="now-time">${day.label} ${displayTime(event)}${event.note ? ` · ${event.note}` : ''}</div>
+    `;
+    return;
+  }
+  panel.innerHTML = `
+    <div class="now-label">流程結束 · ${clock.label}</div>
+    <div class="now-title">我們明年見 👋</div>
+    <div class="now-time">2026 Youth Camp</div>
+  `;
+}
+function update(){
+  // ponytail: URL clock override is for QA; remove if public links must ignore query strings.
+  const clock = taipeiClock(parseOverride(new URLSearchParams(location.search).get('now')));
+  const found = locate(clock);
+  currentKey = found.current?.key || '';
+  const activeDayFromClock = found.current?.day.id || nearestDayId(clock);
+  if(!selectedDayId || (!manualDay && found.current)) selectedDayId = activeDayFromClock;
+  renderNow(clock, found);
+  renderTabs(selectedDayId, activeDayFromClock);
+  renderSchedule(selectedDayId);
+  document.querySelectorAll('.day-tab').forEach(button=>{
+    button.addEventListener('click',()=>{
+      manualDay = true;
+      selectedDayId = button.dataset.day;
+      renderTabs(selectedDayId, activeDayFromClock);
+      renderSchedule(selectedDayId);
+    });
+  });
+}
+function selfTest(){
+  [
+    ['2026-07-07T10:20','相見歡活動'],
+    ['2026-07-08T21:55','水球大戰'],
+    ['2026-07-09T14:30','閉幕式 / 頒獎']
+  ].forEach(([when,title])=>{
+    const found = locate(taipeiClock(parseOverride(when)));
+    console.assert(found.current?.event.title === title, `${when} should be ${title}`);
+  });
+}
+update();
+setInterval(update, 30000);
+if(new URLSearchParams(location.search).has('selftest')) selfTest();
+</script>
+</body>
+</html>
