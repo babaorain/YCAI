@@ -33,12 +33,36 @@
   h1 span{color:var(--orange)}
   .lead{color:var(--muted); font-weight:700; line-height:1.6}
   h2{font-size:1.15rem; margin-bottom:12px; color:var(--teal)}
+  .section-lead{color:var(--muted); font-weight:700; line-height:1.65; margin:-4px 0 12px}
   .tools{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
   .tool{
     display:flex; align-items:center; gap:10px; padding:10px;
     border:2px solid var(--line); border-radius:14px; color:var(--ink); text-decoration:none; font-weight:900;
   }
   .tool img{width:34px; height:34px; border-radius:9px; object-fit:contain}
+  .task-grid{display:grid; gap:12px}
+  .task{
+    border:2px solid var(--ink); border-radius:14px; background:#fffdf8;
+    box-shadow:2px 2px 0 var(--ink); padding:14px;
+  }
+  .tag{
+    display:inline-block; border:2px solid var(--ink); border-radius:999px;
+    padding:3px 9px; background:var(--teal-soft); color:var(--teal);
+    font-size:.72rem; font-weight:900; margin-bottom:8px;
+  }
+  .task h3{font-size:1.05rem; margin-bottom:6px}
+  .task p{color:var(--muted); font-weight:700; line-height:1.6; margin-bottom:10px}
+  pre{
+    white-space:pre-wrap; word-break:break-word; background:var(--paper);
+    border:2px dashed var(--line); border-radius:12px; padding:12px;
+    line-height:1.7; font-size:.9rem; margin-bottom:10px;
+  }
+  .copy{
+    cursor:pointer; border:3px solid var(--ink); border-radius:12px;
+    background:var(--gold); color:var(--ink); box-shadow:3px 3px 0 var(--ink);
+    padding:9px 14px; font:inherit; font-weight:900;
+  }
+  .copy.done{background:var(--teal); color:#fff}
   ul{display:grid; gap:9px; padding-left:1.2em; line-height:1.65; color:var(--muted); font-weight:700}
   .challenge{counter-reset:item; display:grid; gap:10px}
   .challenge li{
@@ -46,6 +70,9 @@
     color:var(--ink); box-shadow:2px 2px 0 var(--ink);
   }
   .challenge li::before{counter-increment:item; content:counter(item) ". "; color:var(--orange); font-weight:900}
+  .challenge strong{display:block; margin-bottom:4px}
+  .challenge span{display:block; color:var(--muted); line-height:1.55; font-weight:700}
+  @media(min-width:700px){.task-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
   @media(max-width:520px){.tools{grid-template-columns:1fr}}
 </style>
 </head>
@@ -73,6 +100,34 @@
   </section>
 
   <section class="card">
+    <h2>今晚就能玩</h2>
+    <p class="section-lead">選一張任務卡，複製後貼到 Gemini 或 Canva。先把任務做小，作品才會真的長大。</p>
+    <div class="task-grid">
+      <article class="task">
+        <span class="tag">學生自學</span>
+        <h3>幫家人做角色</h3>
+        <p>先訪問 3 個答案，再把人變成原創角色。</p>
+        <pre>我要幫家人設計一個原創角色。請根據這些資料產生角色設定：個性：＿＿；喜歡的東西：＿＿；常說的一句話：＿＿。請輸出角色名字、外觀特色、主色、口頭禪，以及一段可以直接拿去生圖的 prompt。不要做成真人肖像，要像原創吉祥物。</pre>
+        <button class="copy" type="button">📋 複製任務卡</button>
+      </article>
+      <article class="task">
+        <span class="tag">家長共玩</span>
+        <h3>親子角色訪談</h3>
+        <p>請家人當導演，你當 AI 溝通師。</p>
+        <pre>我們要一起做一個家庭角色。請用 5 個問題訪問我，問題要適合親子一起回答。問完後，幫我們整理成：角色名字、一句話介紹、三個特色、適合的畫風、第一張定裝照 prompt。</pre>
+        <button class="copy" type="button">📋 複製任務卡</button>
+      </article>
+      <article class="task">
+        <span class="tag">作品延伸</span>
+        <h3>上架前檢查</h3>
+        <p>貼圖、網站、影片都能用這張卡做最後整理。</p>
+        <pre>請幫我檢查這個 AI 角色作品能不能公開分享。請用清單回覆：1. 有沒有個資風險；2. 角色名字、主色、口頭禪是否一致；3. 網站第一眼是否看得懂；4. 貼圖是否適合做成 LINE 貼圖；5. 給我三個最值得優先修改的地方。</pre>
+        <button class="copy" type="button">📋 複製任務卡</button>
+      </article>
+    </div>
+  </section>
+
+  <section class="card">
     <h2>在家使用安全提醒</h2>
     <ul>
       <li>不要上傳身分證、住址、電話、學校證件或家中私人照片。</li>
@@ -84,13 +139,34 @@
   <section class="card">
     <h2>三個進階挑戰</h2>
     <ol class="challenge">
-      <li>幫家人做一個角色：訪問他的個性、口頭禪和代表物，再做定裝照。</li>
-      <li>貼圖真的上架 LINE：把 8 張貼圖整理成一套，研究 LINE Creators Market。</li>
-      <li>網站改版：加上作品故事、QR code、訪客留言或新的主題色。</li>
+      <li><strong>角色家族計畫</strong><span>幫 3 位家人各做一個角色，最後做一張「家庭角色海報」。</span></li>
+      <li><strong>貼圖上架研究</strong><span>把 8 張貼圖整理成同一尺寸與透明背景，查 LINE Creators Market 的上架規格。</span></li>
+      <li><strong>網站第二版</strong><span>新增作品故事、QR code、AR 攝影展精選照，並請一位家人用手機試看。</span></li>
     </ol>
   </section>
 </div>
 <script>
+  async function copyText(text, btn){
+    let copied = false;
+    if(navigator.clipboard && window.isSecureContext){
+      try{
+        await navigator.clipboard.writeText(text);
+        copied = true;
+      }catch(err){}
+    }
+    if(!copied){
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+    }
+    const old = btn.textContent;
+    btn.classList.add('done'); btn.textContent = '✓ 已複製';
+    setTimeout(()=>{btn.classList.remove('done'); btn.textContent = old;}, 1400);
+  }
+  document.querySelectorAll('.copy').forEach(btn=>{
+    btn.addEventListener('click', ()=>copyText(btn.previousElementSibling.textContent.trim(), btn));
+  });
   if(/Android/i.test(navigator.userAgent)){
     document.querySelectorAll('.store-link[data-android]').forEach(link=>link.href=link.dataset.android);
   }

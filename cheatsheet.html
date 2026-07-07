@@ -51,6 +51,15 @@
     padding:10px 16px; font:inherit; font-weight:900;
   }
   .copy.done{background:var(--teal); color:#fff}
+  .big-link{
+    display:inline-flex; align-items:center; justify-content:center;
+    border:3px solid var(--ink); border-radius:12px;
+    background:var(--gold); color:var(--ink); box-shadow:3px 3px 0 var(--ink);
+    padding:12px 16px; font:inherit; font-weight:900; text-decoration:none;
+    margin-bottom:12px;
+  }
+  .big-link:active{transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink)}
+  .hint{color:var(--muted); font-weight:700; line-height:1.65; margin-top:8px}
   .route{display:grid; gap:10px; padding-left:1.4em; line-height:1.7; font-weight:700}
   .route li{padding-left:.2em}
 </style>
@@ -91,19 +100,31 @@
   </section>
 
   <section class="card">
-    <h2>⑤ 一致性 prompt</h2>
+    <h2>⑤ 網站範本（第 6 堂用）</h2>
+    <!-- TODO: 部署前把 TEMPLATE_URL 換成 Canva 範本連結 -->
+    <a class="big-link" href="TEMPLATE_URL" target="_blank" rel="noopener">🏠 以範本建立我的網站</a>
+    <ol class="route">
+      <li>開連結</li>
+      <li>以範本建立</li>
+      <li>換圖換字</li>
+    </ol>
+    <p class="hint">路線 B 從零自建的同學不用這張卡。</p>
+  </section>
+
+  <section class="card">
+    <h2>⑥ 一致性 prompt</h2>
     <pre>（附上角色參考圖）畫同一個角色：臉、髮型、服裝、配色與參考圖完全相同。只改成：開心大笑、雙手比讚。Q 版貼圖風格、白色背景。不要文字、不要變成別的角色。</pre>
     <button class="copy" type="button">📋 複製</button>
   </section>
 
   <section class="card">
-    <h2>⑥ 貼圖 8 連發（短版）</h2>
+    <h2>⑦ 貼圖 8 連發（短版）</h2>
     <pre>（附上角色參考圖）同一個角色的貼圖，一張圖 2x4 共 8 格，依序：開心、哭哭、生氣、讚、掰掰、驚訝、愛你、加油。Q 版風格、粗外框、白色背景，每一格都是同一個角色，臉、髮型、服裝、配色完全相同。不要文字、不要浮水印。</pre>
     <button class="copy" type="button">📋 複製</button>
   </section>
 
   <section class="card">
-    <h2>⑦ Tripo × AR 動線卡</h2>
+    <h2>⑧ Tripo × AR 動線卡</h2>
     <ol class="route">
       <li>Tripo 登入 → 上傳定裝照 → 圖生 3D → 等待</li>
       <li>完成 → 下載 GLB（記住位置！通常在「下載」資料夾）</li>

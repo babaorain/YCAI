@@ -79,6 +79,13 @@
   .zone .z-sub{color:var(--muted); font-size:clamp(.8rem,1.7vw,1.05rem); margin-top:4px}
   .zone.z1 .z-title{color:var(--teal)} .zone.z2 .z-title{color:var(--blue)}
   .zone.z3 .z-title{color:var(--orange)} .zone.z4 .z-title{color:var(--green)}
+  .template-action{
+    display:inline-flex; align-items:center; justify-content:center; align-self:flex-start;
+    border:3px solid var(--ink); border-radius:14px; background:var(--gold);
+    color:var(--ink); box-shadow:3px 3px 0 var(--ink); text-decoration:none;
+    padding:12px 18px; font:inherit; font-weight:900; font-size:clamp(1rem,2.1vw,1.25rem);
+  }
+  .template-action:active{transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink)}
   .nav{
     position:fixed; left:0; right:0; bottom:0; z-index:10;
     display:flex; align-items:center; justify-content:center; gap:14px;
@@ -182,17 +189,30 @@
 
 <!-- 5 -->
 <section class="slide" data-session="第 6 堂">
+  <div class="kicker">選你的路線，終點一樣</div>
+  <h1>兩條路，都能到家 🏠</h1>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><p>🅰 <b>範本起步</b>（求快求穩）：開「網站範本」→ 以範本建立 → 換成自己的圖和字，完工</p></div>
+    <div class="step"><div class="n">2</div><p>🅱 <b>從零自建</b>（進階挑戰）：自選模板，照四個房間自己排</p></div>
+  </div>
+  <div class="callout">不確定選哪條？選 A。先有一個能看的網站，行有餘力再改造它。</div>
+  <!-- TODO: 部署前把 TEMPLATE_URL 換成 Canva 範本連結 -->
+  <a class="template-action" href="TEMPLATE_URL" target="_blank" rel="noopener">🏠 開網站範本</a>
+</section>
+
+<!-- 6 -->
+<section class="slide" data-session="第 6 堂">
   <div class="kicker">Canva 操作</div>
   <h1>四步蓋房</h1>
   <div class="steps">
-    <div class="step"><div class="n">1</div><p>Canva 搜尋「<b>網站</b>」模板，挑一個接近你品牌色的</p></div>
+    <div class="step"><div class="n">1</div><p>路線 A 開範本連結；路線 B 自選「<b>網站</b>」模板</p></div>
     <div class="step"><div class="n">2</div><p>照四個房間<b>排出區塊</b>，多的區塊刪掉</p></div>
     <div class="step"><div class="n">3</div><p>素材從<b>相簿／Padlet</b> 搬進來（就是前四堂的作品）</p></div>
     <div class="step"><div class="n">4</div><p>AR 攝影展區直接上傳照片（可加一句照片說明）</p></div>
   </div>
 </section>
 
-<!-- 6 -->
+<!-- 7 -->
 <section class="slide" data-session="第 6 堂">
   <div class="kicker">第 6 堂收尾</div>
   <h1>今天蓋到哪算過關？</h1>
@@ -204,14 +224,14 @@
   <p class="big">明天上午：微調 → <b>發布 → QR code → 互相參觀</b>。今晚睡飽。</p>
 </section>
 
-<!-- 7 -->
+<!-- 8 -->
 <section class="slide" data-session="第 7 堂">
   <div class="kicker">Session 07 · Launch Day</div>
   <h1>發布日 🚀</h1>
   <p class="big">今天結束時，你會有一個<b>真的網址</b>——掃 QR code 就能看到你三天的所有作品。</p>
 </section>
 
-<!-- 8 -->
+<!-- 9 -->
 <section class="slide" data-session="第 7 堂">
   <div class="kicker">發布前最後檢查</div>
   <h1>品牌一致性檢查 ✅</h1>
@@ -223,7 +243,7 @@
   <div class="callout">迪士尼為什麼一眼認得出來？因為它永遠長一個樣。這就是品牌。</div>
 </section>
 
-<!-- 9 -->
+<!-- 10 -->
 <section class="slide" data-session="第 7 堂">
   <div class="kicker">保護自己</div>
   <h1>公開前的安全線 🔒</h1>
@@ -235,7 +255,7 @@
   <p class="big">網站發布＝<b>全世界都看得到</b>。角色可以高調，個資要低調。</p>
 </section>
 
-<!-- 10 -->
+<!-- 11 -->
 <section class="slide" data-session="第 7 堂">
   <div class="kicker">見證奇蹟的時刻</div>
   <h1>三步上線</h1>
@@ -246,7 +266,7 @@
   </div>
 </section>
 
-<!-- 11 -->
+<!-- 12 -->
 <section class="slide" data-session="第 7 堂">
   <div class="kicker">開放參觀</div>
   <h1>掃碼串門子 📱</h1>
@@ -257,7 +277,7 @@
   </ul>
 </section>
 
-<!-- 12 -->
+<!-- 13 -->
 <section class="slide" data-session="第 7 堂">
   <div class="kicker">結業</div>
   <h1>三天，你做到了 🏆</h1>
@@ -272,7 +292,7 @@
 
 <div class="nav">
   <button id="prev" type="button">◀ 上一頁</button>
-  <span class="count" id="count">1 / 12</span>
+  <span class="count" id="count">1 / 13</span>
   <button id="next" type="button">下一頁 ▶</button>
 </div>
 
