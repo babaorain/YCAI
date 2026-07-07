@@ -549,7 +549,7 @@ function renderNow(clock, found){
   if(found.current){
     const {day,event} = found.current;
     const loc = LOCATIONS[primaryLoc(event)];
-    $('#nowPanel').innerHTML = `<small>現在時間</small><strong>${clock.fullLabel}</strong><button class="now-jump" type="button" data-jump-loc="${primaryLoc(event)}">現在：${event[1]} · ${loc.mapTitle || loc.title}</button>`;
+    $('#nowPanel').innerHTML = `<small>現在時間</small><strong>${clock.fullLabel}</strong><button class="now-jump" type="button" data-jump-current>現在：${event[1]} · ${loc.mapTitle || loc.title}</button>`;
     return;
   }
   $('#nowPanel').innerHTML = `<small>現在時間</small><strong>${clock.fullLabel}</strong><span class="clock-status">目前無進行中活動</span>`;
@@ -559,6 +559,16 @@ function updatePinClasses(){
   document.querySelectorAll('.pin').forEach(pin => {
     pin.classList.toggle('is-current', nowLocs.includes(pin.dataset.loc));
   });
+}
+function scrollCurrentFlow(){
+  if(!currentEvent) return;
+  selectedDay = currentEvent.day.id;
+  updateTabsSelected();
+  updatePanels();
+  renderFlow();
+  updateFlowNow();
+  selectLocation(primaryLoc(currentEvent.event), false, false, false);
+  document.querySelector('.flow-card.is-now')?.scrollIntoView({behavior:'smooth', block:'center'});
 }
 function updateNow(forceFlow){
   // ponytail: query override keeps QA cheap; normal visitors just use current Taipei time.
@@ -595,8 +605,7 @@ function bindEvents(){
     if(card) selectLocation(card.dataset.loc, true, true, false);
   });
   $('#nowPanel').addEventListener('click', event => {
-    const button = event.target.closest('[data-jump-loc]');
-    if(button) selectLocation(button.dataset.jumpLoc, true, true, false);
+    if(event.target.closest('[data-jump-current]')) scrollCurrentFlow();
   });
   $('#mapStage').addEventListener('click', event => {
     const pin = event.target.closest('.pin');
@@ -664,7 +673,7 @@ function init(){
   if(DEBUG) enableDebug();
   updateNow(true);
   selectLocation(selectedLoc, false, false, false);
-  if(currentEvent && !hashLoc) setTimeout(() => selectLocation(primaryLoc(currentEvent.event), true, false, false), 80);
+  if(currentEvent && !hashLoc) setTimeout(scrollCurrentFlow, 80);
   if(params.has('selftest')) selfTest();
   setInterval(() => updateNow(false), 30000);
 }
